@@ -53,8 +53,7 @@ def parse_options():
         _log.error("Please provide an input file")
         print usage
         exit(0)
-    verb_dict = {"WARNING":logging.WARNING, "INFO":logging.INFO, "DEBUG":logging.DEBUG, "ERROR":logging.ERROR}
-    opts.verbosity = verb_dict[opts.verbosity]
+    
     return opts, args
 
 def get_rect_from_ucf(ucf_string, line_no):
@@ -115,8 +114,7 @@ if __name__ == "__main__":
 
     # set verbosity according to option
     log.set_level(opts.verbosity)
-
-    _log.info ("*"*40)
+    _log.debug ("*"*40)
     _log.info ("  UCF Overlap Tester")
     _log.info ("*"*40)
     _log.warning("Only AREA GROUPS are tested!")

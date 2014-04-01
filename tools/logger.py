@@ -9,7 +9,7 @@ class log:
     debug_pre = '\x1b[36;01m'
     reset = '\x1b[39;49;00m'
     _log = None
-
+    all_loggers = []
 
     init = False
 
@@ -33,18 +33,24 @@ class log:
         logger = None
         if name != "":
             logger = logging.getLogger(name)    
-            if level != None:
-                logger.setLevel(level)
-            else:
-                logger.setLevel(logging.DEBUG)
+            logger.setLevel(log._log.getEffectiveLevel())
+            log.all_loggers.append(logger)
 
         return logger
 
     @staticmethod
     def set_level(level):
-        if not log.init: log.init_logging()
-        log._log.setLevel(level)
-
+        if not log.init: 
+            log.init_logging()
+        if isinstance(level, str):
+            verb_dict = {"WARNING":logging.WARNING, "INFO":logging.INFO, "DEBUG":logging.DEBUG, "ERROR":logging.ERROR}
+            log._log.setLevel(verb_dict[level])
+            for logger in log.all_loggers:
+                logger.setLevel(verb_dict[level])
+        else:
+            log._log.setLevel(level)
+            for logger in log.all_loggers:
+                logger.setLevel(level)
     @staticmethod
     def warning(msg):
         if not log.init: log.init_logging()
