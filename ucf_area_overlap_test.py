@@ -58,9 +58,13 @@ def parse_options():
     return opts, args
 
 def get_rect_from_ucf(ucf_string, line_no):
-    """ Quick and dirty parser for ucf AREA_GROUP definitions:
+    """ 
+    Quick and dirty parser for ucf AREA_GROUP definitions:
     Bsp: AREA_GROUP cou_fo_plus RANGE=SLICE_X30Y300:SLICE_X105Y349;
-     """
+    """
+    # Check whether the line is commented and then ignore
+    if ucf_string.lstrip()[0] == "#":
+        return []
     # First get rid of keywords and instance name 
     rects_txt = ucf_string.split("RANGE=")[1]
     # disjunct groups are separated by ','
@@ -106,19 +110,21 @@ def test_rect_list(rect_list):
 
 _log = log.init_logging("ucf-test")
 if __name__ == "__main__":
-    
+    # initialize command line input
     opts, args = parse_options()
+
+    # set verbosity according to option
     log.set_level(opts.verbosity)
+
     _log.info ("*"*40)
     _log.info ("  UCF Overlap Tester")
     _log.info ("*"*40)
     _log.warning("Only AREA GROUPS are tested!")
-    f = open(args[0], 'r')
 
+    f = open(args[0], 'r')
     ram_rects = []
     slice_rects = []
     for line_no, line in enumerate(f):
-        if line[0] == "#": continue #ignore commented lines
         if "AREA_GROUP" in line:
             if "SLICE" in line:
                 slice_rects += get_rect_from_ucf(line, line_no)
@@ -128,9 +134,9 @@ if __name__ == "__main__":
 
     _log.info("Found {} (SLICE) + {} (RAMB18/36) area-constraints.".format(len(slice_rects), len(ram_rects)))
     
+    # check both RAM and SLICE for overlaps:
     found_overlap_ram = test_rect_list(ram_rects)
     found_overlap_slice = test_rect_list(slice_rects)
-
 
     if found_overlap_ram or found_overlap_slice:
         _log.info("Found conflicts (see print-outs above), fix and re-check!")
