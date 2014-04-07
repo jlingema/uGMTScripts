@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<connections>
+  <!--<connection id="AMC13-T1" uri="ipbusudp-2.0://192.168.0.183:50001" address_table="file:///${TCAGUI_ROOT}/external/amc13StandaloneRPM_06-03-2013/map/AMC13_AddressTable_K7.xml" />-->
+  <!--<connection id="AMC13-T2" uri="ipbusudp-2.0://192.168.0.182:50001" address_table="file:///${TCAGUI_ROOT}/external/amc13StandaloneRPM_06-03-2013/map/AMC13_AddressTable_S6.xml" />-->
+  <!--<connection id="GLIB"     uri="ipbusudp-2.0://192.168.0.129:50001" address_table="file://glib/addr_table_top.xml" />-->
+  <connection id="MP7_690_DEMUX"   uri="ipbusudp-2.0://192.168.0.134:50001" address_table="file://mp7_demux/top.xml" />
+  <connection id="MP7_690_MP_ALGO" uri="ipbusudp-2.0://192.168.0.133:50001" address_table="file://mp7_tmt/top.xml" />
+  <connection id="MP7_690_MP"      uri="ipbusudp-2.0://192.168.0.128:50001" address_table="file://mp7_tmt/top.xml" />
+  <connection id="MP7_690_TX_PP"   uri="ipbusudp-2.0://192.168.0.131:50001" address_table="file://mp7_tmt/top.xml" />
+  <connection id="MP7_690_RX_PP"   uri="ipbusudp-2.0://192.168.0.132:50001" address_table="file://mp7_tmt/top.xml" />
+  <connection id="MP7_485"         uri="ipbusudp-2.0://192.168.0.130:50001" address_table="file://mp7_old/top.xml" />
+  <connection id="MP7_690_GCT"     uri="ipbusudp-2.0://192.168.0.128:50001" address_table="file://mp7_gct/top.xml" />
+  <connection id="MP7_690_GCT_B2"  uri="ipbusudp-2.0://192.168.0.128:50001" address_table="file://mp7_gct_b2/top.xml" />
+</connections>

@@ -1,0 +1,20 @@
+<node description="TMT demux control">
+	<node id="csr" address="0x0" size="0x8" description="CSR" tags="slave">
+		<node id="ctrl" address="0x0">
+			<node id="resync" mask="0x1"/>
+			<node id="clr_err" mask="0x2"/>
+			<node id="mask_good_bx" mask="0x4"/>
+			<node id="lat_p" mask="0xf0"/>
+			<node id="lat_bx" mask="0xff00"/>
+			<node id="mp_en" mask="0xffff0000"/>
+		</node>
+		<node id="good_count" address="0x4"/>
+		<node id="empty_count" address="0x5"/>
+		<node id="bust_count" address="0x6"/>
+		<node id="mp_stat" address="0x7">
+			<node id="active" mask="0x1"/>
+			<node id="err" mask="0xf0"/>
+		</node>		
+	</node>
+</node>
+

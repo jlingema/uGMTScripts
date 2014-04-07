@@ -1,0 +1,8 @@
+INTSTYLE=ise
+INFILE=/home/scratch/vhdl/uGMT/dev/ipbus_lut_test/mp7_690es/top.ncd
+OUTFILE=/home/scratch/vhdl/uGMT/dev/ipbus_lut_test/mp7_690es/top.bit
+FAMILY=Virtex7
+PART=xc7vx690t-2ffg1927
+WORKINGDIR=/home/scratch/vhdl/uGMT/dev/ipbus_lut_test/mp7_690es
+LICENSE=ISE
+USER_INFO=174122087_174122088_210559892_222

@@ -1,0 +1,3 @@
+hdl mp7_algo/firmware/hdl/algo_header.vhd
+hdl mp7_buffers/firmware/hdl/mp7_data_types.vhd
+

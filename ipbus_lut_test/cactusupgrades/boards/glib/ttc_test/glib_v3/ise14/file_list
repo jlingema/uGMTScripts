@@ -1,0 +1,7 @@
+hdl glib_v3/hdl/top.vhd
+hdl glib_v3/ucf/glib_v3_basex.ucf
+include mp7_ctrl/firmware/cfg/file_list_glib
+include ipbus/firmware/ethernet/cfg/file_list_v6_basex
+hdl glib_v3/addr_table/ipbus_addr_decode.vhd
+include mp7_ttc/firmware/cfg/file_list_v6
+

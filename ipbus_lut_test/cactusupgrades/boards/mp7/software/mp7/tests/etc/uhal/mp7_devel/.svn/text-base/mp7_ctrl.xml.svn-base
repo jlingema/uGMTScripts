@@ -1,0 +1,41 @@
+<node description="MP7 control registers">
+	<node id="id" address="0x0" description="ID register" fwinfo="endpoint;width=2">
+		<node id="magic" address="0x0"/>
+		<node id="fwrev" address="0x1">
+			<node id="c" mask="0x000000ff"/>
+			<node id="b" mask="0x0000ff00"/>
+			<node id="a" mask="0x00ff0000"/>
+			<node id="design" mask="0xff000000"/>
+		</node>
+		<node id="generics" address="0x2">
+			<node id="nquad" mask="0xff"/>
+			<node id="clock_ratio" mask="0xff00"/>
+			<node id="bunch_count" mask="0xffff0000"/>
+		</node>
+	</node>
+	<node id="loc" address="0x4" description="Board location register" fwinfo="endpoint;width=0"/>
+	<node id="xpoint" module="file://mp7_xpoint.xml" address="0x6"/>
+	<node id="csr" address="0x8" description="ctrl/stat register" fwinfo="endpoint;width=1">
+		<node id="ctrl" address="0x0">
+			<node id="nuke" mask="0x1"/>
+			<node id="uc_sel" mask="0x2"/>
+			<node id="clk40_rst" mask="0x4"/>
+			<node id="clk40_sel" mask="0x8"/>
+			<node id="pp_data_sel" mask="0x10"/>
+			<node id="soft_rst" mask="0x20"/>
+			<node id="txrx_sel" mask="0x010000"/>
+			<node id="chan_sel" mask="0x060000"/>
+			<node id="quad_sel" mask="0xf80000"/>
+			<node id="pp_sel" mask="0x3f000000"/>
+		</node>
+		<node id="stat" address="0x1">
+			<node id="clk40_lock" mask="0x1"/>
+			<node id="clk40_stop" mask="0x2"/>
+			<node id="debug" mask="0xff00"/>
+		</node>
+	</node>
+	<node id="i2c_clk" module="file://opencores_i2c.xml" address="0x10" parameters="i2caddr=0x68" />
+	<node id="i2c_top" module="file://opencores_i2c.xml" address="0x18"/>
+	<node id="i2c_bot" module="file://opencores_i2c.xml" address="0x20"/>	
+</node>
+

@@ -1,0 +1,203 @@
+
+<smartXplorerReport>
+    <command>smartxplorer -p xc7vx690t-ffg1927-2 -b -wd smartxplorer_results top.ngd -to "-v 3 -s 2 -n 3 -fastpaths -xml top.twx " -max_runs 10 -ra
+    </command>
+    <programStatus>Done
+    </programStatus>
+    <programPID>27837
+    </programPID>
+    
+    <strategy name="MapRunTime">
+        <strategyData>map  -ol high -w ; par  -ol high 
+        </strategyData>
+        <xdsFile>mapruntime.xds
+        </xdsFile>
+        <host name="pcdinyar.cern.ch">
+            <hostData>Linux, x86_64, 8-processor, 32G RAM
+            </hostData>
+        </host>
+        <runIndex>run1
+        </runIndex>
+        <status>Done
+        </status>
+        <logFile>top_sx.log
+        </logFile>
+        <timingScore>0
+        </timingScore>
+        <WorstCaseSlack>0.029ns
+        </WorstCaseSlack>
+        <Luts>10,792 (2%)
+	</Luts>
+	<SliceRegisters>10,399 (1%)
+	</SliceRegisters>
+	<runTime>0h 12m 30s
+        </runTime>
+    </strategy>
+    <strategy name="MapLogicOpt">
+        <strategyData>map  -ol high -xe n -logic_opt on -t 2 -w ; par  -ol high -xe n 
+        </strategyData>
+        <xdsFile>maplogicopt.xds
+        </xdsFile>
+        <host name="pcdinyar.cern.ch">
+            <hostData>Linux, x86_64, 8-processor, 32G RAM
+            </hostData>
+        </host>
+        <runIndex>run2
+        </runIndex>
+        <status>Aborted
+        </status>
+        <logFile>top_sx.log
+        </logFile>
+        <timingScore>None
+        </timingScore>
+        <WorstCaseSlack>None
+        </WorstCaseSlack>
+        <Luts>None
+	</Luts>
+	<SliceRegisters>None
+	</SliceRegisters>
+	<runTime>0h 6m 54s
+        </runTime>
+    </strategy>
+    <strategy name="MapTimingExtraEffort">
+        <strategyData>map  -ol high -xe n -t 3 -w ; par  -ol high 
+        </strategyData>
+        <xdsFile>maptimingextraeffort.xds
+        </xdsFile>
+        <host name="None">
+            <hostData>None
+            </hostData>
+        </host>
+        <runIndex>None
+        </runIndex>
+        <status>None
+        </status>
+        <logFile>top_sx.log
+        </logFile>
+        <timingScore>None
+        </timingScore>
+        <WorstCaseSlack>None
+        </WorstCaseSlack>
+        <Luts>None
+	</Luts>
+	<SliceRegisters>None
+	</SliceRegisters>
+	<runTime>None
+        </runTime>
+    </strategy>
+    <strategy name="MapLogicOptRegDup">
+        <strategyData>map  -ol high -xe n -logic_opt on -register_duplication on -t 2 -w ; par  -ol high -xe n 
+        </strategyData>
+        <xdsFile>maplogicoptregdup.xds
+        </xdsFile>
+        <host name="None">
+            <hostData>None
+            </hostData>
+        </host>
+        <runIndex>None
+        </runIndex>
+        <status>None
+        </status>
+        <logFile>top_sx.log
+        </logFile>
+        <timingScore>None
+        </timingScore>
+        <WorstCaseSlack>None
+        </WorstCaseSlack>
+        <Luts>None
+	</Luts>
+	<SliceRegisters>None
+	</SliceRegisters>
+	<runTime>None
+        </runTime>
+    </strategy>
+    <strategy name="MapRegDup">
+        <strategyData>map  -ol high -register_duplication on -t 3 -w ; par  -ol high 
+        </strategyData>
+        <xdsFile>mapregdup.xds
+        </xdsFile>
+        <host name="None">
+            <hostData>None
+            </hostData>
+        </host>
+        <runIndex>None
+        </runIndex>
+        <status>None
+        </status>
+        <logFile>top_sx.log
+        </logFile>
+        <timingScore>None
+        </timingScore>
+        <WorstCaseSlack>None
+        </WorstCaseSlack>
+        <Luts>None
+	</Luts>
+	<SliceRegisters>None
+	</SliceRegisters>
+	<runTime>None
+        </runTime>
+    </strategy>
+    <strategy name="MapLogicOptIOReg">
+        <strategyData>map  -ol high -logic_opt on -pr b -w  ; par  -ol high -xe c 
+        </strategyData>
+        <xdsFile>maplogicoptioreg.xds
+        </xdsFile>
+        <host name="None">
+            <hostData>None
+            </hostData>
+        </host>
+        <runIndex>None
+        </runIndex>
+        <status>None
+        </status>
+        <logFile>top_sx.log
+        </logFile>
+        <timingScore>None
+        </timingScore>
+        <WorstCaseSlack>None
+        </WorstCaseSlack>
+        <Luts>None
+	</Luts>
+	<SliceRegisters>None
+	</SliceRegisters>
+	<runTime>None
+        </runTime>
+    </strategy>
+    <strategy name="MapLogicOptRegDupIOReg">
+        <strategyData>map  -ol high -logic_opt on -register_duplication on -pr b -w ; par  -ol high -xe c 
+        </strategyData>
+        <xdsFile>maplogicoptregdupioreg.xds
+        </xdsFile>
+        <host name="None">
+            <hostData>None
+            </hostData>
+        </host>
+        <runIndex>None
+        </runIndex>
+        <status>None
+        </status>
+        <logFile>top_sx.log
+        </logFile>
+        <timingScore>None
+        </timingScore>
+        <WorstCaseSlack>None
+        </WorstCaseSlack>
+        <Luts>None
+	</Luts>
+	<SliceRegisters>None
+	</SliceRegisters>
+	<runTime>None
+        </runTime>
+    </strategy>
+    <bestStrategy>MapRunTime
+    </bestStrategy>
+    <envVariables>
+        <env name="LD_LIBRARY_PATH"  value="/opt/Xilinx/14.6/ISE_DS/ISE//lib/lin64"/>
+        <env name="PATH"  value="/opt/Xilinx/14.6/ISE_DS/ISE//bin/lin64:/afs/cern.ch/cms/bin/amd64_linux26:/afs/cern.ch/cms/system/bin:/afs/cern.ch/user/d/dinyar/scripts:/afs/cern.ch/cms/caf/scripts:/afs/cern.ch/cms/common:/afs/cern.ch/cms/bin:/afs/cern.ch/cms/utils:/usr/sue/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/bin:/bin:/afs/cern.ch/user/d/dinyar/bin:/usr/local/sbin:/usr/sbin:/sbin"/>
+        <env name="XILINXD_LICENSE_FILE"  value="2112@lxlic01,2112@lxlic02,2112@lxlic03"/>
+        <env name="XILINX"  value="/opt/Xilinx/14.6/ISE_DS/ISE/"/>
+        
+    </envVariables>
+    <copyResult>MapRunTime
+    </copyResult>
+</smartXplorerReport>

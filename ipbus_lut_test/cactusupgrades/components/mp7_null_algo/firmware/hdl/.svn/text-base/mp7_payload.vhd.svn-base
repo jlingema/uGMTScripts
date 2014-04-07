@@ -1,0 +1,54 @@
+-- null_algo
+--
+-- Do-nothing top level algo for testing
+--
+-- Dave Newbold, July 2013
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+use work.ipbus.all;
+use work.mp7_data_types.all;
+
+entity mp7_payload is
+	generic(
+		NCHAN: positive;
+		PIPELINE_STAGES: positive := 1
+	);
+	port(
+		clk: in std_logic; -- ipbus signals
+		rst: in std_logic;
+		ipb_in: in ipb_wbus;
+		ipb_out: out ipb_rbus;
+		clk_p: in std_logic; -- data clock
+		d: in ldata(NCHAN - 1 downto 0); -- data in
+		q: out ldata(NCHAN - 1 downto 0) -- data out
+	);
+		
+end mp7_payload;
+
+architecture rtl of mp7_payload is
+	
+	type dr_t is array(PIPELINE_STAGES downto 0) of ldata(NCHAN - 1 downto 0);
+	signal dr: dr_t;
+	
+	attribute KEEP: string;
+	attribute KEEP of dr: signal is "TRUE"; -- Don't absorb FFs into shreg
+
+begin
+
+	ipb_out <= IPB_RBUS_NULL;
+
+	dr(0) <= d;
+
+	process(clk_p) -- Mother of all shift registers
+	begin
+		if rising_edge(clk_p) then
+			dr(PIPELINE_STAGES downto 1) <= dr(PIPELINE_STAGES - 1 downto 0);
+		end if;
+	end process;
+	
+	q <= dr(PIPELINE_STAGES);
+
+end rtl;
+

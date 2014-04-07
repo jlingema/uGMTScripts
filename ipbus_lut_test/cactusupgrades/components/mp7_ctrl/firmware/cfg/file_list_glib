@@ -1,0 +1,11 @@
+# Xilinx ISE setup fragment for mp7_ctrl
+
+hdl mp7_ctrl/firmware/hdl/glib_ctrl.vhd
+hdl ipbus/firmware/example_designs/hdl/clocks_v6_serdes_noxtal.vhd
+hdl ipbus/firmware/example_designs/hdl/clock_div.vhd
+include ipbus/firmware/ipbus_core/cfg/file_list
+hdl ipbus/firmware/ipbus_core/hdl/ipbus_fabric.vhd
+hdl ipbus/firmware/slaves/hdl/ipbus_reg_types.vhd
+hdl ipbus/firmware/slaves/hdl/ipbus_ctrlreg_v.vhd
+include mp7_xpoint/firmware/cfg/file_list
+

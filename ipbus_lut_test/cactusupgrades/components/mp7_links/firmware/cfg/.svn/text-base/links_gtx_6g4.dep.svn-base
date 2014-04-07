@@ -1,0 +1,15 @@
+src -s gtx_6g4 mp7_mgt.vhd
+src -c components/ipbus_core ipbus_fabric_sel.vhd ipbus_package.vhd 
+src -c components/ipbus_slaves ipbus_reg_types.vhd
+include -c components/ipbus_slaves syncreg_v.dep
+src -c components/mp7_datapath mp7_data_types.vhd
+src -c components/mp7_ttc freq_ctr_div.vhd
+src -s gtx_6g4 mgt_decl.vhd quad_wrapper_gtx.vhd
+src -s common mgt_raw_cap.vhd
+src -s sc_protocol int_align_gtx_debug.vhd
+src -s packages package_links.vhd package_types.vhd package_utilities.vhd
+src -s ultimate_crc_1_0/rtl/vhdl ucrc_pkg.vhd ucrc_par.vhd
+src -d -s cgn virtex7_rx_buf.xco
+src -d -s ngc gtx_quad_wrapper_jj.ngc
+include mp7_links_addrtab.dep
+

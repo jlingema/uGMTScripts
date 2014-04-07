@@ -1,0 +1,35 @@
+# Basic timing constraints for MP7
+
+# TTC clock rate (40MHz)
+
+TIMESPEC TS_clk40_in = PERIOD clk40_in 25ns PRIORITY 0;
+
+# Ethernet clock rate (125MHz, 62.5MHz)
+
+TIMESPEC TS_eth_clk = PERIOD eth_clk 8ns;
+NET infra/eth/txoutclk TNM_NET=txoutclk;
+TIMESPEC TS_txoutclk = PERIOD txoutclk 16ns;
+
+# TIG constraints for effectively async signals
+
+NET infra/clocks/rst TIG;
+NET infra/clocks/nuke_i TIG;
+
+# TIG constraints for inter-domain signals
+# These signals msut have handshaking buffers where required
+
+NET clk_ipb TNM=clk_ipb;
+NET ttc/clocks/clk40_i TNM=clk40;
+NET ttc/clocks/clk160_i TNM=clk160;
+NET ttc/clocks/clk240_i TNM=clk240;
+NET infra/clocks/clko_200 TNM=clk200;
+
+TIMESPEC TS_clk40 = FROM clk_ipb TO clk40 TIG;
+TIMESPEC TS_clk40_r = FROM clk40 to clk_ipb TIG;
+TIMESPEC TS_clk160 = FROM clk_ipb TO clk160 TIG;
+TIMESPEC TS_clk160_r = FROM clk160 to clk_ipb TIG;
+TIMESPEC TS_clk240 = FROM clk_ipb TO clk240 TIG;
+TIMESPEC TS_clk240_r = FROM clk240 to clk_ipb TIG;
+TIMESPEC TS_clkp_fr_r = FROM clk_ipb to clk200 TIG;
+TIMESPEC TS_clkp_fr_r = FROM clk200 to clk_ipb TIG;
+

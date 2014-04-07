@@ -1,0 +1,7 @@
+src pp_core.vhd
+src data_driver_with_tmux.vhd data_driver.vhd detector_sim.vhd timemux_top.vhd period_check.vhd
+src -c components/ipbus_core ipbus_package.vhd ipbus_fabric_sel.vhd
+src -c components/mp7_counters mp7_counters_decl.vhd
+src -c components/mp7_datapath mp7_data_types.vhd
+src -c components/mp7_mgt -s packages package_types.vhd package_utilities.vhd
+

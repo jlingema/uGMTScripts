@@ -1,0 +1,176 @@
+# This file contains the various random IO pins for the MP7 board
+#
+
+# Clock inputs
+
+NET clk40_in_p LOC=H28 | IOSTANDARD=LVDS | DIFF_TERM=TRUE | TNM_NET=clk40_in;
+NET clk40_in_n LOC=H29 | IOSTANDARD=LVDS | DIFF_TERM=TRUE;
+NET ttc_in_p LOC=L16 | IOSTANDARD=LVDS | DIFF_TERM=TRUE;
+NET ttc_in_n LOC=K16 | IOSTANDARD=LVDS | DIFF_TERM=TRUE;
+NET eth_clkp LOC=A10 | DIFF_TERM=TRUE | TNM_NET=eth_clk;
+NET eth_clkn LOC=A9 | DIFF_TERM=TRUE;
+
+# Clock fanout control pins
+
+NET clk_cntrl<*> IOSTANDARD=LVCMOS18 | SLEW=SLOW;
+NET clk_cntrl<0> LOC=BD21;
+NET clk_cntrl<1> LOC=BD20;
+NET clk_cntrl<2> LOC=BA21;
+NET clk_cntrl<3> LOC=BB20;
+NET clk_cntrl<4> LOC=BA20;
+NET clk_cntrl<5> LOC=AW22;
+NET clk_cntrl<6> LOC=AY22;
+NET clk_cntrl<7> LOC=AV20;
+NET clk_cntrl<8> LOC=AW21;
+NET clk_cntrl<9> LOC=AY21;
+NET clk_cntrl<10> LOC=AW19;
+NET clk_cntrl<11> LOC=AY19;
+NET clk_cntrl<12> LOC=AU22;
+NET clk_cntrl<13> LOC=AV22;
+NET clk_cntrl<14> LOC=AU20;
+NET clk_cntrl<15> LOC=AT21;
+NET clk_cntrl<16> LOC=AU21;
+NET clk_cntrl<17> LOC=AT20;
+
+# Clock multiplier control pins
+
+NET si5326_* IOSTANDARD=LVCMOS18;
+NET si5326_rst LOC=AP16;
+NET si5326_int LOC=AR16;
+NET si5326_lol LOC=AR18;
+NET si5326_scl LOC=AR17;
+NET si5326_sda LOC=AT16;
+
+# Minipod I2C busses
+
+NET minipod_* IOSTANDARD=LVCMOS18 | SLEW=SLOW;
+NET minipod_top_rst_b LOC=P27;
+NET minipod_top_scl LOC=U30;
+NET minipod_top_sda_o LOC=R27;
+NET minipod_top_sda_i LOC=T30;
+NET minipod_bot_rst_b LOC=T18;
+NET minipod_bot_scl LOC=R18;
+NET minipod_bot_sda_o LOC=U18;
+NET minipod_bot_sda_i LOC=R17;
+
+# Front panel LEDs
+
+NET leds<*> IOSTANDARD=LVCMOS18 | SLEW=SLOW;
+NET leds<0> LOC=AN20;
+NET leds<1> LOC=AR21;
+NET leds<2> LOC=AR22;
+NET leds<3> LOC=AP19;
+NET leds<4> LOC=AN22;
+NET leds<5> LOC=AP22;
+NET leds<6> LOC=AM22;
+NET leds<7> LOC=AM21;
+NET leds<8> LOC=AJ22;
+NET leds<9> LOC=AJ21;
+NET leds<10> LOC=AM20;
+NET leds<11> LOC=AN19;
+
+# Interface to MMC
+
+NET EBI_D<*> IOSTANDARD=LVCMOS18 | SLEW=SLOW;
+NET EBI_D<0> LOC=BC27;
+NET EBI_D<1> LOC=BD27;
+NET EBI_D<2> LOC=BD29;
+NET EBI_D<3> LOC=BD30;
+NET EBI_D<4> LOC=BB30;
+NET EBI_D<5> LOC=BC30;
+NET EBI_D<6> LOC=BC28;
+NET EBI_D<7> LOC=BC29;
+NET EBI_D<8> LOC=BA30;
+NET EBI_D<9> LOC=AW29;
+NET EBI_D<10> LOC=AY29;
+NET EBI_D<11> LOC=AW27;
+NET EBI_D<12> LOC=AY27;
+NET EBI_D<13> LOC=BA31;
+NET EBI_D<14> LOC=AY28;
+NET EBI_D<15> LOC=BA28;
+
+NET EBI_NRD LOC=AY23 | IOSTANDARD=LVCMOS18;
+NET EBI_NWE LOC=AY26 | IOSTANDARD=LVCMOS18;
+
+NET EBI_A<*> IOSTANDARD=LVCMOS18 | SLEW=SLOW; 
+NET EBI_A<1> LOC=AM23; 
+NET EBI_A<2> LOC=AL23; 
+NET EBI_A<3> LOC=AP26; 
+NET EBI_A<4> LOC=AN25; 
+NET EBI_A<5> LOC=AP25; 
+NET EBI_A<6> LOC=AP24; 
+NET EBI_A<7> LOC=AU27; 
+NET EBI_A<8> LOC=AT26; 
+NET EBI_A<9> LOC=AN24; 
+NET EBI_A<10> LOC=AN23; 
+NET EBI_A<11> LOC=AT25; 
+NET EBI_A<12> LOC=AT24; 
+NET EBI_A<13> LOC=AU23; 
+NET EBI_A<14> LOC=AT23; 
+NET EBI_A<15> LOC=AU26; 
+NET EBI_A<16> LOC=AU25; 
+
+# Mezzanine connector
+
+NET mezz_* IOSTANDARD=LVDS | SLEW=SLOW;
+NET mezz_n(0) LOC= AT33;
+NET mezz_n(1) LOC= AL33;
+NET mezz_n(2) LOC= AV33;
+NET mezz_n(3) LOC= AK32;
+NET mezz_n(4) LOC= AP32;
+NET mezz_n(5) LOC= AJ31;
+NET mezz_n(6) LOC= AR32;
+NET mezz_n(7) LOC= AL31;
+NET mezz_n(8) LOC= AU32;
+NET mezz_n(9) LOC= AM31;
+NET mezz_n(10) LOC= AV13;
+NET mezz_n(11) LOC= AK14;
+NET mezz_n(12) LOC= AT13;
+NET mezz_n(13) LOC= AL13;
+NET mezz_n(14) LOC= AW12;
+NET mezz_n(15) LOC= AM12;
+NET mezz_n(16) LOC= AU11;
+NET mezz_n(17) LOC= AK12;
+NET mezz_n(18) LOC= AV10;
+NET mezz_n(19) LOC= AN12;
+NET mezz_n(20) LOC= AW32;
+NET mezz_n(21) LOC= AV35;
+NET mezz_n(22) LOC= AW35;
+NET mezz_n(23) LOC= AY34;
+NET mezz_n(24) LOC= BA35;
+NET mezz_n(25) LOC= AW14;
+NET mezz_n(26) LOC= AW10;
+NET mezz_n(27) LOC= BA13;
+NET mezz_n(28) LOC= AY11;
+NET mezz_n(29) LOC= BA10;
+NET mezz_p(0) LOC= AR33;
+NET mezz_p(1) LOC= AK33;
+NET mezz_p(2) LOC= AU33;
+NET mezz_p(3) LOC= AJ32;
+NET mezz_p(4) LOC= AP31;
+NET mezz_p(5) LOC= AJ30;
+NET mezz_p(6) LOC= AR31;
+NET mezz_p(7) LOC= AK31;
+NET mezz_p(8) LOC= AU31;
+NET mezz_p(9) LOC= AL30;
+NET mezz_p(10) LOC= AU13;
+NET mezz_p(11) LOC= AJ14;
+NET mezz_p(12) LOC= AT14;
+NET mezz_p(13) LOC= AL14;
+NET mezz_p(14) LOC= AV12;
+NET mezz_p(15) LOC= AM13;
+NET mezz_p(16) LOC= AU12;
+NET mezz_p(17) LOC= AK13;
+NET mezz_p(18) LOC= AU10;
+NET mezz_p(19) LOC= AN13;
+NET mezz_p(20) LOC= AV32;
+NET mezz_p(21) LOC= AV34;
+NET mezz_p(22) LOC= AW34;
+NET mezz_p(23) LOC= AY33;
+NET mezz_p(24) LOC= BA34;
+NET mezz_p(25) LOC= AV14;
+NET mezz_p(26) LOC= AW11;
+NET mezz_p(27) LOC= AY13;
+NET mezz_p(28) LOC= AY12;
+NET mezz_p(29) LOC= BA11;
+

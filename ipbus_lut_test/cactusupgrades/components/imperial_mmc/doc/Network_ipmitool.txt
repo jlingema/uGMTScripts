@@ -1,0 +1,52 @@
+MP7 network management using ipmitool
+-------------------------------------
+
+** Introduction
+
+This document assumes that the crate MCH is on the network at address
+192.168.0.41 and has a blank username/password.
+
+To set the net info of a card you need to convert its slot number to an IPMB-L
+address, the formula for this is (for slot S in range 1 - 12): Addr = 0x70 + (S * 2)
+i.e. the following lookup table (uTCA.0 SPEC R1.0 Page 3-12):
+Slot-Addr
+ 1-0x72   2-0x74   3-0x76   4-0x78   5-0x7A   6-0x7C
+ 7-0x7E   8-0x80   9-0x82  10-0x84  11-0x86  12-0x88
+
+The examples below will use slot 11 (i.e. 0x86) as the example. Be careful to
+not confuse it with the 0x82 address, which is the IPMB-0 address of the carrier
+manager (and should not be changed).
+
+
+** Getting the network info:
+
+ipmitool -H 192.168.0.41 -P "" -B 0 -T 0x82 -b 7 -t 0x86 raw 0x30 0x04
+
+This returns: IP[0] .. IP[3] MAC[0] .. MAC[5] FLAGS
+
+i.e. for a card with MAC 00:11:22:33:44:55 and IP address 192.168.1.123, the
+following would be output:
+ c0 a8 01 7b 00 11 22 33 44 55 00
+
+Flags (returned as 0x00 in the above example) is a bitmask. The only bit that is
+currently used is 0x80, if this is set then the network parameters have been
+changed, but not written to the EEPROM.
+
+
+** Setting network info:
+
+First set the MAC (to 00:11:22:33:44:55 in this example):
+
+ipmitool -H 192.168.0.41 -P "" -B 0 -T 0x82 -b 7 -t 0x86 raw 0x30 0x02 0x00 0x11 0x22 0x33 0x44 0x55
+
+Then set the IP (to 192.168.1.123 in this case):
+
+ipmitool -H 192.168.0.41 -P "" -B 0 -T 0x82 -b 7 -t 0x86 raw 0x30 0x03 0xC0 0xA8 0x01 0x7B
+
+Finally (optionally) save the settings to the EEPROM, if not saved the above
+addresses will be used until the MMC is power cycled (the "data bytes" in this
+command are just a magic word to prevent accidental EEPROM writes):
+
+ipmitool -H 192.168.0.41 -P "" -B 0 -T 0x82 -b 7 -t 0x86 raw 0x30 0x01 0xFE 0xEF
+
+

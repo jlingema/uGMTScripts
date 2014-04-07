@@ -1,0 +1,5 @@
+hdl mp7_links/firmware/hdl/dummy/mp7_links.vhd
+hdl ipbus/firmware/ipbus_core/hdl/ipbus_package.vhd
+hdl mp7_buffers/firmware/hdl/mp7_data_types.vhd
+hdl ipbus/firmware/ipbus_core/hdl/ipbus_fabric_sel.vhd
+
