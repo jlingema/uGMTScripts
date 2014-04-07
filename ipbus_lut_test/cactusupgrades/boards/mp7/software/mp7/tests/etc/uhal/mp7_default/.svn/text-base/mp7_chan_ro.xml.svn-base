@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="LATIN1"?>
+
+<node >
+	<node id="orbit_lock_range" address="0x0">
+		<node id="orbit_location_max" mask="0xffff0000" />
+		<node id="orbit_location_min" mask="0x0000ffff" />
+	</node>
+	<node id="status" address="0x1">
+		<node id="txusrrst" mask="0x80000000" />
+		<node id="rxusrrst" mask="0x40000000" />
+		<node id="sync_valid" mask="0x20000000" />
+		<node id="sync_lost" mask="0x10000000" />
+		<node id="rxcdrlock" mask="0x08000000" />
+		<node id="tx_fsm_reset_done" mask="0x04000000" />
+		<node id="rx_fsm_reset_done" mask="0x02000000" />
+		<node id="sync_lost_latch" mask="0x01000000" />
+		<node id="align_error_tag_not_at_orbit_location" mask="0x00000020" />
+		<node id="align_error_tag_at_wrong_orbit_location" mask="0x00000010" />
+		<node id="align_error_byte" mask="0x00000008" />
+		<node id="align_error_no_valid_fifoout_location" mask="0x00000004" />
+		<node id="align_operating" mask="0x00000002" />
+		<node id="align_ok" mask="0x00000001" />
+	</node>	
+	<node id="align_checks" address="0x2" mask="0xff"/>
+	<node id="crc_count" address="0x3">
+		<node id="crc_checked" mask="0xff"/>
+		<node id="crc_error" mask="0xff00"/>
+		<node id="tx_crc_checked" mask="0xff0000"/>
+		<node id="tx_crc_error" mask="0xff000000"/>
+	</node>
+</node>

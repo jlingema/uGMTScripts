@@ -1,0 +1,11 @@
+src mp7_ctrl.vhd
+src ipbus_decode_mp7_ctrl.vhd board_id.vhd
+addrtab -t mp7_ctrl.xml
+addrtab -c components/mp7_xpoint
+addrtab -c components/opencores_i2c
+src -c components/ipbus_core ipbus_fabric_sel.vhd
+include -c components/mp7_xpoint
+include -c components/opencores_i2c
+src -c components/ipbus_slaves ipbus_reg_v.vhd ipbus_ctrlreg_v.vhd ipbus_reg_types.vhd
+src -c components/ipbus_core ipbus_trans_decl.vhd ipbus_package.vhd
+

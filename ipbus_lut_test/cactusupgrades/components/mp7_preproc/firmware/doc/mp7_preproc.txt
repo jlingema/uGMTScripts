@@ -1,0 +1,72 @@
+
+The PP has two options for data generation, which are controlled by the signal data_sel.  This should be set before applying reset (the PP shares a common reset signal with the MP called algo_rst).
+
+
+ - A fixed pattern gerenerator (data_sel = 0)
+ - Pattern RAMS (data_sel = 1)
+
+Below is the output from the pattern generator.  
+
+
+        # [q00c0   ]# [q00c1   ]# [q00c2   ]# [q00c3   ]
+ Links :         00          01          02          03
+--------  ----------  ----------  ----------  ---------- 
+000 00 :  0x00000000  0x00000000  0x00000000  0x00000000
+001 00 :  0x00000000  0x00000000  0x00000000  0x00000000
+002 00 :  0x00000000  0x00000000  0x00000000  0x00000000
+003 00 :  0x00000000  0x00000000  0x00000000  0x00000000
+.
+.
+021 03 :  0x00000000  0x00000000  0x00000000  0x00000000
+022 03 :  0x00040003  0x01040003  0x02040003  0x03040003 
+023 03 :  0x00000003  0x00000003  0x00000003  0x00000003
+024 04 :  0x00010003  0x00010003  0x00010003  0x00010003
+025 04 :  0x00020003  0x00020003  0x00020003  0x00020003
+026 04 :  0x00030003  0x00030003  0x00030003  0x00030003
+027 04 :  0x00040003  0x00040003  0x00040003  0x00040003
+028 04 :  0x00050003  0x00050003  0x00050003  0x00050003
+029 04 :  0x01000003  0x01000003  0x01000003  0x01000003
+030 05 :  0x01010003  0x01010003  0x01010003  0x01010003
+.
+.
+050 08 :  0x04030003  0x04030003  0x04030003  0x04030003
+051 08 :  0x04040003  0x04040003  0x04040003  0x04040003
+052 08 :  0x04050003  0x04050003  0x04050003  0x04050003
+053 08 :  0x00000000  0x00000000  0x00000000  0x00000000
+
+Across the top is quad & channel number (i.e. qXXcX). On the far left is local Bx and SubBx #.  The format of the header is:
+
+  Bits 31:24 = Source (i.e. PP Card #), max 256
+  Bits 23:16 = Destination (i.e. MP Card #), max 256
+  Bits 11:00 = BX ID (max 4095 - fixed in LHC to 3564)
+
+From this we can see that for entry q00c1 at time bx=022, sub-bx=03 the header of 01040003 implies that the PP source is 1, the MP destination is 4 and the data is from Bx=3.  The payload mimics the result from the pattern rams. The format is:
+
+  Bits 31:24 = RAM #
+  Bits 23:16 = Sub-Bx #
+  Bits 11:00 = BX ID (max 4095 - fixed in LHC to 3564)
+
+There are 5 RAMs in this example, each with 6 SubBx 32bit words.  For the TMT the mapping is as follows:
+
+RAM-0, SubBx-0 = eta 0,
+RAM-0, SubBx-1 = eta 1, 
+RAM-0, SubBx-2 = eta 2, 
+RAM-0, SubBx-3 = eta 3, 
+RAM-0, SubBx-4 = eta 4, 
+RAM-0, SubBx-5 = eta 5, 
+RAM-1, SubBx-0 = eta 6, 
+RAM-1, SubBx-1 = eta 7, 
+.
+.
+RAM-4, SubBx-4 = eta 28, 
+RAM-4, SubBx-5 = eta 29, 
+
+In each packet, each link (i.e qXXcX) supplies 2 phi values for half of eta. An excel mapping file available on the twiki defines all the links (i.e. which 2 phi values per link, eta + or -, etc).
+
+To load the rams use the pp_sel to selct the virtual PP card.  The rams within each virtual PP card are selcted with address bits (13:10).  If address bit 0 = '0' then a 32bit word is written to the ram as one would normally expect.  If address bit 0 = '1' then bits data bits 3:0 are written to to the parity section of the ram.  Only parity bit 0 is used for data valid, but it is recommended to write the data valid flag to all 4 bits.
+
+
+
+
+
+

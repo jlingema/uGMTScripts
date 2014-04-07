@@ -1,0 +1,8 @@
+src mp7_readout.vhd
+src fake_roc.vhd
+include -c components/ipbus_slaves syncreg_v.dep
+src mp7_readout_decl.vhd
+src -c components/mp7_datapath mp7_data_types.vhd
+src -c components/ipbus_slaves ipbus_reg_types.vhd
+src -c components/ipbus_core ipbus_package.vhd
+

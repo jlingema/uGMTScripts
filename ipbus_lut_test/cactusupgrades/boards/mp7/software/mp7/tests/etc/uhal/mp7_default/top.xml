@@ -1,0 +1,11 @@
+<node id="TOP">
+    <node id="ctrl" module="file://mp7_ctrl.xml" address="0x0"/>
+    <node id="mgt_align" module="file://mp7_mgt_align.xml" address="0x20"/>
+    <node id="ttc" module="file://mp7_ttc.xml" address="0x40"/>
+    <node id="mgt" module="file://mp7_mgt.xml" address="0x80"/>
+    <node id="mgt_drp" module="file://mp7_mgt_drp.xml" address="0x200"/>
+    <node id="demux" module="file://tmt_demux.xml" address="0x800"/>
+    <node id="pp_ctrl" module="file://mp7_preproc.xml" address="0x4000"/>
+    <node id="buffers" module="file://mp7_buffers.xml" address="0x10000"/>
+</node>
+

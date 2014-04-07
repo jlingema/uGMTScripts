@@ -1,0 +1,44 @@
+<node description="MP7 TTC block control registers">
+	<node id="ttc" address="0x0" size="0x8" description="MP7 TTC block" tags="slave">
+		<node id="ctrl" address="0x0">
+			<node id="ttc_enable" mask="0x1"/>
+			<node id="err_ctr_clear" mask="0x2"/>
+			<node id="l1a_send" mask="0x4"/>
+			<node id="int_bc0_enable" mask="0x8"/>
+			<node id="mask_hist_bc0" mask="0x10"/>
+			<node id="fill_hist_buf" mask="0x20"/>
+			<node id="m_del_inc" mask="0x40"/>
+			<node id="ctr_clear" mask="0x80"/>
+			<node id="buf_go" mask="0x100"/>
+			<node id="l1a_mask" mask="0x200"/>
+			<node id="algo_rst" mask="0x400"/>
+			<node id="b_send" mask="0xff0000"/>
+			<node id="c_del" mask="0x1f000000"/>
+		</node>
+		<node id="stat0" address="0x4">
+			<node id="bunch_ctr" mask="0xfff"/>
+			<node id="bc0_lock" mask="0x10000"/>
+			<node id="bc0_err" mask="0x20000"/>
+			<node id="orb_len" mask="0xfff00000"/>	
+		</node>
+		<node id="stat1" address="0x5">
+			<node id="evt_ctr" mask="0xffffff"/>
+		</node>
+		<node id="stat2" address="0x6">
+			<node id="orb_ctr" mask="0xffffff"/>
+		</node>
+		<node id="stat3" address="0x7">
+			<node id="single_biterr_ctr" mask="0xffff"/>
+			<node id="double_biterr_ctr" mask="0xffff0000"/>
+		</node>
+	</node>
+	<node id="ttc_freq" address="0x8" size="0x2" description="TTC frequency counter" tags="slave">
+		<node id="chan_sel" address="0x0"/>
+		<node id="freq" address="0x1">
+			<node id="count" mask="0xffffff"/>
+			<node id="valid" mask="0x1000000"/>
+		</node>
+	</node>
+	<node id="ttc_hist_buf" address="0xa" mode='non-incremental' description="TTC history buffer" tags="slave"/>
+</node>
+

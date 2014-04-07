@@ -1,0 +1,6 @@
+<node description="DAQ buffer">
+	<node id="buffer" address="0x0" size="0x2" description="DAQ/ Readout buffer" tags="slave">
+		<node id="daq_addr" address="0x0"/>
+		<node id="daq_data" address="0x1" mode="port"/>
+	</node>
+</node>

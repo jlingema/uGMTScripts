@@ -1,0 +1,16 @@
+verilog work ../example_design/tri_mode_eth_mac_v5_5_mod.v
+verilog work ../example_design/fifo/tri_mode_eth_mac_v5_5_tx_client_fifo.v
+verilog work ../example_design/fifo/tri_mode_eth_mac_v5_5_rx_client_fifo.v
+verilog work ../example_design/fifo/tri_mode_eth_mac_v5_5_ten_100_1g_eth_fifo.v
+verilog work ../example_design/common/tri_mode_eth_mac_v5_5_reset_sync.v
+verilog work ../example_design/common/tri_mode_eth_mac_v5_5_sync_block.v
+verilog work ../example_design/pat_gen/tri_mode_eth_mac_v5_5_address_swap.v
+verilog work ../example_design/pat_gen/tri_mode_eth_mac_v5_5_axi_mux.v
+verilog work ../example_design/pat_gen/tri_mode_eth_mac_v5_5_axi_pat_gen.v
+verilog work ../example_design/pat_gen/tri_mode_eth_mac_v5_5_axi_pat_check.v
+verilog work ../example_design/pat_gen/tri_mode_eth_mac_v5_5_axi_pipe.v
+verilog work ../example_design/pat_gen/tri_mode_eth_mac_v5_5_basic_pat_gen.v
+verilog work ../example_design/control/tri_mode_eth_mac_v5_5_config_vector_sm.v
+verilog work ../example_design/tri_mode_eth_mac_v5_5_block.v
+verilog work ../example_design/tri_mode_eth_mac_v5_5_fifo_block.v
+verilog work ../example_design/tri_mode_eth_mac_v5_5_example_design.v

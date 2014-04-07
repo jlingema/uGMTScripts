@@ -1,0 +1,31 @@
+<node description="Capture / playback buffers">
+	<node id="csr" address="0x0" size="0x8" description="CSR" tags="slave">
+		<node id="mode" address="0x0">
+			<node id="rx_buf_mode" mask="0x3"/>
+			<node id="tx_buf_mode" mask="0xc"/>
+			<node id="loopback_en" mask="0x10"/>
+			<node id="rx_datasrc" mask="0x20"/>
+			<node id="cap_bx_en" mask="0x100"/>
+			<node id="play_bx_en" mask="0x200"/>
+		</node>
+		<node id="cap_bx" address="0x1">
+			<node id="bx_low" mask="0xfff"/>
+			<node id="bx_high" mask="0xfff0000"/>
+		</node>
+		<node id="play_bx" address="0x2">
+			<node id="bx_low" mask="0xfff"/>
+			<node id="bx_high" mask="0xfff0000"/>
+		</node>
+		<node id="stat" address="0x4">
+			<node id="locked" mask="0x1"/>
+			<node id="cap_done" mask="0x2"/>
+		</node>
+	</node>
+	<node id="buffers" address="0x8" size="0x4" parameters="depth=1024" description="Capture / playback buffers for MGT channel" tags="slave">
+		<node id="rx_addr" address="0x0"/>
+		<node id="rx_data" address="0x1" mode="port"/>
+		<node id="tx_addr" address="0x2"/>
+		<node id="tx_data" address="0x3" mode="port"/>
+	</node>
+</node>
+

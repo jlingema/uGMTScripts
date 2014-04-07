@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="LATIN1"?>
+
+<node>
+	<node id="control" address="0x0">
+		<node id="sync_lost_clear" mask="0x08000000" />
+		<node id="rx_fsm_reset" mask="0x04000000" />
+		<node id="tx_fsm_reset" mask="0x02000000" />		
+		<node id="spy_write_stop" mask="0x01000000" />
+		<node id="reset_crc_counters" mask="0x00800000" />
+		<node id="loopback" mask="0x00700000" />
+		<node id="rxpolarity" mask="0x00080000" />
+		<node id="txpolarity" mask="0x00040000" />
+		<node id="align_auto" mask="0x00020000" />
+		<node id="align_once" mask="0x00010000" />
+		<node id="orbit_location_req" mask="0x0000ffff" />
+	</node>
+</node>

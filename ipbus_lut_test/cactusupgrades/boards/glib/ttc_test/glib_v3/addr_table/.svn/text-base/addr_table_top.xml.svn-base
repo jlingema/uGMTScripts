@@ -1,0 +1,4 @@
+<node id="TOP">
+    <node id="ctrl" module="file://mp7_ctrl.xml" address="0x0"/>
+    <node id="ttc" module="file://mp7_ttc.xml" address="0x10"/>
+</node>
