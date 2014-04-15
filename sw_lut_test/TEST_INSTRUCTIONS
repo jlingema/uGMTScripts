@@ -1,0 +1,23 @@
+Recipe for getting SW running:
+First ssh to dinyar's PC (for now):
+pcdinyar.cern.ch
+
+check out the corresponding SW tag, currently:
+svn co svn+ssh://<uname>@svn.cern.ch/reps/cactus/tags/mp7/unstable/software/mp7sw_v1_1_0
+- set paths (see $AFSHOME/OnlineSoftware/TestUGMT/set_paths.sh or User Manual)
+- compile
+
+checkout the scripts from uGMTScripts/sw_lut_test to mp7sw_v1_1_0/mp7/
+
+
+
+Recipe for running with current setup:
+In AFS-Home:
+cd ~/OnlineSoftware/TestUGMT/
+source set_paths.sh
+cd ./mp7sw_1_1_0/mp7/tests
+source setup.sh
+
+
+For first lut-test:
+lut_tests.py MP7_GMT_SIM -c file://etc/uhal/connections-test.xml --sim
