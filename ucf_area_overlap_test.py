@@ -42,18 +42,24 @@ class Rect(object):
 def parse_options():
     import optparse
     usage = '''
-%prog filename [options]
+%prog filename(s) [options]
 '''
 
     parser = optparse.OptionParser( usage )
     parser.add_option('-v', '--verbosity', dest='verbosity', help='Set verbosity-level, possible values: DEBUG, INFO, WARNING, ERROR (%default)', default="DEBUG", type='string')
 
     opts, args = parser.parse_args()
-    if len(args) != 1:
+    fnames = []
+    if len(args) < 1:
         _log.error("Please provide an input file")
         print usage
         exit(0)
-    
+    else:
+        for arg in args:
+            fnames.append(arg)
+
+    opts.files = fnames
+
     return opts, args
 
 def get_rect_from_ucf(ucf_string, line_no):
@@ -89,7 +95,7 @@ def get_rect_from_ucf(ucf_string, line_no):
             xe = int(end.split("X")[1].split("Y")[0].strip().replace(";", ""))
             ye = int(end.split("Y")[1].strip().replace(";", ""))
         except ValueError:
-            _log.error("ValueError: in line {}: Parser failed. Expected int following X/Y found something else, skipping line:".format(line_no))
+            _log.error("ValueError: in line {line}: Parser failed. Expected int following X/Y found something else, skipping line:".format(line=line_no+1))
             print "\t\t", ucf_string
             return []
         rects.append(Rect(xb, yb, xe-xb, ye-yb, typ, name, modifier))
@@ -119,18 +125,19 @@ if __name__ == "__main__":
     _log.info ("*"*40)
     _log.warning("Only AREA GROUPS are tested!")
 
-    f = open(args[0], 'r')
     ram_rects = []
     slice_rects = []
-    for line_no, line in enumerate(f):
-        if "AREA_GROUP" in line:
-            if "SLICE" in line:
-                slice_rects += get_rect_from_ucf(line, line_no)
-            if "RAM" in line:
-                ram_rects += get_rect_from_ucf(line, line_no)
-    f.close()
+    for fname in opts.files:
+        f = open(fname, 'r')
+        for line_no, line in enumerate(f):
+            if "AREA_GROUP" in line:
+                if "SLICE" in line:
+                    slice_rects += get_rect_from_ucf(line, line_no)
+                if "RAM" in line:
+                    ram_rects += get_rect_from_ucf(line, line_no)
+        f.close()
 
-    _log.info("Found {} (SLICE) + {} (RAMB18/36) area-constraints.".format(len(slice_rects), len(ram_rects)))
+    _log.info("Found {slices} (SLICE) + {rams} (RAMB18/36) area-constraints.".format(slices=len(slice_rects), rams=len(ram_rects)))
     
     # check both RAM and SLICE for overlaps:
     found_overlap_ram = test_rect_list(ram_rects)
