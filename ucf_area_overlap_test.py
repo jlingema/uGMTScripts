@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+
 from tools.logger import log
-import logging
+
 class Rect(object):
     """A minimal class for rectangles that allows overlap checking"""
     def __init__(self, x, y, w, h, typ, name, modifier=1):
