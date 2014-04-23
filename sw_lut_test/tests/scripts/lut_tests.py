@@ -49,7 +49,7 @@ def get_lut_32bit_word(address):
 
 opts, args = parse_options()
 
-uhal.setLogLevelTo(uhal.LogLevel.ERROR)
+#uhal.setLogLevelTo(uhal.LogLevel.ERROR)
 
 cm = uhal.ConnectionManager(opts.connectionFile)
 board = cm.getDevice( opts.board )
@@ -75,7 +75,7 @@ import mp7tools.tester_wluts as tester
 
 # only necessary for sim!
 if opts.sim:
-    board.setTimeoutPeriod(1000)
+    board.setTimeoutPeriod(5000)
 
 mp7tester = tester.MP7TesterLUT(board, lutnames='auto')
 lut_names = mp7tester.lutnames()
