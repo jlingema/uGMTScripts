@@ -47,6 +47,14 @@ def get_lut_32bit_word(address):
         print hex(val)
     return val
 
+def get_lut_16bit_word(address):
+    from random import randint
+    # 0 <= ret <= (2^32-1)
+    val = randint(0, 65535)
+    if len(bin(val).replace("0b", "")) > 16: #dirty check for me
+        print hex(val)
+    return val
+
 opts, args = parse_options()
 
 #uhal.setLogLevelTo(uhal.LogLevel.ERROR)
@@ -77,7 +85,7 @@ import mp7tools.tester_wluts as tester
 if opts.sim:
     board.setTimeoutPeriod(5000)
 
-mp7tester = tester.MP7TesterLUT(board, lutnames='auto')
+mp7tester = tester.MP7TesterLUT(board, luts='auto')
 lut_names = mp7tester.lutnames()
 
 ######## Define or get the lut data (temporary):
