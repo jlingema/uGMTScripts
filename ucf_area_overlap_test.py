@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+
 from tools.logger import log
-import logging
+
 class Rect(object):
     """A minimal class for rectangles that allows overlap checking"""
     def __init__(self, x, y, w, h, typ, name, modifier=1):
@@ -109,7 +111,7 @@ def test_rect_list(rect_list):
             if i == j: continue
             overlap = Rect.test_overlap(rect1, rect2)
             if overlap:
-                _log.error("{rect1} and {rect2}".format(rect1=rect1, rect2=rect2))
+                _log.info("{rect1} and {rect2}".format(rect1=rect1, rect2=rect2))
                 found_overlap = True
     return found_overlap
 
@@ -123,7 +125,6 @@ if __name__ == "__main__":
     _log.debug ("*"*40)
     _log.info ("  UCF Overlap Tester")
     _log.info ("*"*40)
-    _log.warning("Only AREA GROUPS are tested!")
 
     ram_rects = []
     slice_rects = []
@@ -144,6 +145,6 @@ if __name__ == "__main__":
     found_overlap_slice = test_rect_list(slice_rects)
 
     if found_overlap_ram or found_overlap_slice:
-        _log.info("Found conflicts (see print-outs above), fix and re-check!")
+        _log.error("Found conflicts (see print-outs above), fix and re-check!")
     else:
         _log.info("Found no conflicts.")
