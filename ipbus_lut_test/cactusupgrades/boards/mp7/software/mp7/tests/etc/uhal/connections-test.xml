@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<connections>
-  <connection id="MP7_TEST"    uri="ipbusudp-2.0://192.168.0.128:50001" address_table="file://${MP7_TESTS}/etc/uhal/mp7_default/top.xml" />
-  <connection id="MP7_TEST_V2" uri="ipbusudp-2.0://192.168.0.135:50001" address_table="file://${MP7_TESTS}/etc/uhal/mp7_default/top.xml" />
-  <connection id="MP7_SIM"     uri="ipbusudp-2.0://192.168.201.2:50001" address_table="file://${MP7_TESTS}/etc/uhal/mp7_devel_sim/mp7_infra.xml" />
-  <connection id="MP7_DEVEL"   uri="ipbusudp-2.0://192.168.0.128:50001" address_table="file://${MP7_TESTS}/etc/uhal/mp7_devel/mp7_infra.xml" />
-</connections>

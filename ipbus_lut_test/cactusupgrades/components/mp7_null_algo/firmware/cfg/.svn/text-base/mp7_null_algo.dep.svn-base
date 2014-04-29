@@ -1,4 +1,0 @@
-src mp7_payload.vhd
-src -c components/mp7_datapath mp7_data_types.vhd
-src -c components/ipbus_core ipbus_package.vhd
-

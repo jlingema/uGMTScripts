@@ -1,3 +1,0 @@
-[install]
-install-scripts=$CACTUS_ROOT/bin/uhal/gui
-optimize=1

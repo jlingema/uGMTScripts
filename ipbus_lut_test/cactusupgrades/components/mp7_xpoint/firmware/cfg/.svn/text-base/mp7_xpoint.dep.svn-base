@@ -1,5 +1,0 @@
-src mp7_xpoint.vhd
-src xpoint.vhd
-src -c components/ipbus_slaves ipbus_ctrlreg_v.vhd
-src -c components/ipbus_core ipbus_package.vhd
-

@@ -1,9 +1,0 @@
-hdl mp7_algo/firmware/hdl/tmt_demux.vhd
-hdl mp7_buffers/firmware/hdl/mp7_data_types.vhd
-hdl ipbus/firmware/ipbus_core/hdl/ipbus_package.vhd
-hdl ipbus/firmware/slaves/hdl/ipbus_reg_v.vhd
-hdl mp7_ttc/firmware/hdl/bunch_ctr.vhd
-hdl mp7_algo/firmware/hdl/tmt_demux_flat.vhd
-hdl mp7_algo/firmware/hdl/tmt_demux_mux.vhd
-include ipbus/firmware/slaves/cfg/file_list_ipbus_syncreg_v
-

@@ -1,9 +1,0 @@
-<node id="TOP">
-    <node id="ctrl" module="file://mp7_ctrl.xml" address="0x0" fwinfo="endpoint"/>
-    <node id="ttc" module="file://mp7_ttc.xml" address="0x40" fwinfo="endpoint"/>
-    <node id="uc" module="file://mp7_infra_uc.xml" address="0x100"/>
-    <node id="datapath" module="file://mp7_datapath.xml" address="0x800" fwinfo="endpoint"/>
-    <node id="readout" address="0x1000" fwinfo="endpoint;width=12"/>
-    <node id="payload" address="0x2000" fwinfo="endpoint;width=12"/>
-</node>
-

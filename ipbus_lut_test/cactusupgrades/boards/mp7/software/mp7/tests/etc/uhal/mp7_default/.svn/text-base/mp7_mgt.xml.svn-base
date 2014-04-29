@@ -1,6 +1,0 @@
-<node description="MGT quad CSR registers" size="0x40" tags="slave">
-	<node id="rw_regs" module="file://mp7_quad_rw.xml" address="0x00000"/>
-	<node id="ro_regs" module="file://mp7_quad_ro.xml" address="0x00020"/>
-</node>
-
-
