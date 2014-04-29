@@ -1,0 +1,7 @@
+<node description="MP7 payload">
+		<node id="lut1" address="0x0" size="0x40" mode="block" fwinfo="endpoint;width=8" tags="lut_asym" parameters="data_width=8" />
+		<node id="lut2" address="0x40" size="0x40" mode="block" fwinfo="endpoint;width=8" tags="lut_asym" parameters="data_width=8" />
+		<node id="lut3" address="0x80" size="0x40" mode="block" fwinfo="endpoint;width=8" tags="lut_asym" parameters="data_width=8" />
+		<node id="lut4" address="0xC0" size="0x40" mode="block" fwinfo="endpoint;width=8" tags="lut_asym" parameters="data_width=8" />
+</node>
+

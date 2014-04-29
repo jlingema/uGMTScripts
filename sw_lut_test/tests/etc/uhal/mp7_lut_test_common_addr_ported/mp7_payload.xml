@@ -1,0 +1,7 @@
+<node description="MP7 payload">
+  <node id="lut_group" address="0x0" fwinfo="endpoint;width=1" tags="lut_group" parameters="N=4">
+    <node id="addr" address="0x0"/>
+    <node id="data" address="0x1" size="0x400" mode="port"/>
+  </node>
+</node>
+

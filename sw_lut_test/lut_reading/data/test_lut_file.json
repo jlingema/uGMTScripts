@@ -1,0 +1,19 @@
+{
+	"payload" : {
+		"lut1" : { 
+			"data" : {
+					"instance1" : [1, 2, 3, 4, 5, 6],
+					"instance2" : [1, 2, 3, 4, 5, 6],
+					"instance3" : [1, 2, 3, 4, 5, 6],
+					"instance4" : [1, 2, 3, 4, 5, 6]
+				},
+			"description" : "a group of 4 luts",
+			"type" : "group"
+		},
+		"lut2" : { 
+			"data" : [1, 2, 3, 4, 5, 6],
+			"description" : "a single lut",
+			"type" : "lut"
+		}
+	}
+}

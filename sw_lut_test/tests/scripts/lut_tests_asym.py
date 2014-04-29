@@ -39,20 +39,11 @@ def parse_options():
     return opts,args
 
 
-def get_lut_32bit_word(address):
+def get_rand_word(address, nbit=32):
     from random import randint
-    # 0 <= ret <= (2^32-1)
-    val = randint(0, 4294967295)
-    if len(bin(val).replace("0b", "")) > 32: #dirty check for me
-        print hex(val)
-    return val
-
-def get_lut_16bit_word(address):
-    from random import randint
-    # 0 <= ret <= (2^32-1)
-    val = randint(0, 65535)
-    if len(bin(val).replace("0b", "")) > 16: #dirty check for me
-        print hex(val)
+    # 0 <= returned int < 2^nbit
+    max_val = pow(2, nbit)-1
+    val = randint(0, max_val)
     return val
 
 opts, args = parse_options()
@@ -97,7 +88,7 @@ for lut_name in lut_names:
     mp7tester.print_lut_debug(lut_name)
     lut_data[lut_name] = []
     for add in range(address_max):
-        lut_data[lut_name].append(get_lut_32bit_word(add))
+        lut_data[lut_name].append(get_rand_word(add, 8))
 
 
 #### just read

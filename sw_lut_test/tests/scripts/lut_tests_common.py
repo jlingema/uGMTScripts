@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import uhal
 import mp7tools.helpers as hlp
 import logging
@@ -83,26 +84,25 @@ import mp7tools.tester_wluts as tester
 
 # only necessary for sim!
 if opts.sim:
-    board.setTimeoutPeriod(5000)
+    board.setTimeoutPeriod(10000)
 
 mp7tester = tester.MP7TesterLUT(board, luts='auto')
-lut_names = mp7tester.lutnames()
 
 ######## Define or get the lut data (temporary):
 N_ADDRESS_BITS = 8
 address_max = pow(2, N_ADDRESS_BITS)
 
+lut_names = ["lut1", "lut2", "lut3", "lut4"]
 lut_data = {}
 for lut_name in lut_names:
-    mp7tester.print_lut_debug(lut_name)
     lut_data[lut_name] = []
     for add in range(address_max):
         lut_data[lut_name].append(get_lut_32bit_word(add))
 
 
 #### just read
-for lut_name in lut_names:
-    reg = mp7tester.read_lut(lut_name)
+for i in xrange(4):
+    reg = mp7tester.read_lut("lut_group", pos=i)
     try:
         board.dispatch()
     except:
@@ -110,13 +110,13 @@ for lut_name in lut_names:
         print "Failed to read block data from",lut_name
         sys.exit(-1)
 
-    print "Successfully read from", lut_name
+    print "Successfully read from lut_group, pos {pos}".format(pos=i)
     print " Values: ", [hex(x) for x in reg]
 
 
 #### write and read
-valheader = mp7tester.write_lut("lut1", lut_data["lut1"])
-mem = mp7tester.read_lut("lut1")
+valheader = mp7tester.write_lut("lut_group", data=lut_data["lut1"], pos=0)
+mem = mp7tester.read_lut("lut_group", pos=0)
 
 try:
     board.dispatch()

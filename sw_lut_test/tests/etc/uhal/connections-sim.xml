@@ -1,0 +1,11 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<connections>
+  <connection id="COMMON_PORTED"   uri="ipbusudp-2.0://192.168.201.2:50001" address_table="file://${MP7_TESTS}/etc/uhal/mp7_lut_test_common_addr_ported/mp7_infra.xml" />
+  <connection id="DIRECT_PORTED"   uri="ipbusudp-2.0://192.168.201.2:50001" address_table="file://${MP7_TESTS}/etc/uhal/mp7_lut_test_direct_addr_ported/mp7_infra.xml" />
+  <connection id="DIRECT_NPORTED"   uri="ipbusudp-2.0://192.168.201.2:50001" address_table="file://${MP7_TESTS}/etc/uhal/mp7_lut_test_direct_addr_nported/mp7_infra.xml" />
+  <connection id="DIRECT_NPORTED_ASYM"   uri="ipbusudp-2.0://192.168.201.2:50001" address_table="file://${MP7_TESTS}/etc/uhal/mp7_lut_test_direct_addr_nported_asym/mp7_infra.xml" />
+  <connection id="DIRECT_PORTED_CUSTOM"   uri="ipbusudp-2.0://192.168.201.2:50001" address_table="file://${MP7_TESTS}/etc/uhal/mp7_lut_test_custom_ported/mp7_infra.xml" />
+</connections>
+
