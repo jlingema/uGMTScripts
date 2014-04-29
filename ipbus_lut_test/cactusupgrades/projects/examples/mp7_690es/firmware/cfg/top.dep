@@ -1,3 +1,0 @@
-include -c boards/mp7/base_fw/mp7_690es
-include -c components/mp7_null_algo
-

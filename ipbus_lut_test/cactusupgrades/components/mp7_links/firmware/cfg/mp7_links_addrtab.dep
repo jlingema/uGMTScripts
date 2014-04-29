@@ -1,5 +1,0 @@
-addrtab mp7_links.xml
-addrtab mp7_quad_rw.xml mp7_quad_ro.xml
-addrtab mp7_chan_rw.xml mp7_common_rw.xml mp7_chan_ro.xml mp7_common_ro.xml
-addrtab mp7_links_align.xml
-

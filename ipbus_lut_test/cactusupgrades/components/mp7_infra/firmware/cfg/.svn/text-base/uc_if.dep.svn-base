@@ -1,5 +1,0 @@
-src uc_if.vhd
-src -c components/ipbus_slaves trans_buffer.vhd uc_spi_interface.vhd uc_pipe_interface.vhd
-src -c components/ipbus_slaves -d -s cgn sdpram_16x10_32x9.xco sdpram_32x9_16x10.xco
-
-

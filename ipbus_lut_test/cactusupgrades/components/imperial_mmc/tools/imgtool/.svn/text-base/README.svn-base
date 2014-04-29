@@ -1,9 +1,0 @@
-imgtool is a simple utility for manipulating SFWFS images (or even block
-devices directly). It uses the same filesystem library (avr32_sfwfs.c) as the
-MMC itself so can also be used for running unit tests on the file system code /
-finding & reproducing bugs. See imgtool --help for usage information.
-
-Remember that SFWFS uses the host endian ordering... i.e. If you make an image
-on a (little-endian) PC, you should use the "swap" command on it before loading
-it onto an SD-Card for an MMC (normally big-endian).
-

@@ -1,9 +1,0 @@
-src -d -s sim_hdl mp7_infra_sim.vhd
-src ipbus_decode_mp7_infra.vhd
-addrtab -t mp7_infra.xml
-addrtab mp7_infra_uc.xml
-src -c components/ipbus_util -d -s sim_hdl clock_sim.vhd
-# NB: ethernet core included in top level dep file (it's board-dependent)
-include -c components/ipbus_core
-src -c components/ipbus_core ipbus_fabric_sel.vhd ipbus_trans_decl.vhd ipbus_package.vhd
-

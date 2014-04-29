@@ -1,7 +1,0 @@
-/home/scratch/vhdl/uGMT/dev/ipbus_lut_test/mp7_690es/top.ngc 1396876733
-ipcore_dir/virtex7_rx_buf.ngc 1396348220
-../cactusupgrades/components/mp7_links/firmware/ngc/gth_quad_wrapper_jj.ngc 1396348149
-ipcore_dir/gig_eth_pcs_pma_v11_5.ngc 1396348613
-ipcore_dir/tri_mode_eth_mac_v5_5.ngc 1396348406
-ipcore_dir/ttc_history_fifo.ngc 1396348310
-OK
