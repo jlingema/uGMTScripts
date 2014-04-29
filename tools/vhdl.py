@@ -27,11 +27,14 @@ class VHDLConstantsParser(object):
     @staticmethod
     def parse_vhdl_file(filename):
         f = open(filename, "r")
-        re_vname = re.compile("constant +[A-Za-z_]*")
+        re_vname = re.compile("constant +[A-Za-z_0-9]*")
         re_value = re.compile(":= *[0-9]+")
         re_vcomb = re.compile(":= *[A-Za-z+*_]+")
         config_dict = {}
         for i, line in enumerate(f):
+            # Check if line is commented.
+            if line.lstrip()[0:1] == "--":
+                continue
             if "constant " in line:
                 vname_match = re_vname.search(line)
                 if vname_match:
