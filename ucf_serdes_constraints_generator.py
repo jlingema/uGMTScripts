@@ -40,11 +40,14 @@ def get_quad_areagroup_mapping(filename):
     f.close()
     return quad_dict
 
-def generate_instance_string(serdes_type, instance, area_group):
-    instance_num = instance[instance.rfind('_')+1:]
+def generate_instance_string(serdes_type, instance_num, area_group):
     instance_string = 'INST "algo/deserialize'
     if serdes_type == "CALO":
         instance_string = instance_string + '_energies'
+    elif serdes_type == "MU":
+        instance_string = instance_string + '_muons'        
+    else:
+        instance_string = instance_string + '_ERROR'
     instance_string = instance_string + '/deserialize_'
     instance_string = instance_string + str(instance_num)
     instance_string = instance_string + '" AREA_GROUP=quad_'
@@ -69,9 +72,11 @@ if __name__ == "__main__":
     quad_dict = get_quad_areagroup_mapping(opts.files[1])
     
     for key in sorted(config_dict):
-        if "MU_QUAD_" in key:
-            print generate_instance_string("MU", key, quad_dict[str(config_dict[key])])
-        if "ENERGY_QUAD_" in key:
-            print generate_instance_string("CALO", key, quad_dict[str(config_dict[key])])
+        if "MU_QUAD_ASSIGNMENT" in key:
+            for i in range(len(config_dict[key])):
+                print generate_instance_string("MU", i, quad_dict[str(config_dict[key][i])])
+        if "ENERGY_QUAD_ASSIGNMENT" in key:
+            for i in range(len(config_dict[key])):
+                print generate_instance_string("CALO", i, quad_dict[str(config_dict[key][i])])
 
 
