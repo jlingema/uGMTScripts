@@ -52,7 +52,6 @@ class VHDLConstantsParser(object):
 
                 if type_match:
                     t = re.split(r": *", type_match.group(0))[1]
-                    print t
                     if t in ["integer", "natural"]:                
                         if value_match:
                             config_dict[vname] = int(re.split(r":= *", value_match.group(0))[1])
