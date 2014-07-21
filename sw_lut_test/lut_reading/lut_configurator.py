@@ -58,3 +58,24 @@ class LUTConfigurator(object):
         from math import sin, pi
         data = [ int((1+sin(x/float(max_addr)*2*pi))*max_data_val) for x in range(max_addr) ]
         return data
+
+    @staticmethod
+    def get_2param_function_lut(function_string, addr_width1, addr_width2, data_width):
+        max_addr = pow(2, addr_width1+addr_width2)
+        # calculate masks for to unhash the input
+        mask1 = (1 << addr_width1) - 1
+        mask2 = (1 << (addr_width1 + addr_width2)) - mask1 - 1
+
+        # maximum value of output, given the data_width
+        data_max = pow(2, data_width) - 1
+        data = []
+        # iterate over the whole input range
+        for x in xrange(max_addr):
+            # unhash "input"
+            a = x & mask1
+            b = (x & mask2) >> addr_width1
+            # take maximum data if overflow
+            res = min(eval(function_string), data_max)
+            data.append(res)
+        return data
+
