@@ -79,3 +79,32 @@ class LUTConfigurator(object):
             data.append(res)
         return data
 
+    @staticmethod
+    def get_function_lut(function_string, input_names, addr_widths, data_width):
+        max_addr = pow(2, sum(addr_widths))
+        # prepare the function string to use the local list inputs (see below)
+        for i, input_name in enumerate(input_names):
+            function_string = function_string.replace(input_name, "inputs[{idx}]".format(idx=i))
+
+        # prepare the masks according to the address widths:
+        masks = []
+        for i, addr_width in enumerate(addr_widths):
+            mask = (1 << addr_width)
+            if i > 0:
+                mask = mask << addr_widths[i-1]
+            mask -= 1
+            masks.append(mask)
+
+        data_max = pow(2, data_width) - 1
+        data = []
+        for x in xrange(max_addr):
+            # unhash "input"
+            inputs = []
+            for i, mask in enumerate(masks):
+                inputs.append(x & mask)
+                if i > 0:
+                    inputs[i] = inputs[i] >> addr_widths[i-1]
+            # take maximum data if overflow
+            res = min(eval(function_string), data_max)
+            data.append(res)
+        return data

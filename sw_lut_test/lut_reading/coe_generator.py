@@ -31,7 +31,7 @@ def parse_options():
 
 '''
     defaults = {
-        'outdir'       : 'data/',
+        'outdir'       : 'data/coe/',
     }
     parser = optparse.OptionParser( usage )
     parser.add_option('-o', '--outdir'   , dest='outdir'   , help='location for output files (%default)', default=defaults['outdir']   , type='string' )
@@ -52,10 +52,9 @@ if __name__ == "__main__":
         lut_config = json.load(json_file)
 
         for name, config in lut_config.iteritems():
-            if config["function"] and len(config["inputs"]) == 2:
-                fstring = config["function"].replace("a", config["inputs"][0]).replace("b", config["inputs"][1])
-                lut_data = LUTConfigurator.get_2param_function_lut(config["function"], config["input_widths"][0], config["input_widths"][1], config["data_out_width"])
-                write_coe_file(name, opts.outdir, fstring, lut_data)
+            if config["function"] != "":
+                lut_data = LUTConfigurator.get_function_lut(config["function"], config["inputs"], config["input_widths"], config["data_out_width"])
+                write_coe_file(name, opts.outdir, config["function"], lut_data)
 
 
     
