@@ -1,0 +1,312 @@
+{
+    "FONegMatchQualLUT": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "BPhiExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbs", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
+        "input_widths": [
+            5, 
+            5, 
+            5
+        ]
+    }, 
+    "OvlPosSingleMatchQualLUT": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "IdxSelMemEtaF": {
+        "function": "0", 
+        "inputs": [
+            "eta"
+        ], 
+        "data_out_width": 5, 
+        "docstring": "Has to be manually generated for unknown reason!", 
+        "input_widths": [
+            9
+        ]
+    }, 
+    "IdxSelMemEtaB": {
+        "function": "0", 
+        "inputs": [
+            "eta"
+        ], 
+        "data_out_width": 5, 
+        "docstring": "Has to be manually generated for unknown reason!", 
+        "input_widths": [
+            9
+        ]
+    }, 
+    "BrlSingleMatchQualLUT": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "AbsIsoCheckMem": {
+        "function": "0", 
+        "inputs": [
+            "areaSum"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            5
+        ]
+    }, 
+    "BOPosMatchQualLUT": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "RelIsoCheckMem": {
+        "function": "0", 
+        "inputs": [
+            "areaSum", 
+            "pT"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            5, 
+            9
+        ]
+    }, 
+    "FwdPosSingleMatchQualLUT": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "FEtaExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbsRed", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "?", 
+        "input_widths": [
+            5, 
+            5, 
+            5
+        ]
+    }, 
+    "OEtaExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbsRed", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "?", 
+        "input_widths": [
+            5, 
+            5, 
+            5
+        ]
+    }, 
+    "BEtaExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbsRed", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "?", 
+        "input_widths": [
+            5, 
+            5, 
+            5
+        ]
+    }, 
+    "OvlNegSingleMatchQualLUT": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "IdxSelMemPhiO": {
+        "function": "0", 
+        "inputs": [
+            "phi"
+        ], 
+        "data_out_width": 6, 
+        "docstring": "Has to be manually generated for unknown reason!", 
+        "input_widths": [
+            10
+        ]
+    }, 
+    "IdxSelMemPhiB": {
+        "function": "0", 
+        "inputs": [
+            "phi"
+        ], 
+        "data_out_width": 6, 
+        "docstring": "Has to be manually generated for unknown reason!", 
+        "input_widths": [
+            10
+        ]
+    }, 
+    "IdxSelMemPhiF": {
+        "function": "0", 
+        "inputs": [
+            "phi"
+        ], 
+        "data_out_width": 6, 
+        "docstring": "Has to be manually generated for unknown reason!", 
+        "input_widths": [
+            10
+        ]
+    }, 
+    "IdxSelMemEtaO": {
+        "function": "0", 
+        "inputs": [
+            "eta"
+        ], 
+        "data_out_width": 5, 
+        "docstring": "Has to be manually generated for unknown reason!", 
+        "input_widths": [
+            9
+        ]
+    }, 
+    "SortRankLUT": {
+        "function": "pT+qual", 
+        "inputs": [
+            "pT", 
+            "qual"
+        ], 
+        "data_out_width": 10, 
+        "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
+        "input_widths": [
+            9, 
+            4
+        ]
+    }, 
+    "OPhiExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbs", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
+        "input_widths": [
+            5, 
+            5, 
+            5
+        ]
+    }, 
+    "FwdNegSingleMatchQualLUT": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "FOPosMatchQualLUT": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "BONegMatchQualLUT": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "FPhiExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbs", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
+        "input_widths": [
+            5, 
+            5, 
+            5
+        ]
+    }
+}
