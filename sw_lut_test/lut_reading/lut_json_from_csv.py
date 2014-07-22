@@ -46,6 +46,7 @@ if __name__ == "__main__":
         idx_doc = header.index("Remarks")
 
         json_obj = {}
+        default_function = "0"
         for row in lut_reader:
             name = row[idx_lut_name]
             if "Total" in name: continue
@@ -57,12 +58,13 @@ if __name__ == "__main__":
                 if len(json_obj[name]["input_widths"]) != len(json_obj[name]["inputs"]):
                     print "ERROR", name, "mismatch input widths and input names"
             else:
-                json_obj[name]["inputs"] = row[idx_input_names]
-                json_obj[name]["input_widths"] = int(row[idx_input_widths])
+                json_obj[name]["inputs"] = [row[idx_input_names]]
+                json_obj[name]["input_widths"] = [int(row[idx_input_widths])]
 
             json_obj[name]["data_out_width"] = int(row[idx_output_width])
-            json_obj[name]["function"] = ""
+            json_obj[name]["function"] = default_function
             json_obj[name]["docstring"] = row[idx_doc]
 
+   
     with open(opts.out, "w") as json_file:
         json_file.write(json.dumps(json_obj, indent=4))
