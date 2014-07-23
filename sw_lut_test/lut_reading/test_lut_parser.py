@@ -1,4 +1,4 @@
-#!/usr/env/bin python
+#!/usr/bin/env python
 
 from lut_configurator import LUTConfigurator
 
@@ -22,13 +22,17 @@ if __name__ == "__main__":
     print "sinus as data (addrwidth=8, datawidth=32):", [hex(x) for x in sine_data]
 
 
-    from ROOT import TH1D, TCanvas
-    max_val = pow(2, 8)
-    h = TH1D("", "", max_val, 0, max_val)
-    # max_val = pow(2, 32)
-    for x in range(max_val):
-        h.SetBinContent(x, sine_data[x])
 
-    cv = TCanvas()
-    h.Draw("LP")
-    cv.Print("sinus_test.pdf")
+    print ""
+    LUTConfigurator.get_2param_function_lut("a+b", 5, 6, 5)
+
+    # from ROOT import TH1D, TCanvas
+    # max_val = pow(2, 8)
+    # h = TH1D("", "", max_val, 0, max_val)
+    # # max_val = pow(2, 32)
+    # for x in range(max_val):
+    #     h.SetBinContent(x, sine_data[x])
+
+    # cv = TCanvas()
+    # h.Draw("LP")
+    # cv.Print("sinus_test.pdf")
