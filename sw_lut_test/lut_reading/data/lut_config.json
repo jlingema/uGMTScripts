@@ -76,7 +76,7 @@
         ]
     }, 
     "AbsIsoCheckMem": {
-        "function": "0", 
+        "function": "areaSum<3", 
         "inputs": [
             "areaSum"
         ], 
@@ -100,7 +100,7 @@
         ]
     }, 
     "RelIsoCheckMem": {
-        "function": "0", 
+        "function": "areaSum/(pT if pT > 0 else 0.0001)<1", 
         "inputs": [
             "areaSum", 
             "pT"
