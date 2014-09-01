@@ -84,7 +84,7 @@ def mu_to_string(mu_line, line_no):
             val = twos_comp(int(mu_params[p_key]), nbits)
             #print name, val
             mu_int += (val << shift)
-        if name == "QUAL": print val, low
+        #if name == "QUAL": print val, low
         #print name, val
         #bin_str=bin(val<<shift)
         #print bin_str, len(bin_str)
