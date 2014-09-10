@@ -3,8 +3,8 @@ import math
 import os
 from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1D, TLegend, THStack, TH1
 from DataFormats.FWLite import Events, Handle
-from Muon_class import Muon 
-from muon_functions import file_converter, get_frame, get_num, bit_mask_new, select, twos_complement_sign, plot_modifier, hist_creator1D
+from muon import Muon 
+from muon_functions import file_converter, get_frame, get_num, bit_mask_new, select, twos_complement_sign, plot_modifier, hist_creator1D, non_zero_block
 from tools.vhdl import VHDLConstantsParser
 from optparse import OptionParser
 
@@ -162,20 +162,6 @@ def non_zero(obj): # counts how many obj in an array are !=0
         if obj[i].bitword!=0:
             vec.append(obj[i])
     return len(vec)
-
-def non_zero_block(m_list,m_dict,muon_option=None): # Outputs have 3 links a 6 frames -> correspond to 4 muons. m_dict is a dict that contains such a "block"
-    # m_list (the output) is a list of m_dict, with all the entries transformed to objects of the Muon_class, but only if any of them is !=0. This is to ensure that no empty blocks are taken.
-    # If the function is called with 3 arguments, only the entries are taken into the list without initialising them as Muon objects.
-
-    h_vec = []
-    for var in m_dict:
-        h_vec.append(m_dict[var])   
-    for m in h_vec:
-        if muon_option==None:
-            m = Muon(vhdl_dict, bitword=m)
-        m_list.append(m)
-
-    return m_list
 
 def fill_muon_hists(index, hist_list, muons):
     for mu in muons:
@@ -387,7 +373,7 @@ if __name__ == "__main__":
         hw_list = []
         while out_frame_high<=min(1023, start_frame + num_of_input_frames-6):
             muons = select(obj,out_link_low,out_link_high,out_frame_low,out_frame_high)
-            non_zero_block(hw_list,muons)
+            non_zero_block(vhdl_dict, hw_list,muons)
             out_frame_low = out_frame_low+6
             out_frame_high = out_frame_high+6
 
@@ -399,7 +385,7 @@ if __name__ == "__main__":
         inter_list = []
         while intermediate_frame_high<=min(1023, start_frame + num_of_input_frames - offset-6):
             intermediate = select(obj,intermediate_link_low,intermediate_link_high,intermediate_frame_low,intermediate_frame_high)
-            non_zero_block(inter_list, intermediate)
+            non_zero_block(vhdl_dict, inter_list, intermediate)
             intermediate_frame_low = intermediate_frame_low+6
             intermediate_frame_high = intermediate_frame_high+6
 

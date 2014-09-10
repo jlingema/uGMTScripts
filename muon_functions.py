@@ -1,5 +1,7 @@
 import ROOT
 
+from muon import Muon
+
 def file_converter(obj): # transforms data from txt-File to a dictionary, whos entries are named "Frame xxxx" and contain a list of all links in frame xxxx
 	obj_dict = {}
 	i = 0
@@ -94,6 +96,7 @@ def hist_creator1D(namesdict,hist,title):
     for varname, hist_property in namesdict.iteritems():
         hist[varname] = ROOT.TH1D(varname+"{title}".format(title=title), "", hist_property[1], hist_property[2], hist_property[3])
         hist[varname].SetXTitle(hist_property[0])
+
 
 def hist_creator2D(namesdict,hist,xname,yname,title): # xname & yname are strings!
     hist["{yname} gg {xname}".format(xname=xname,yname=yname)] = ROOT.TH2D("{title}".format(title=title),"",
@@ -267,10 +270,9 @@ def non_zero(obj): # counts how many obj in an array are !=0
             vec.append(obj[i])
     return len(vec)
 
-def non_zero_block(m_list,m_dict,muon_option=None): # Outputs have 3 links a 6 frames -> correspond to 4 muons. m_dict is a dict that contains such a "block"
+def non_zero_block(vhdl_dict, m_list, m_dict, muon_option=None): # Outputs have 3 links a 6 frames -> correspond to 4 muons. m_dict is a dict that contains such a "block"
     # m_list (the output) is a list of m_dict, with all the entries transformed to objects of the Muon_class, but only if any of them is !=0. This is to ensure that no empty blocks are taken.
     # If the function is called with 3 arguments, only the entries are taken into the list without initialising them as Muon objects.
-
     h_vec = []
     for var in m_dict:
         h_vec.append(m_dict[var])   
