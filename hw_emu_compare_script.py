@@ -269,7 +269,6 @@ if __name__ == "__main__":
         for hist_list, hist_name_prefix in vec_list:
             hist_creator1D(hist_parameters, hist_list, hist_name_prefix)
 
-        print "*"*100, "next file"
         for i, event in enumerate(events):
             event.getByLabel("microGMTEmulator", out_handle)
             event.getByLabel("microGMTInputProducer", "BarrelTFMuons", bar_handle)
@@ -291,8 +290,6 @@ if __name__ == "__main__":
                 mu_tmp = Muon(vhdl_dict, obj=mu)
                 emu_imd_list.append(mu_tmp)
 
-            
-            print i, vec_list
             fill_muon_hists(0, vec_list, emu_out_list)
             fill_muon_hists(4, vec_list, emu_imd_list)
 
