@@ -4,164 +4,9 @@ import os
 from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1D, TLegend, THStack, TH1
 from DataFormats.FWLite import Events, Handle
 from muon import Muon 
-from muon_functions import file_converter, get_frame, get_num, bit_mask_new, select, twos_complement_sign, plot_modifier, hist_creator1D, non_zero_block
+from muon_functions import file_converter, select, twos_complement_sign, plot_modifier, hist_creator1D, non_zero_block, find_nonzero_output, input_frames, rank, eta, single_bit, isequal
 from tools.vhdl import VHDLConstantsParser
 from optparse import OptionParser
-
-def isequal(a,b): # gives 1 if a==b and 0 otherwise
-    x = int(a)^int(b)
-    if x==0 or x==1:
-        return x
-    else:
-        return 1
-
-def single_bit(num,bit): # Gets one single bit defined by num
-    a = 1<<bit
-    b = num&a
-    return b >> bit
-
-def num_of_ones(x): # returns num of ones in a bitword...not very elegant, works only for positive numbers!
-    return bin(x).count("1")
-
-def eta(obj,stepsize,eta_low,eta_high): # reads the etaBits in twos_complement.
-    # The discommented lines transform etaBits to the physical values for eta and print a warning if eta is out of physical senseful boundaries
-
-    obj.etaBits = twos_complement_sign(obj.etaBits,9)
-    
-def phi(obj,stepsize,phi_low,phi_high): # the following 2 functions are discommented in the script, but they return the physical phi and pT (see eta)
-    obj.phiBits = stepsize*obj.phiBits
-    if (obj.phiBits<phi_low) or (obj.phiBits>phi_high):
-        print "phiBits out of range [{l},{h}]".format(l=phi_low,h=phi_high)
-
-def pt(obj,stepsize,pt_low,pt_high):
-    obj.ptBits = stepsize*obj.ptBits
-    if (obj.ptBits<pt_low) or (obj.ptBits>pt_high):
-        print "ptBits out of range [{l},{h}]".format(l=pt_low,h=pt_high)
-
-def rank(obj,rank_link_low,rank_link_high,rank_frame_low,rank_frame_high,rank_bitlength,free_bits): # A very complicated function but it works: 
-    # It returns a list of the ranks from frame_low and link_low to frame_high and link_high. 
-    # Addtionally the bitlength of the rank_words (see below) can be changed as well as the number of free bits in the 32-bit-word
-    # This was implemented to keep it as flexible as possible. 
-
-    ranks = {}
-    rank_list = []
-    for i in xrange(rank_link_low,rank_link_high+1): 
-        for j in xrange(rank_frame_low,rank_frame_high):
-            ranks["Frame {j}, link {i}".format(j=j, i=i)] = get_num(obj,j,i)
-            a = ranks["Frame {j}, link {i}".format(j=j, i=i)]
-            b = (int(a,16)>>12) 
-            ranks["Frame {j}, link {i}".format(j=j, i=i)] = b
-
-    for i in xrange(rank_frame_low,rank_frame_high):
-        for j in xrange(2*(1+rank_link_high-rank_link_low)):
-            arg = (i-1)*2*(1+rank_link_high-rank_link_low)+j
-
-            if j<(1+rank_link_high-rank_link_low):
-                m = rank_link_low
-            else:
-                m = rank_link_high
-
-            if arg%2 == 0:
-                a = ranks["Frame {i}, link {m}".format(m=m, i=i)]>>rank_bitlength
-                rank_list.append(a)
-            else:
-                b = bit_mask_new(ranks["Frame {i}, link {m}".format(i=i,m=m)],1+rank_bitlength,2*rank_bitlength)
-                rank_list.append(b)
-    return rank_list
-
-def find_nonzero_output(obj, links=None, num_of_frames=None): # Finds the first non-zero valid (1v) entry from frame 0000 to frame "num_of_frames" in the input_links 
-    # Attention: links is an array of length 2 !!!
-
-    if num_of_frames==None:
-        num_of_frames = 2**10
-
-    if links==None:
-        k0 = 0
-        k1 = 4
-    else:
-        k0 = links[0]
-        k1 = links[1]
-
-    for j in xrange(k0, k1):
-        for i in xrange(num_of_frames):
-            a = get_frame(obj,i)[j]
-            if (a[:2] == "1v") and (a!="1v00000000"):
-                return i
-                break
-
-def input_frames(obj, link=None, num_of_frames=None): # Function made for input_files. Returns the number of valid input_frames starting from link 36 (can be modified)
-    # Attention: Stops at first "0v" entry! (See code) If there should be other "1v" entries below, this function doesnt take them into consideration!
-
-    if link==None:
-        link = 36
-
-    if num_of_frames == None:
-        num_of_frames = 1024
-
-    end_frame = num_of_frames
-
-    for i in xrange(num_of_frames):
-        a = get_frame(obj, i)[link]
-        if a[:2] == "1v":
-            start_frame = i
-            break
-
-    for i in xrange(start_frame,num_of_frames):
-        a = get_frame(obj, i)[link]
-        if a[:2] == "0v":
-            end_frame = i
-            break
-
-    return end_frame-start_frame
-
-def find_nonzero_intermediate(obj,start_frame,link_low=None,link_high=None): # Function made for the intermediate_muons.
-    # It finds the first intermediate-bitword that is identical to the first valid non-zero output-bitword. "start_frame" is the frame in which this output_word is.
-    # This is to define the offset between output and intermediate if there are problems in the alignment.
-
-    if link_low==None:
-        link_low=4
-
-    if link_high==None:
-        link_high=12
-
-    for i in xrange(start_frame+1):
-        for j in xrange(link_low,link_high):
-            a = get_frame(obj,i)[j]
-            b = get_frame(obj,start_frame)[0] 
-            if a==b:
-                return i
-                break
-
-def zero_qual(obj, input_muon=None): # Counts the muons with quality=0 but non-zero bitword. If the function is called with 2 arguments, it counts the input_qualityBits
-    vec = []
-    for i in xrange(len(obj)):
-        if input_muon==None:
-            m = obj[i].input_qualityBits
-        else:
-            m = obj[i].qualityBits
-
-        if m==0 and obj[i].bitword!=0:
-            vec.append(obj[i])
-    return len(vec)
-
-def zero_pt(obj, input_muon=None): # works as the function above for "ptBits"
-    vec = []
-    for i in xrange(len(obj)):
-        if input_muon==None:
-            m = obj[i].input_ptBits
-        else:
-            m = obj[i].ptBits
-
-        if m==0 and obj[i].bitword!=0:
-            vec.append(obj[i])
-    return len(vec)
-
-def non_zero(obj): # counts how many obj in an array are !=0
-    vec = []
-    for i in xrange(len(obj)):
-        if obj[i].bitword!=0:
-            vec.append(obj[i])
-    return len(vec)
 
 def fill_muon_hists(index, hist_list, muons):
     for mu in muons:
@@ -169,18 +14,6 @@ def fill_muon_hists(index, hist_list, muons):
         hist_list[index][0]["ptBits"].Fill(mu.ptBits)
         hist_list[index][0]["qualityBits"].Fill(mu.qualityBits)
         hist_list[index][0]["etaBits"].Fill(mu.etaBits)
-
-def sort_files(list): # Sorts the files of the os.walk(). Attention: All input_files start with "rx_", all output_files with "tx_" and all emu_files end with "root"!!!
-    o_list = [0, 0, 0]
-    for d in files:
-        if d[-4:]=="root":
-            o_list[2]=d
-        if d[:3]=="tx_":
-            o_list[1]=d
-        if d[:3]=="rx_":
-            o_list[0]=d
-
-    return o_list
 
 if __name__ == "__main__":
     TH1.AddDirectory(False)
@@ -501,7 +334,7 @@ if __name__ == "__main__":
 
         hist2 = TH2D("{f}_comparison2".format(f=filename),"comparison of hardware: overview [{f}]".format(f=filename),4,0,4,8,1,min(len(hw_list),len(emu_out_list)))
         for y in xrange(min(len(hw_list),len(emu_out_list))):
-            hist2.Fill(0,(y+1)*isequal(hw_list[y].phiBits,emu_out_list[y].phiBits))
+            hist2.Fill(0,(y+1)*isequal(hw_list[y].phiBits, emu_out_list[y].phiBits))
             hist2.Fill(1,(y+1)*isequal(hw_list[y].ptBits,emu_out_list[y].ptBits))
             hist2.Fill(2,(y+1)*isequal(hw_list[y].qualityBits,emu_out_list[y].qualityBits))
             hist2.Fill(3,(y+1)*isequal(hw_list[y].etaBits,emu_out_list[y].etaBits))
