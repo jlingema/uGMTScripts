@@ -1,10 +1,10 @@
 import ROOT
 import math
 import os
-from ROOT import TColor, TCanvas, gStyle, gROOT, TH2D, TH1D, TLegend, THStack
+from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1D, TLegend, THStack, TH1
 from DataFormats.FWLite import Events, Handle
 from Muon_class import Muon 
-from muon_functions import file_converter, get_frame, get_frames, frame_printer, get_num, add_nums, bit_mask_new, select, twos_complement_sign, plot_modifier, hist_creator1D
+from muon_functions import file_converter, get_frame, get_num, bit_mask_new, select, twos_complement_sign, plot_modifier, hist_creator1D
 from tools.vhdl import VHDLConstantsParser
 from optparse import OptionParser
 
@@ -27,10 +27,7 @@ def eta(obj,stepsize,eta_low,eta_high): # reads the etaBits in twos_complement.
     # The discommented lines transform etaBits to the physical values for eta and print a warning if eta is out of physical senseful boundaries
 
     obj.etaBits = twos_complement_sign(obj.etaBits,9)
-    #obj.etaBits = stepsize*obj.etaBits
-    #if (obj.etaBits<eta_low) or (obj.etaBits>eta_high):
-    #   print "etaBits out of range [{l},{h}]".format(l=eta_low,h=eta_high)
-
+    
 def phi(obj,stepsize,phi_low,phi_high): # the following 2 functions are discommented in the script, but they return the physical phi and pT (see eta)
     obj.phiBits = stepsize*obj.phiBits
     if (obj.phiBits<phi_low) or (obj.phiBits>phi_high):
@@ -173,7 +170,6 @@ def non_zero_block(m_list,m_dict,muon_option=None): # Outputs have 3 links a 6 f
     h_vec = []
     for var in m_dict:
         h_vec.append(m_dict[var])   
-    #if any(x != 0 for x in h_vec): # not very elegant, just a prototype!
     for m in h_vec:
         if muon_option==None:
             m = Muon(vhdl_dict, bitword=m)
@@ -181,7 +177,7 @@ def non_zero_block(m_list,m_dict,muon_option=None): # Outputs have 3 links a 6 f
 
     return m_list
 
-def plot_mu(index, hist_list, muons):
+def fill_muon_hists(index, hist_list, muons):
     for mu in muons:
         hist_list[index][0]["phiBits"].Fill(mu.phiBits)
         hist_list[index][0]["ptBits"].Fill(mu.ptBits)
@@ -201,7 +197,7 @@ def sort_files(list): # Sorts the files of the os.walk(). Attention: All input_f
     return o_list
 
 if __name__ == "__main__":
-
+    TH1.AddDirectory(False)
     pi = math.pi
     gROOT.SetBatch()
     gStyle.SetOptStat("ne")
@@ -217,17 +213,17 @@ if __name__ == "__main__":
 
     file_dict = {}
 
-    print options.directory
     for roots, dirs, files in os.walk("{d}".format(d=options.directory)):
-        file_dict[roots] = {}
+        tmp_dict = {}
         for fname in files:
             if "tx_" in fname:
-                file_dict[roots]["tx"] = fname
+                tmp_dict["tx"] = fname
             if ".root" in fname:
-                file_dict[roots]["root"] = fname
+                tmp_dict["root"] = fname
             if "rx_" in fname:
-                file_dict[roots]["rx"] = fname
-        if file_dict[roots] == {}: del file_dict[roots]
+                tmp_dict["rx"] = fname
+        if tmp_dict != {}: 
+            file_dict[roots] = tmp_dict
 
     ##### if the physical properties should be calculated, then the functions phi, eta and pt just have to be discommented. Doing this, the following parameters are their input.
     ##### They dont have any other use
@@ -244,10 +240,10 @@ if __name__ == "__main__":
 
     #### Parameters for histograms may be changed here at any time
     hist_parameters = {
-    "qualityBits":["qualityBits", 16, 0, 16],
-    "ptBits":["ptBits", 128, 0, 512],#(pt_high-pt_low)/pt_unit, pt_low, pt_high],
-    "phiBits":["phiBits", 256, 0, 1024], #(phi_high-phi_low)/phi_unit, phi_low, phi_high],
-    "etaBits":["etaBits", 256, -512, 512] #(eta_high-eta_low)/eta_unit, eta_low, eta_high]
+        "qualityBits": ["qualityBits", 16, 0, 16],
+        "ptBits": ["ptBits", 128, 0, 512],#(pt_high-pt_low)/pt_unit, pt_low, pt_high],
+        "phiBits": ["phiBits", 256, 0, 1024], #(phi_high-phi_low)/phi_unit, phi_low, phi_high],
+        "etaBits": ["etaBits", 256, -512, 512] #(eta_high-eta_low)/eta_unit, eta_low, eta_high]
     }
 
     for filename in file_dict:
@@ -270,10 +266,11 @@ if __name__ == "__main__":
         leafs_hists_imd = {}
 
         vec_list = ([leafs_hists_out,"emu_out_muons"], [leafs_hists_bar,"emu_bar_muons"], [leafs_hists_ovl,"emu_ovl_muons"], [leafs_hists_fwd,"emu_fwd_muons"], [leafs_hists_imd, "emu_imd_muons"])
-        for i in vec_list:
-            hist_creator1D(hist_parameters,i[0],i[1])
+        for hist_list, hist_name_prefix in vec_list:
+            hist_creator1D(hist_parameters, hist_list, hist_name_prefix)
 
-        for event in events:
+        print "*"*100, "next file"
+        for i, event in enumerate(events):
             event.getByLabel("microGMTEmulator", out_handle)
             event.getByLabel("microGMTInputProducer", "BarrelTFMuons", bar_handle)
             event.getByLabel("microGMTInputProducer", "ForwardTFMuons", fwd_handle)
@@ -286,53 +283,54 @@ if __name__ == "__main__":
             emu_fwd_muons = fwd_handle.product()
             imd_prod = imd_handle.product()
 
-            emulator_muon_list = [emu_out_muons, emu_bar_muons, emu_ovl_muons, emu_fwd_muons, imd_prod]
-            for var in emulator_muon_list:
-                for mu in var:
-                    mu = Muon(vhdl_dict, obj=mu)
-                    if var==emu_out_muons:
-                        emu_out_list.append(mu)
-                    if var==imd_prod:
-                        emu_imd_list.append(mu)
+            for mu in emu_out_muons:
+                mu_tmp = Muon(vhdl_dict, obj=mu)
+                emu_out_list.append(mu_tmp)
 
-            plot_mu(0, vec_list, emu_out_list)
-            plot_mu(4, vec_list, emu_imd_list)
+            for mu in imd_prod:
+                mu_tmp = Muon(vhdl_dict, obj=mu)
+                emu_imd_list.append(mu_tmp)
+
+            
+            print i, vec_list
+            fill_muon_hists(0, vec_list, emu_out_list)
+            fill_muon_hists(4, vec_list, emu_imd_list)
 
 
-            for name in hist_parameters:
-                emu_leg = TLegend(0.2,0.7,0.4,0.9,"Legend")
-                emu_stack = THStack("stack","{name}".format(name=name))
+        for name in hist_parameters:
+            emu_leg = TLegend(0.2,0.7,0.4,0.9,"Legend")
+            emu_stack = THStack("stack","{name}".format(name=name))
 
-                plot_modifier(leafs_hists_out[name],"{name}".format(name=name),"",ROOT.kBlack)
-                emu_leg.AddEntry(leafs_hists_out[name],"emu_out_muons","f")
+            plot_modifier(leafs_hists_out[name],"{name}".format(name=name),"",ROOT.kBlack)
+            emu_leg.AddEntry(leafs_hists_out[name],"emu_out_muons","f")
 
-                plot_modifier(leafs_hists_bar[name],"{name}".format(name=name),"",ROOT.kGreen+1)
-                emu_leg.AddEntry(leafs_hists_bar[name],"emu_bar_muons","f")
-                emu_stack.Add(leafs_hists_bar[name])
+            plot_modifier(leafs_hists_bar[name],"{name}".format(name=name),"",ROOT.kGreen+1)
+            emu_leg.AddEntry(leafs_hists_bar[name],"emu_bar_muons","f")
+            emu_stack.Add(leafs_hists_bar[name])
 
-                plot_modifier(leafs_hists_ovl[name],"{name}".format(name=name),"",ROOT.kYellow)
-                emu_leg.AddEntry(leafs_hists_ovl[name],"emu_ovl_muons","f")
-                emu_stack.Add(leafs_hists_ovl[name])
+            plot_modifier(leafs_hists_ovl[name],"{name}".format(name=name),"",ROOT.kYellow)
+            emu_leg.AddEntry(leafs_hists_ovl[name],"emu_ovl_muons","f")
+            emu_stack.Add(leafs_hists_ovl[name])
 
-                plot_modifier(leafs_hists_fwd[name],"{name}".format(name=name),"",ROOT.kAzure-2)
-                emu_leg.AddEntry(leafs_hists_fwd[name],"emu_fwd_muons","f")
-                emu_stack.Add(leafs_hists_fwd[name])
+            plot_modifier(leafs_hists_fwd[name],"{name}".format(name=name),"",ROOT.kAzure-2)
+            emu_leg.AddEntry(leafs_hists_fwd[name],"emu_fwd_muons","f")
+            emu_stack.Add(leafs_hists_fwd[name])
 
-                max_vec = (emu_stack.GetMaximum(),
-                leafs_hists_out[name].GetBinContent(leafs_hists_out[name].GetMaximumBin()))
-                a = sum(max_vec)+10
+            max_vec = (emu_stack.GetMaximum(),
+            leafs_hists_out[name].GetBinContent(leafs_hists_out[name].GetMaximumBin()))
+            a = sum(max_vec)+10
 
-                if max_vec[0]!=0:
-                    emu_stack.Draw("")
-                    emu_stack.GetXaxis().SetTitle("{name}".format(name=name))
-                    emu_stack.GetYaxis().SetTitle("N")
-                    emu_stack.GetYaxis().SetRangeUser(0,a)
-                    leafs_hists_out[name].Draw("same")
-                else:
-                    leafs_hists_out[name].Draw("")
-                    leafs_hists_out[name].GetYaxis().SetRangeUser(0, a)
+            if max_vec[0]!=0:
+                emu_stack.Draw("")
+                emu_stack.GetXaxis().SetTitle("{name}".format(name=name))
+                emu_stack.GetYaxis().SetTitle("N")
+                emu_stack.GetYaxis().SetRangeUser(0,a)
+                leafs_hists_out[name].Draw("same")
+            else:
+                leafs_hists_out[name].Draw("")
+                leafs_hists_out[name].GetYaxis().SetRangeUser(0, a)
 
-                emu_leg.Draw("same")
+            emu_leg.Draw("same")
         canvas.Print("{f}/figures/emu_{name}.pdf".format(f=filename, name=hist_parameters[name][0]))
 
         # Reading and processing the hardware data
