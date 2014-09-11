@@ -2,89 +2,86 @@ import ROOT
 
 from muon import Muon
 
-def file_converter(obj): # transforms data from txt-File to a dictionary, whos entries are named "Frame xxxx" and contain a list of all links in frame xxxx
-	obj_dict = {}
-	i = 0
-	for line in obj:
-		if line[0]=="F":
-			i = str(i)
-			if len(i) != 4:
-				i = "0"*(4-len(i))+i
-			obj_dict["Frame {i}".format(i=i)] = line[13:].split() ### 13: !!!
-			i = int(i)+1 
-	return obj_dict
+def file_converter(f_obj): # transforms data from txt-File to a dictionary, whos entries are named "Frame xxxx" and contain a list of all links in frame xxxx
+    obj_dict = {}
+    for line in f_obj:
+        frames = line.split()
+        if "Frame" in frames[0]:
+            frame = frames[0]
+            obj_dict[frame] = frames[13:].split() ### 13: !!!
+    return obj_dict
 
 def get_frame(obj,frame_number): # gets a frame (=list!)
-	frame_number = str(frame_number)
-	if len(frame_number)!=4:
-		frame_number = "0"*(4-len(frame_number))+frame_number
-	return obj["Frame {n}".format(n=frame_number)]
+    frame_number = str(frame_number)
+    if len(frame_number)!=4:
+        frame_number = "0"*(4-len(frame_number))+frame_number
+    return obj["Frame {n}".format(n=frame_number)]
 
 def get_frames(obj,frame_numbers): # gets a dict of frames. Attention: frame_numbers have to be in ascending order!
-	frames_dict = {}
-	for x in frame_numbers:
-		x = str(x)
-	for num in frame_numbers:
-		frames_dict["{num}".format(num=num)] = get_frame(obj,num)
-	return frames_dict
+    frames_dict = {}
+    for x in frame_numbers:
+        x = str(x)
+    for num in frame_numbers:
+        frames_dict["{num}".format(num=num)] = get_frame(obj,num)
+    return frames_dict
 
 def frame_printer(obj,frame_numbers): #Prints the chosen frames to check them out. Attention: frame_numbers have to be in ascending order! frame(s) always within () [eg.: (1,2,3)]!!!
-	if isinstance(frame_numbers,str):
-		frame = get_frame(obj,frame_numbers)
-		print frame
-	else:
-		frames = get_frames(obj,frame_numbers)
-		for i in frames:
-			print frames[i]
+    if isinstance(frame_numbers,str):
+        frame = get_frame(obj,frame_numbers)
+        print frame
+    else:
+        frames = get_frames(obj,frame_numbers)
+        for i in frames:
+            print frames[i]
 
 def get_num(obj,frame,num): # Get a number (=Frame[link]). The output is without the valid bits "1v"!!!
-	if isinstance(num,str) and num[0]=="q":
-		a = num[1:-2]
-		a = int(a) + 1
-		b = num[4]
-		b = int(b) + 1 
-		num = 4*a + b - 1
+    if isinstance(num,str) and num[0]=="q":
+        a = num[1:-2]
+        a = int(a) + 1
+        b = num[4]
+        b = int(b) + 1 
+        num = 4*a + b - 1
 
-	var = get_frame(obj,frame)
-	var[num] = var[num][2:]
-	return var[num]
+    var = get_frame(obj,frame)
+    var[num] = var[num][2:]
+    return var[num]
 
 def add_nums(num1,num2): # Essential function. Adds nums to the final 64-bit word
-	a = int(num1,16)
-	b = int(num2,16)
-	x = (b<<32) + a
-	return x
+    a = int(num1,16)
+    b = int(num2,16)
+    x = (b<<32) + a
+    return x
 
 def bit_mask_new(num,xlow,xup): # A bit_mask
-	x = (1<<(xup-xlow+1)) - 1
-	y = x<<xlow
-	z = num & y
-	return z>>xlow
-	
+    x = (1<<(xup-xlow+1)) - 1
+    y = x<<xlow
+    z = num & y
+    return z>>xlow
+    
 def select(obj,link_low,link_high,frame_low,frame_high): # Provides a dictionary whos entries are named "Frames link_a-link_b" and contain final combined muon_words.
-	m_dict = {}
-	for n in xrange(link_low, link_high):
-		c = frame_low
-		while c<frame_high:
-			a = get_num(obj,c,n)
-			b = get_num(obj,c+1,n)
-			m_dict["Frame {c}-{d},link {n}".format(c=c,d=c+1,n=n)] = add_nums(a,b)
-			c = c+2	
-	return m_dict
+    m_dict = {}
+    for n in xrange(link_low, link_high):
+        c = frame_low
+        while c<frame_high:
+            a = get_num(obj,c,n)
+            b = get_num(obj,c+1,n)
+            m_dict["Frame {c}-{d},link {n}".format(c=c,d=c+1,n=n)] = add_nums(a,b)
+            c = c+2 
+    return m_dict
 
 def twos_complement_sign(bits,bit_num=None):# reads a bitword in twos complement sign, currently only used for etaBits
-	if bit_num==None:
-		bit_num = 9
+    if bit_num==None:
+        bit_num = 9
 
-	bits = int(bits)
-	bit_num = int(bit_num)
-	if (bits>>(bit_num-1))==0:
-		return bits
-	elif (bits>>(bit_num-1))==1:
-		#return (~bits) +1 ### doesnt work properly, while the following line looks strange but fullfills its purpose perfectly! :
-		return -((1<<bit_num)-bits)
-	else:
-		print "error in bitshifting, input>>{n} is neither 0 nor 1!".format(n=bit_num-1)
+    bits = int(bits)
+    bit_num = int(bit_num)
+    if (bits>>(bit_num-1))==0:
+        return bits
+    elif (bits>>(bit_num-1))==1:
+        #return (~bits) +1 ### doesnt work properly, while the following line looks strange but fullfills its purpose perfectly! :
+        return -((1<<bit_num)-bits)
+    else:
+        print "error in bitshifting, input>>{n} is neither 0 nor 1!".format(n=bit_num-1)
 
 def filler1D(hist,name,value):
     hist[name].Fill(value)
