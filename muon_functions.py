@@ -8,7 +8,7 @@ def file_converter(f_obj): # transforms data from txt-File to a dictionary, whos
         frames = line.split()
         if "Frame" in frames[0]:
             frame = frames[0]
-            obj_dict[frame] = frames[13:].split() ### 13: !!!
+            obj_dict[frame] = frames[13:] ### 13: !!!
     return obj_dict
 
 def get_frame(obj,frame_number): # gets a frame (=list!)
