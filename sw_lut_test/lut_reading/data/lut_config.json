@@ -41,7 +41,8 @@
         ]
     }, 
     "IdxSelMemEtaF": {
-        "function": "0", 
+        "function": "",
+        "map": "etamap",
         "inputs": [
             "eta"
         ], 
@@ -52,7 +53,8 @@
         ]
     }, 
     "IdxSelMemEtaB": {
-        "function": "0", 
+        "function": "",
+        "map" : "etamap", 
         "inputs": [
             "eta"
         ], 
@@ -184,7 +186,8 @@
         ]
     }, 
     "IdxSelMemPhiO": {
-        "function": "0", 
+        "function": "",
+        "map" : "phimap",
         "inputs": [
             "phi"
         ], 
@@ -195,7 +198,8 @@
         ]
     }, 
     "IdxSelMemPhiB": {
-        "function": "0", 
+        "function": "",
+        "map" : "phimap",
         "inputs": [
             "phi"
         ], 
@@ -206,7 +210,8 @@
         ]
     }, 
     "IdxSelMemPhiF": {
-        "function": "0", 
+        "function": "",
+        "map" : "phimap",
         "inputs": [
             "phi"
         ], 
@@ -217,7 +222,8 @@
         ]
     }, 
     "IdxSelMemEtaO": {
-        "function": "0", 
+        "function": "",
+        "map" : "etamap",
         "inputs": [
             "eta"
         ], 

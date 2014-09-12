@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from tools.vhdl import VHDLConstantsParser
-
+from copy import copy
 #BAR 0 9 4 58 0 1 3     # muon: pt = 4.5,  phi = 0.0436332,  eta = 0.58125,  charge = 0
 # muon format (separated by one space):
 # cable number only for debugging purposes
@@ -10,7 +10,13 @@ def twos_comp(val, bits):
     """compute the 2's compliment of int value val"""
     if val >= 0:
         return val
-    val = val + (1<<bits)
+    #sprint bin(val)
+    all_one = (1 << bits)-1
+    #print "al", len(bin(all_one).replace("0b", "")), hex(all_one)
+    val = ((-val)^all_one)+1
+
+    #val = ~(val)+1 
+    #print bin(val)
     return val
 
 def test(nbits):
@@ -63,50 +69,74 @@ def mu_to_string(mu_line, line_no):
     id_ = mu_params[0]
     cable = int(mu_params[1])
     
-    i_word1 = 0
-    i_word2 = 0
-
-    s_word1 = {}
-    s_word2 = {}
-    values = {}
+    mu_int = 0
+    #print mu_line
     for name, p_key in name_to_key.iteritems():
-        if name == "ADDRESS":
-            values[name] = 0
-            if cfg[name+"_IN_LOW"] < offset_w2:
-                s_word1[name] = [cfg[name+"_IN_LOW"], cfg[name+"_IN_HIGH"], cfg[name+"_IN_LOW"]]
-            else:
-                s_word2[name] = [cfg[name+"_IN_LOW"], cfg[name+"_IN_HIGH"], cfg[name+"_IN_LOW"]]
-            continue
-        shift = cfg[name+"_IN_LOW"]
-        nbits = cfg[name+"_IN_HIGH"] - cfg[name+"_IN_LOW"] + 1
-        #print name, nbits
-        if shift >= offset_w2: 
-            shift -= offset_w2
-            i_word2 += twos_comp(int(mu_params[p_key]), nbits) << shift
-            s_word2[name] = [cfg[name+"_IN_LOW"], cfg[name+"_IN_HIGH"], shift]
-            
+        low = cfg[name+"_IN_LOW"]    
+        high = cfg[name+"_IN_HIGH"]    
+        shift = low
+        nbits = high - low + 1
+        if name == "ADDRESS": 
+            # val = (1<<29)-1 #FIXME!
+            # mu_int += (val << shift)
+            val = 0
         else: 
-            s_word1[name] = [cfg[name+"_IN_LOW"], cfg[name+"_IN_HIGH"], shift]
-            i_word1 += twos_comp(int(mu_params[p_key]), nbits) << shift
-        values[name] = mu_params[p_key]
-    word1 = hex(i_word1).replace("0x", "")
+            val = twos_comp(int(mu_params[p_key]), nbits)
+            #print name, val
+            mu_int += (val << shift)
+        #if name == "QUAL": print val, low
+        #print name, val
+        #bin_str=bin(val<<shift)
+        #print bin_str, len(bin_str)
+    mask = (1 << 32)-1
+    # print hex(mu_int)
+    # first word is found by mask -- replace 0x prefix and py-long postfix
+    word1 = hex(mu_int & mask).replace("0x", "").replace("L", "")
+    # second word are the trailing 32 bits:
+    word2 = hex(mu_int >> 32).replace("0x", "").replace("L", "")
+    # print word1, word2
+
     if len(word1) > 8:
         print "*"*40
         print "\033[22;30m[error]\033[22;0m overflow:", word1, "in line", line_no
-        print_dformat([s_word1, s_word2], 0, values)
+        # print_dformat([s_word1, s_word2], 0, values)
         print "*"*40
 
-    word2 = hex(i_word2).replace("0x", "")
+    #word2 = hex(i_word2).replace("0x", "")
     if len(word2) > 8:
         print "*"*40
         print "\033[22;30m[error]\033[22;0m overflow:", word2, "in line", line_no
-        print_dformat([s_word1, s_word2], 1, values)
+        # print_dformat([s_word1, s_word2], 1, values)
         print "*"*40
 
     word1=fill_word(word1)
     word2=fill_word(word2)
     #print word1, word2
-    return id_, cable, word1, word2, [s_word1, s_word2]
+    return id_, cable, word1, word2
+
+def string_to_mu(words, config, type_ = "IN"):
+    # get the int values:
+    word1, word2 = [ int(w.replace("1v", ""), 16) for w in words ]
+
+    name_to_key = {"ADDRESS":None, "PT":2, "PHI":3, "ETA":4, "SYSIGN":5, "QUAL":7}
+    #string them words together:
+    mu_int = word1 + (word2 << 32)
+    mu = {}
+    for name, key in name_to_key.iteritems():
+        low = config["{var}_{type}_LOW".format(var=name, type=type_)]
+        high = config["{var}_{type}_HIGH".format(var=name, type=type_)]
+        nbits = high-low+1
+        # mask should have as many ones as nbits:
+        mask = (1 << nbits) - 1
+        # and trailing zeroes to get the correct part of word the low bits:
+        # could also just mask the first "high" bits because right shift below
+        mask = mask << low
+        # discard the trailing zeroes:        
+        mu[name] = (mu_int & mask) >> low
+        if mu[name] >= (1 << high-low) and name == "ETA": #eta can be negative
+            # twos complement
+            mu[name] = mu[name] - (1 << (nbits))
+    return mu
 
 def fill_word(w):
     while len(w) < 8:
@@ -119,14 +149,14 @@ def parse_options():
 %prog board_name [options]
 '''
     defaults = {
-    'in'    : 'test.dat',
+    'in'    : 'empty',
     'out'   : 'muon_test_mp7.dat',
     'board' : 'UGMT',
-    'config': 'ugmt_constants.vhd'
+    'config': 'data/ugmt_constants.vhd'
     }
 
     parser = optparse.OptionParser( usage )
-    parser.add_option('-i', '--in',  dest='infile',      help='Input human-readable data file (%default)',          default=defaults['in'],     type='string')
+    parser.add_option('-i', '--in',  dest='infile',      help='Input human-readable data file or mode (empty, full, interchange) (%default)',          default=defaults['in'],     type='string')
     parser.add_option('-o', '--out', dest='outfile',     help='Output mp7-framework readable data file (%default)', default=defaults['out'],    type='string')
     parser.add_option('-c', '--config', dest='config',   help='VHDL file containing ugmt constants (%default)',     default=defaults['config'], type='string')
     parser.add_option('-v', '--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False,              action='store_true')
@@ -141,7 +171,7 @@ def parse_options():
 def generate_frames_string(frames, offset):
     f_string = ""
     for i in xrange(6):
-        f_string += "Frame {:04} :".format(offset+i+1)
+        f_string += "Frame {:04} :".format(offset+i)
         for j in xrange(72):
             if len(frames[j]) > i:
                 f_string += " "+frames[j][i]
@@ -151,6 +181,25 @@ def generate_frames_string(frames, offset):
 
     return f_string
 
+def generate_dat_string(link, words, cfg):
+    prefix = ""
+    channel = link
+    if link < 12: 
+        prefix = "BAR"
+    elif link < 24:
+        prefix = "OVL"
+        channel = link%12
+    else:
+        channel = link%24
+        prefix = "FWD"
+    mu_obj = string_to_mu(words, cfg, "IN")
+    mu_str = "{pre} {chnl}".format(pre=prefix, chnl=channel)
+    for var in ["PT", "PHI", "ETA", "SYSIGN", "QUAL"]:
+        mu_str += " {val}".format(val = mu_obj[var])
+        if var == "SYSIGN": # sign and valid...
+            mu_str += " {val}".format(val = mu_obj[var])
+    mu_str += "\n"
+    return mu_str
 
 def print_counters(header, ctrs):
     print header
@@ -163,24 +212,24 @@ def determine_offset_count(counters):
     if id_ == "BAR":
         offset = cfg['BARREL_LOW']
         counters['brl'] += 1
-    if id_ == "FWD":
-        if cable > 5:
-            offset = cfg['FWD_NEG_LOW']
-            counters['fwd_neg'] += 1
-        else: 
-            offset = cfg['FWD_POS_LOW']
-            counters['fwd_pos'] += 1
-    if id_ == "OVL":
-        if cable > 5:
-            offset = cfg['OVL_NEG_LOW']
-            counters['ovl_neg'] += 1
-        else: 
-            offset = cfg['OVL_POS_LOW']
-            counters['ovl_pos'] += 1
-    return offset
+    if id_ == "FWD-":
+        offset = cfg['FWD_NEG_LOW']-6
+        counters['fwd_neg'] += 1
+    if id_ == "FWD+":
+        offset = cfg['FWD_POS_LOW']
+        counters['fwd_pos'] += 1
+    if id_ == "OVL-":
+        # print "OVL-", offset
+        offset = cfg['OVL_NEG_LOW']-6
+        counters['ovl_neg'] += 1
+    if id_ == "OVL+":
+        offset = cfg['OVL_POS_LOW']
+        # print "OVL+", offset
+        counters['ovl_pos'] += 1
+    return offset+36 # muons come after calo energies
 
 def generate_calo_frames(frames, calo_energies):
-    cable_no = cfg['NUM_MU_CHANS']+1 #calo energies come after muons
+    cable_no = 0 #calo energies come before muons
     word = 0
     frame_counter = 0
     tot_words = 0
@@ -200,6 +249,7 @@ def generate_calo_frames(frames, calo_energies):
     print "Total words for CALO in this event:", tot_words
 
 
+
 def add_energies(calo_energies, line, line_no):
     tot = 0
     for i, en_sum in enumerate(line.split()):
@@ -209,6 +259,19 @@ def add_energies(calo_energies, line, line_no):
         calo_energies.append(int(en_sum))
     return tot
 
+def get_header(board_name):
+    mp7_string = "Board %s\n" % board_name
+    quad_line = " Quad/Chan :"
+    link_line = "      Link :"
+    for i in xrange(72):
+        quad = int(i/4)
+        channel = i%4
+        quad_line += " "+"q{:02}c{}".format(quad, channel).center(10)
+        link_line += " "+"{:02}".format(i).center(10)
+    quad_line += "\n"
+    link_line += "\n"
+    mp7_string += quad_line+link_line
+    return mp7_string
 
 if __name__ == "__main__":
     global cfg
@@ -216,32 +279,24 @@ if __name__ == "__main__":
     #mu_to_string("BAR 0 9 4 58 0 1 3     # muon: pt = 4.5,  phi = 0.0436332,  eta = 0.58125,  charge = 0")
     opts, args = parse_options()
 
-    mp7_string = "Board %s\n" % args[0]
-    quad_line = " Quad/Chan :"
-    link_line = "      Link :"
-
+    header = get_header(args[0])
     
     print '-'*40
     print 'MP7 muon input conversion script'
     print '-'*40
 
     #test(8); test(9); test(2); test(10)
-    frames = {}
+    frames = []
 
     for i in xrange(72):
-        quad = int(i/4)
-        channel = i%4
-        quad_line += " "+"q{:02}c{}".format(quad, channel).center(10)
-        link_line += " "+"{:02}".format(i).center(10)
-        frames[i] = []
+        frames.append([])
 
-    quad_line += "\n"
-    link_line += "\n"
+
     # convert this to commandline option together with out file
     infile = open(opts.infile, "r")
     outfile = open(opts.outfile, "w")
     cfg = VHDLConstantsParser.parse_vhdl_file(opts.config)
-
+    print cfg
     newEvt = False
     evts = 0
     counters_tot = {
@@ -270,7 +325,7 @@ if __name__ == "__main__":
             calo_energies = []
             #break
         if "EVT" in line: 
-            cur_frames = frames.copy()
+            cur_frames = [ [] for i in xrange(72) ]
             newEvt = True
             evts += 1
             continue
@@ -278,20 +333,24 @@ if __name__ == "__main__":
         if "CALO" in line: 
             counters["calo"] += add_energies(calo_energies, line, i)
         else:
-            id_, cable, word1, word2, data_format = mu_to_string(line, i)
+            id_, cable, word1, word2 = mu_to_string(line, i)
+            string_to_mu([word1, word2], cfg, "IN")
             offset = determine_offset_count(counters)
         
+
+        
+
         cur_frames[cable+offset].append(word1)
         cur_frames[cable+offset].append(word2)  
     
     print '-'*40
     print_counters("Total events processed: {} \nSummary of muons processed:".format(evts), counters_tot)
-    print 'Incoming Muon Dataformat:'
-    print_dformat(data_format, 0)
-    print_dformat(data_format, 1)
+    
 
-    outfile.write(mp7_string+quad_line+link_line+frames_string)
+    outfile.write(header+frames_string)
     print "Data blocks were written for board:", args[0]
     print "Read muons from:", opts.infile
     print "Wrote to file:", opts.outfile
+
+    test(32)
     
