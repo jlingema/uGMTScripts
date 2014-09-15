@@ -1,10 +1,10 @@
 import ROOT
 import math
 import os
-from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1D, TLegend, THStack, TH1
+from ROOT import TCanvas, gStyle, gROOT, TH2D, TLegend, THStack, TH1
 from DataFormats.FWLite import Events, Handle
 from muon import Muon 
-from muon_functions import file_converter, plot_modifier, hist_creator1D, find_nonzero_output, input_frames, get_rank_list, single_bit, isequal, get_muon_objects, non_zero
+from muon_functions import file_converter, plot_modifier, find_nonzero_output, input_frames, get_rank_list, single_bit, isequal, get_muon_objects, non_zero
 from tools.vhdl import VHDLConstantsParser
 from optparse import OptionParser
 
@@ -19,6 +19,13 @@ def fill_muon_hists(index, hist_list, muons):
         hist_list[index][0]["ptBits"].Fill(mu.ptBits)
         hist_list[index][0]["qualityBits"].Fill(mu.qualityBits)
         hist_list[index][0]["etaBits"].Fill(mu.etaBits)
+
+
+def hist_creator1D(namesdict,hist,title):
+    for varname, hist_property in namesdict.iteritems():
+        hist[varname] = ROOT.TH1D(varname+"{title}".format(title=title), "", hist_property[1], hist_property[2], hist_property[3])
+        hist[varname].SetXTitle(hist_property[0])
+
 
 if __name__ == "__main__":
     TH1.AddDirectory(False)
@@ -230,57 +237,6 @@ if __name__ == "__main__":
         #   print "Attention : Unequal number of Output- and Emulatormuons being compared! [occured at pattern {f}]".format(f=filename)
         #   print "len(hw_list) = ", len(hw_list), ", corresponds to ", len(hw_list)/8, " events"
         #   print "len(emu_out_list) = ", len(emu_out_list), ", corresponds to ", len(emu_out_list)/8, " events"
-
-        hist_input_dict = {}
-
-        for var in hist_parameters:
-            hpv = hist_parameters[var]
-            hist_input_dict[var] = ROOT.TH1D("input_"+var+"_{f}".format(f=filename), "hw_input_"+var+" [{f}]".format(f=filename), int(hpv[1]), hpv[2], hpv[3])
-            hist_input_dict[var].SetXTitle(hpv[0])
-            hist_input_dict[var].SetYTitle("N")
-
-        for i in xrange(len(in_muons)):
-            hist_input_dict["qualityBits"].Fill(in_muons[i].qualityBits)
-            hist_input_dict["ptBits"].Fill(in_muons[i].ptBits)
-            hist_input_dict["phiBits"].Fill(in_muons[i].phiBits)
-            hist_input_dict["etaBits"].Fill(in_muons[i].etaBits)
-        #######
-
-        hist_dict = {}
-
-        for var in hist_parameters:
-            hpv = hist_parameters[var]
-            hist_dict[var] = TH1D("output_"+var+"_{f}".format(f=filename), "hw_output_"+var+" [{f}]".format(f=filename), int(hpv[1]), hpv[2], hpv[3])
-            hist_dict[var].SetXTitle(hpv[0])
-            hist_dict[var].SetYTitle("N")
-
-        for i in xrange(len(hw_list)):
-            hist_dict["qualityBits"].Fill(hw_list[i].qualityBits)
-            hist_dict["ptBits"].Fill(hw_list[i].ptBits)
-            hist_dict["phiBits"].Fill(hw_list[i].phiBits)
-            hist_dict["etaBits"].Fill(hw_list[i].etaBits)
-        ########
-
-        for var in hist_parameters:
-            hw_leg = TLegend(0.7, 0.7, 0.9, 0.85, "Legend")
-            a = hist_input_dict[var].GetBinContent(hist_input_dict[var].GetMaximumBin())
-            b = hist_dict[var].GetBinContent(hist_dict[var].GetMaximumBin())
-            c = max(a,b)
-
-            plot_modifier(hist_dict[var], "{x}".format(x=hist_parameters[var][0]), "", ROOT.kBlack)
-            hist_dict[var].GetYaxis().SetRangeUser(0, 1.01*c)
-            hist_dict[var].GetYaxis().SetTitle("N")
-            hw_leg.AddEntry(hist_dict[var], "Output", "f")
-            hist_dict[var].Draw()
-
-            plot_modifier(hist_input_dict[var], "{x}".format(x=hist_parameters[var][0]), "", ROOT.kBlue)
-            hist_input_dict[var].GetYaxis().SetRangeUser(0, 1.01*c)
-            hist_input_dict[var].GetYaxis().SetTitle("N")
-            hw_leg.AddEntry(hist_input_dict[var], "Input", "f")
-            hist_input_dict[var].Draw("same")
-
-            hw_leg.Draw("same")
-            canvas.Print("{f}/figures/hw_{name}.pdf".format(f=filename, name=hist_parameters[var][0]))
 
         hist1 = TH2D("{f}_comparison1".format(f=filename),"comparison of hardware: all bits [{f}]".format(f=filename),64,0,64,8,1,min(len(hw_list),len(emu_out_list)))
         for y in xrange(min(len(hw_list),len(emu_out_list))):

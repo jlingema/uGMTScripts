@@ -48,24 +48,9 @@ def get_muon_dict(frame_dict, link_low, link_high, frame_low, frame_high):
                 a = get_num(frame_dict, frame, link_n)
                 b = get_num(frame_dict, frame+1, link_n)
                 mu_dict[frame].append((b<<32) + a)
-                print "found valid pair"
         frame = frame+2 
 
     return mu_dict
-
-
-
-def filler1D(hist,name,value):
-    hist[name].Fill(value)
-
-def filler2D(hist,name,xvalue,yvalue):
-    hist[name].Fill(xvalue,yvalue)
-
-def hist_creator1D(namesdict,hist,title):
-    for varname, hist_property in namesdict.iteritems():
-        hist[varname] = ROOT.TH1D(varname+"{title}".format(title=title), "", hist_property[1], hist_property[2], hist_property[3])
-        hist[varname].SetXTitle(hist_property[0])
-
 
 def hist_creator2D(namesdict,hist,xname,yname,title): # xname & yname are strings!
     hist["{yname} gg {xname}".format(xname=xname,yname=yname)] = ROOT.TH2D("{title}".format(title=title),"",
@@ -96,16 +81,6 @@ def single_bit(num,bit): # Gets one single bit defined by num
 def num_of_ones(x): # returns num of ones in a bitword...not very elegant, works only for positive numbers!
     return bin(x).count("1")
 
-
-def phi(obj,stepsize,phi_low,phi_high): # the following 2 functions are discommented in the script, but they return the physical phi and pT (see eta)
-    obj.phiBits = stepsize*obj.phiBits
-    if (obj.phiBits<phi_low) or (obj.phiBits>phi_high):
-        print "phiBits out of range [{l},{h}]".format(l=phi_low,h=phi_high)
-
-def pt(obj,stepsize,pt_low,pt_high):
-    obj.ptBits = stepsize*obj.ptBits
-    if (obj.ptBits<pt_low) or (obj.ptBits>pt_high):
-        print "ptBits out of range [{l},{h}]".format(l=pt_low,h=pt_high)
 
 def get_rank_list(frame_dict, rank_link_low, rank_link_high, rank_frame_low, rank_frame_high, rank_bitlength, free_bits): 
     # returns a list of valid ranks in the range specified

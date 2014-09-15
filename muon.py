@@ -81,7 +81,7 @@ class Muon():
         # check sign bit and calculate signed int, if set
         if (bits>>(bit_num-1))==0:
             return bits
-        elif (bits>>(bit_num-1))==1:
+        else:
             return -((1<<bit_num)-bits)
 
     def bit_mask(self,xlow,xup):
