@@ -4,7 +4,9 @@ import os
 from ROOT import TCanvas, gStyle, gROOT, TH2D, TLegend, THStack, TH1
 from DataFormats.FWLite import Events, Handle
 from muon import Muon 
-from muon_functions import file_converter, plot_modifier, find_nonzero_output, input_frames, get_rank_list, single_bit, isequal, get_muon_objects, non_zero
+from muon_functions import plot_modifier, non_zero, single_bit, isequal
+#file_converter, plot_modifier, find_nonzero_output, input_frames, get_rank_list, single_bit, isequal, get_muon_objects, non_zero
+from mp7_buffer_parser import InputBufferParser, OutputBufferParser
 from tools.vhdl import VHDLConstantsParser
 from optparse import OptionParser
 
@@ -25,7 +27,6 @@ def hist_creator1D(namesdict,hist,title):
     for varname, hist_property in namesdict.iteritems():
         hist[varname] = ROOT.TH1D(varname+"{title}".format(title=title), "", hist_property[1], hist_property[2], hist_property[3])
         hist[varname].SetXTitle(hist_property[0])
-
 
 if __name__ == "__main__":
     TH1.AddDirectory(False)
@@ -88,16 +89,6 @@ if __name__ == "__main__":
         ovl_handle = Handle('std::vector<GMTInputMuon>')
         imd_handle = Handle('std::vector<GMTMuonCandidate>')
 
-        leafs_hists_out = {}
-        leafs_hists_bar = {}
-        leafs_hists_ovl = {}
-        leafs_hists_fwd = {}
-        leafs_hists_imd = {}
-
-        vec_list = ([leafs_hists_out,"emu_out_muons"], [leafs_hists_bar,"emu_bar_muons"], [leafs_hists_ovl,"emu_ovl_muons"], [leafs_hists_fwd,"emu_fwd_muons"], [leafs_hists_imd, "emu_imd_muons"])
-        for hist_list, hist_name_prefix in vec_list:
-            hist_creator1D(hist_parameters, hist_list, hist_name_prefix)
-
         for i, event in enumerate(events):
             event.getByLabel("microGMTEmulator", out_handle)
             event.getByLabel("microGMTInputProducer", "BarrelTFMuons", bar_handle)
@@ -119,131 +110,40 @@ if __name__ == "__main__":
                 mu_tmp = Muon(vhdl_dict, mu_type="IN", obj=mu)
                 emu_imd_list.append(mu_tmp)
 
-            fill_muon_hists(0, vec_list, emu_out_list)
-            fill_muon_hists(4, vec_list, emu_imd_list)
-
-
-        for name in hist_parameters:
-            print name
-            emu_leg = TLegend(0.2,0.7,0.4,0.9,"Legend")
-            emu_stack = THStack("stack","{name}".format(name=name))
-
-            plot_modifier(leafs_hists_out[name],"{name}".format(name=name),"",ROOT.kBlack)
-            emu_leg.AddEntry(leafs_hists_out[name],"emu_out_muons","f")
-
-            plot_modifier(leafs_hists_bar[name],"{name}".format(name=name),"",ROOT.kGreen+1)
-            emu_leg.AddEntry(leafs_hists_bar[name],"emu_bar_muons","f")
-            emu_stack.Add(leafs_hists_bar[name])
-
-            plot_modifier(leafs_hists_ovl[name],"{name}".format(name=name),"",ROOT.kYellow)
-            emu_leg.AddEntry(leafs_hists_ovl[name],"emu_ovl_muons","f")
-            emu_stack.Add(leafs_hists_ovl[name])
-
-            plot_modifier(leafs_hists_fwd[name],"{name}".format(name=name),"",ROOT.kAzure-2)
-            emu_leg.AddEntry(leafs_hists_fwd[name],"emu_fwd_muons","f")
-            emu_stack.Add(leafs_hists_fwd[name])
-
-            max_vec = (emu_stack.GetMaximum(),
-            leafs_hists_out[name].GetBinContent(leafs_hists_out[name].GetMaximumBin()))
-            a = sum(max_vec)+10
-
-            if max_vec[0]!=0:
-                emu_stack.Draw("")
-                emu_stack.GetXaxis().SetTitle("{name}".format(name=name))
-                emu_stack.GetYaxis().SetTitle("N")
-                emu_stack.GetYaxis().SetRangeUser(0,a)
-                leafs_hists_out[name].Draw("same")
-            else:
-                leafs_hists_out[name].Draw("")
-                leafs_hists_out[name].GetYaxis().SetRangeUser(0, a)
-
-            emu_leg.Draw("same")
-            canvas.Print("{f}/figures/emu_{name}.pdf".format(f=filename, name=hist_parameters[name][0]))
-
         # Reading and processing the hardware data
+        input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
+        output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict)
 
-        fobj = open("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]))
-        frame_dict_out = file_converter(fobj)
-
-        #######
-        input_fobj = open("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]))
-        frame_dict_in = file_converter(input_fobj)
-
-        num_of_input_frames = input_frames(frame_dict_in)
-        in_events = math.ceil(num_of_input_frames/6.)
-        in_muons = get_muon_objects(vhdl_dict, frame_dict_in, 0, num_of_input_frames, 36, 72)
-
-        ##### settings on where in the file the final output muons are may be set here and may be modified at any time:
-        start_frame = find_nonzero_output(frame_dict_out)
-        if start_frame==None:
-            #print "Attention! start frame set to zero, no non-zero output found!"
-            start_frame=0
-        out_link_low = 0
-        out_link_high = 4
-        out_frame_low = start_frame # 3
-        out_frame_high = start_frame+3 # 6
-        #####
-
-        ##### settings on where in the file the intermediate muons are may be set here and may be modified at any time:
-        intermediate_link_low = 4
-        intermediate_link_high = 12
-
-        if find_nonzero_output(frame_dict_out, links=[4,12])==None:
-            #print "Attention: all intermediates are 0! [occured at pattern {f}]".format(f=filename)
-            offset = 0
-        else:
-            offset = start_frame - find_nonzero_output(frame_dict_out, links=[4,12])
-
-        intermediate_frame_low = out_frame_low-offset
-        intermediate_frame_high = intermediate_frame_low + 6 
-        #####
-
-        ##### settings on where in the output the ranks are may be set here and may be modified at any time:
-        rank_link_low = 12
-        rank_link_high = 13
-        rank_frame_low = intermediate_frame_low # = intermediate_frame_low
-        rank_frame_high = intermediate_frame_high # = intermediate_frame_high
-        rank_free_bits = 12 # free bits in the ranks, maybe changed at any time    
-        rank_bitlength = 10 # bitlength of one (!) get_rank_list bitword, may be changed at any time
-        #####
-
-        hw_endframe = min(1023, start_frame + num_of_input_frames-6)
-        hw_list = get_muon_objects(vhdl_dict, frame_dict_out, out_frame_low, hw_endframe, out_link_low, out_link_high, mu_type="OUT")
-        
-        inter_list = get_muon_objects(vhdl_dict, frame_dict_out, intermediate_frame_low, intermediate_link_high,
-            intermediate_link_low, intermediate_link_high)
-
-
-        rank_frame_high = min(1023, start_frame-offset+num_of_input_frames-6)
-        rank_list = get_rank_list(frame_dict_out, rank_link_low, rank_link_high, rank_frame_low, rank_frame_high, rank_bitlength, rank_free_bits)
-
+        in_muons = input_parser.get_input_muons()
+        out_muons = output_parser.get_output_muons()
+        intermediate_muons = output_parser.get_intermediate_muons()
+        ranks = output_parser.get_ranks()
 
         #### here the number of nonzero ranks is counted
         rank_num_of_non_zeros = 0
-        for i in xrange(len(rank_list)):
-            if rank_list[i]!=0:
+        for i in xrange(len(ranks)):
+            if ranks[i]!=0:
                 rank_num_of_non_zeros = rank_num_of_non_zeros+1
         ####
 
-        print "{fn}_in_events :".format(fn=filename), in_events
+        # print "{fn}_in_events :".format(fn=filename), in_events
         print "{fn}_in_muons :".format(fn=filename), non_zero(in_muons), "/", len(in_muons)
-        print "{fn}_num of final non-zero Output-Muons: ".format(fn=filename), non_zero(hw_list), "/", len(hw_list)#,"), corresponds to ", len(hw_list)/8," Events"
-        print "{fn}_Output-Muons behind end_frame:"
-        print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(inter_list), "/" , len(inter_list)#, "), corresponds to ", len(inter_list)/24," Events" 
-        print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(rank_list)
+        print "{fn}_num of final non-zero Output-Muons: ".format(fn=filename), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"
+        print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
+        print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(ranks)
 
 
-        #if len(hw_list) != len(emu_out_list): ### prints a warning if hardware- and Emulator-output have an unequal number of events
+        #if len(out_muons) != len(emu_out_list): ### prints a warning if hardware- and Emulator-output have an unequal number of events
         #   print "Attention : Unequal number of Output- and Emulatormuons being compared! [occured at pattern {f}]".format(f=filename)
-        #   print "len(hw_list) = ", len(hw_list), ", corresponds to ", len(hw_list)/8, " events"
+        #   print "len(out_muons) = ", len(out_muons), ", corresponds to ", len(out_muons)/8, " events"
         #   print "len(emu_out_list) = ", len(emu_out_list), ", corresponds to ", len(emu_out_list)/8, " events"
 
-        hist1 = TH2D("{f}_comparison1".format(f=filename),"comparison of hardware: all bits [{f}]".format(f=filename),64,0,64,8,1,min(len(hw_list),len(emu_out_list)))
-        for y in xrange(min(len(hw_list),len(emu_out_list))):
+        hist1 = TH2D("{f}_comparison1".format(f=filename),"comparison of hardware: all bits [{f}]".format(f=filename),64,0,64,8,1,min(len(out_muons),len(emu_out_list)))
+        for y in xrange(min(len(out_muons),len(emu_out_list))):
             for x in xrange(64):
-                hw = single_bit(hw_list[y].bitword,x)
+                hw = single_bit(out_muons[y].bitword,x)
                 emu = single_bit(emu_out_list[y].bitword,x)
-                hist1.Fill(x,(y+1)*isequal(hw,emu))
+                hist1.Fill(x,(y+1)*isequal(hw, emu))
 
         hist1.Draw("TEXT COLZ")
         hist1.SetMaximum(90)
@@ -257,13 +157,13 @@ if __name__ == "__main__":
             hist1.GetYaxis().SetBinLabel(n+1,"Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/bitplot1.pdf".format(f=filename))
 
-        hist2 = TH2D("{f}_comparison2".format(f=filename),"comparison of hardware: overview [{f}]".format(f=filename),4,0,4,8,1,min(len(hw_list),len(emu_out_list)))
-        for y in xrange(min(len(hw_list),len(emu_out_list))):
-            hist2.Fill(0,(y+1)*isequal(hw_list[y].phiBits, emu_out_list[y].phiBits))
-            hist2.Fill(1,(y+1)*isequal(hw_list[y].ptBits,emu_out_list[y].ptBits))
-            hist2.Fill(2,(y+1)*isequal(hw_list[y].qualityBits,emu_out_list[y].qualityBits))
-            hist2.Fill(3,(y+1)*isequal(hw_list[y].etaBits,emu_out_list[y].etaBits))
-            #hist2.Fill(3,(y+1)*isequal(twos_complement_sign(hw_list[y].etaBits,9),emu_out_list[y].etaBits()))  ### for mistakes on purpose
+        hist2 = TH2D("{f}_comparison2".format(f=filename),"comparison of hardware: overview [{f}]".format(f=filename),4,0,4,8,1,min(len(out_muons),len(emu_out_list)))
+        for y in xrange(min(len(out_muons),len(emu_out_list))):
+            hist2.Fill(0,(y+1)*isequal(out_muons[y].phiBits, emu_out_list[y].phiBits))
+            hist2.Fill(1,(y+1)*isequal(out_muons[y].ptBits,emu_out_list[y].ptBits))
+            hist2.Fill(2,(y+1)*isequal(out_muons[y].qualityBits,emu_out_list[y].qualityBits))
+            hist2.Fill(3,(y+1)*isequal(out_muons[y].etaBits,emu_out_list[y].etaBits))
+            #hist2.Fill(3,(y+1)*isequal(twos_complement_sign(out_muons[y].etaBits,9),emu_out_list[y].etaBits()))  ### for mistakes on purpose
 
         hist2.Draw("TEXT COLZ")
         hist2.SetMaximum(90)
@@ -278,10 +178,10 @@ if __name__ == "__main__":
             hist2.GetYaxis().SetBinLabel(n+1,"Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/bitplot2.pdf".format(f=filename))
 
-        hist_inter_1 = TH2D("{f}_comparison_inter_1".format(f=filename), "comparison of intermediates: all bits [{f}]".format(f=filename), 64, 0, 64, 24, 0, min(len(inter_list), len(emu_imd_list)))
-        for y in xrange(min(len(inter_list), len(emu_imd_list))):
+        hist_inter_1 = TH2D("{f}_comparison_inter_1".format(f=filename), "comparison of intermediates: all bits [{f}]".format(f=filename), 64, 0, 64, 24, 0, min(len(intermediate_muons), len(emu_imd_list)))
+        for y in xrange(min(len(intermediate_muons), len(emu_imd_list))):
             for x in xrange(64):
-                hw = single_bit(inter_list[y].bitword, x)
+                hw = single_bit(intermediate_muons[y].bitword, x)
                 emu = single_bit(emu_imd_list[y].bitword, x)
                 hist_inter_1.Fill(x, (y+1)*isequal(hw, emu))
 
@@ -297,12 +197,12 @@ if __name__ == "__main__":
             hist_inter_1.GetYaxis().SetBinLabel(n+1,"Inter-Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/intermediate_bitplot1.pdf".format(f=filename))
 
-        hist_inter_2 = TH2D("{f}_inter_comparison2".format(f=filename), "comparison of intermediate: overview [{f}]".format(f=filename), 4, 0, 4, 24, 1, min(len(inter_list), len(emu_imd_list)))
-        for y in xrange(min(len(inter_list), len(emu_imd_list))):
-            hist_inter_2.Fill(0,(y+1)*isequal(inter_list[y].phiBits,emu_imd_list[y].phiBits))
-            hist_inter_2.Fill(1,(y+1)*isequal(inter_list[y].ptBits,emu_imd_list[y].ptBits))
-            hist_inter_2.Fill(2,(y+1)*isequal(inter_list[y].qualityBits,emu_imd_list[y].qualityBits))
-            hist_inter_2.Fill(3,(y+1)*isequal(inter_list[y].etaBits,emu_imd_list[y].etaBits))
+        hist_inter_2 = TH2D("{f}_inter_comparison2".format(f=filename), "comparison of intermediate: overview [{f}]".format(f=filename), 4, 0, 4, 24, 1, min(len(intermediate_muons), len(emu_imd_list)))
+        for y in xrange(min(len(intermediate_muons), len(emu_imd_list))):
+            hist_inter_2.Fill(0,(y+1)*isequal(intermediate_muons[y].phiBits,emu_imd_list[y].phiBits))
+            hist_inter_2.Fill(1,(y+1)*isequal(intermediate_muons[y].ptBits,emu_imd_list[y].ptBits))
+            hist_inter_2.Fill(2,(y+1)*isequal(intermediate_muons[y].qualityBits,emu_imd_list[y].qualityBits))
+            hist_inter_2.Fill(3,(y+1)*isequal(intermediate_muons[y].etaBits,emu_imd_list[y].etaBits))
 
         hist_inter_2.Draw("TEXT COLZ")
         hist_inter_2.SetMaximum(90)
@@ -316,6 +216,3 @@ if __name__ == "__main__":
         for n in xrange(8):
             hist_inter_2.GetYaxis().SetBinLabel(n+1,"Inter-Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/intermediate_bitplot2.pdf".format(f=filename))
-
-        fobj.close()
-        input_fobj.close()
