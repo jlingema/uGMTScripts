@@ -4,7 +4,7 @@ import os
 from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1D, TLegend, THStack, TH1
 from DataFormats.FWLite import Events, Handle
 from muon import Muon 
-from muon_functions import file_converter, select, twos_complement_sign, plot_modifier, hist_creator1D, non_zero_block, find_nonzero_output, input_frames, rank, eta, single_bit, isequal
+from muon_functions import file_converter, twos_complement_sign, plot_modifier, hist_creator1D, find_nonzero_output, input_frames, get_rank_list, eta, single_bit, isequal, get_muon_objects
 from tools.vhdl import VHDLConstantsParser
 from optparse import OptionParser
 
@@ -114,6 +114,7 @@ if __name__ == "__main__":
 
 
         for name in hist_parameters:
+            print name
             emu_leg = TLegend(0.2,0.7,0.4,0.9,"Legend")
             emu_stack = THStack("stack","{name}".format(name=name))
 
@@ -147,30 +148,24 @@ if __name__ == "__main__":
                 leafs_hists_out[name].GetYaxis().SetRangeUser(0, a)
 
             emu_leg.Draw("same")
-        canvas.Print("{f}/figures/emu_{name}.pdf".format(f=filename, name=hist_parameters[name][0]))
+            canvas.Print("{f}/figures/emu_{name}.pdf".format(f=filename, name=hist_parameters[name][0]))
 
         # Reading and processing the hardware data
 
         fobj = open("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]))
-        obj = file_converter(fobj)
+        frame_dict_out = file_converter(fobj)
 
         #######
         input_fobj = open("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]))
-        in_obj = file_converter(input_fobj)
+        frame_dict_in = file_converter(input_fobj)
 
-        num_of_input_frames = input_frames(in_obj)
-        in_events = num_of_input_frames/6
+        num_of_input_frames = input_frames(frame_dict_in)
+        in_events = math.ceil(num_of_input_frames/6.)
 
-        in_muons = []
-        in_muons_dict = select(in_obj, 36, 72, 0, num_of_input_frames)
-
-        for var in in_muons_dict:
-            if in_muons_dict[var]!=0:
-                in_muons_dict[var] = Muon(vhdl_dict, bitword=in_muons_dict[var])
-                in_muons.append(in_muons_dict[var])
+        in_muons = get_muon_objects(vhdl_dict, frame_dict_in, 0, num_of_input_frames, 36, 72)
 
         ##### settings on where in the file the final output muons are may be set here and may be modified at any time:
-        start_frame = find_nonzero_output(obj)
+        start_frame = find_nonzero_output(frame_dict_out)
         if start_frame==None:
             #print "Attention! start frame set to zero, no non-zero output found!"
             start_frame=0
@@ -184,11 +179,11 @@ if __name__ == "__main__":
         intermediate_link_low = 4
         intermediate_link_high = 12
 
-        if find_nonzero_output(obj, links=[4,12])==None:
+        if find_nonzero_output(frame_dict_out, links=[4,12])==None:
             #print "Attention: all intermediates are 0! [occured at pattern {f}]".format(f=filename)
             offset = 0
         else:
-            offset = start_frame - find_nonzero_output(obj, links=[4,12])
+            offset = start_frame - find_nonzero_output(frame_dict_out, links=[4,12])
 
         intermediate_frame_low = out_frame_low-offset
         intermediate_frame_high = intermediate_frame_low + 6 
@@ -200,28 +195,20 @@ if __name__ == "__main__":
         rank_frame_low = intermediate_frame_low # = intermediate_frame_low
         rank_frame_high = intermediate_frame_high # = intermediate_frame_high
         rank_free_bits = 12 # free bits in the ranks, maybe changed at any time    
-        rank_bitlength = 10 # bitlength of one (!) rank bitword, may be changed at any time
+        rank_bitlength = 10 # bitlength of one (!) get_rank_list bitword, may be changed at any time
         #####
 
-        hw_list = []
-        while out_frame_high<=min(1023, start_frame + num_of_input_frames-6):
-            muons = select(obj,out_link_low,out_link_high,out_frame_low,out_frame_high)
-            non_zero_block(vhdl_dict, hw_list,muons)
-            out_frame_low = out_frame_low+6
-            out_frame_high = out_frame_high+6
-
+        hw_endframe = min(1023, start_frame + num_of_input_frames-6)
+        hw_list = get_muon_objects(vhdl_dict, frame_dict_out, out_frame_low, hw_endframe, out_link_low, out_link_high)
+        
         for m in hw_list:
-            eta(m,eta_unit,eta_low,eta_high)
-            #phi(m,phi_unit,phi_low,phi_high)
-            #pt(m,pt_unit,pt_low,pt_high)
+            eta(m, eta_unit, eta_low, eta_high)
+            #phi(m, phi_unit, phi_low, phi_high)
+            #pt(m, pt_unit, pt_low, pt_high)
 
-        inter_list = []
-        while intermediate_frame_high<=min(1023, start_frame + num_of_input_frames - offset-6):
-            intermediate = select(obj,intermediate_link_low,intermediate_link_high,intermediate_frame_low,intermediate_frame_high)
-            non_zero_block(vhdl_dict, inter_list, intermediate)
-            intermediate_frame_low = intermediate_frame_low+6
-            intermediate_frame_high = intermediate_frame_high+6
-
+        inter_list = get_muon_objects(vhdl_dict, frame_dict_out, intermediate_frame_low, intermediate_link_high,
+            intermediate_link_low, intermediate_link_high)
+        
         for m in inter_list:
             eta(m,eta_unit,eta_low,eta_high)
             #phi(m,phi_unit,phi_low,phi_high)
@@ -229,14 +216,14 @@ if __name__ == "__main__":
 
         rank_list = []
         while rank_frame_high<=min(1023, start_frame-offset+num_of_input_frames-6): 
-            a = rank(obj,rank_link_low,rank_link_high,rank_frame_low,rank_frame_high,rank_bitlength,rank_free_bits)
+            a = get_rank_list(frame_dict_out,rank_link_low,rank_link_high,rank_frame_low,rank_frame_high,rank_bitlength,rank_free_bits)
             for i in xrange(len(a)):
                 rank_list.append(a[i])
             rank_frame_low = rank_frame_low + 6
             rank_frame_high = rank_frame_high + 6
 
-        #for i in xrange(len(inter_list)):  # here each intermediate muon can be assigned a rank. Works only if len(inter_list)==len(rank_list)
-        #   inter_list[i].rank = rank_list[i]
+        #for i in xrange(len(inter_list)):  # here each intermediate muon can be assigned a get_rank_list. Works only if len(inter_list)==len(rank_list)
+        #   inter_list[i].get_rank_list = rank_list[i]
 
         #### here the number of nonzero ranks is counted
         rank_num_of_non_zeros = 0

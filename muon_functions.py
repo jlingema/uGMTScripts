@@ -2,7 +2,8 @@ import ROOT
 
 from muon import Muon
 
-def file_converter(f_obj): # transforms data from txt-File to a dictionary, whos entries are named "Frame xxxx" and contain a list of all links in frame xxxx
+def file_converter(f_obj): 
+    # transforms data from txt-File to a dictionary the index is the frame-number
     frame_dict = {}
     for line in f_obj:
         frames = line.split()
@@ -11,7 +12,8 @@ def file_converter(f_obj): # transforms data from txt-File to a dictionary, whos
             frame_dict[frame_n] = frames[3:] # strips the frame identifier
     return frame_dict
 
-def frame_printer(frame_dict, frame_numbers): #Prints the chosen frames to check them out. Attention: frame_numbers have to be in ascending order! frame(s) always within () [eg.: (1,2,3)]!!!
+def frame_printer(frame_dict, frame_numbers):
+    # Prints frames specified by frame_numbers (either list/tuple or int)
     if isinstance(frame_numbers, int):
         print frame_dict[frame_numbers]
     else:
@@ -27,24 +29,30 @@ def get_num(frame_dict, frame, link):
     return num
 
 
-def bit_mask_new(num,xlow,xup): # A bit_mask
-    x = (1<<(xup-xlow+1)) - 1
-    y = x<<xlow
-    z = num & y
-    return z>>xlow
+def get_masked_word(complete_word, bit_low, bit_high): 
+    # Create bit mask for bit_low-bit_high
+    mask = (1<<(bit_high-bit_low+1)) - 1
+    mask = mask<<bit_low
+    masked_word = complete_word & mask
+    return masked_word>>bit_low
     
-def select(frame_dict, link_low, link_high, frame_low, frame_high): # Provides a dictionary whos entries are named "Frames link_a-link_b" and contain final combined muon_words.
-    m_dict = {}
-    for link_n in xrange(link_low, link_high):
-        frame = frame_low
-        while frame<frame_high:
-            a = get_num(frame_dict, frame, link_n)
-            b = get_num(frame_dict, frame, link_n)
-            m_dict["Frame {c}-{d},link {n}".format(c=frame,d=frame+1,n=link_n)] = (b<<32) + a
-            frame = frame+2 
-    return m_dict
+def get_muon_dict(frame_dict, link_low, link_high, frame_low, frame_high): 
+    # Concatinates muon frames and returns dict
+    mu_dict = {}
+    frame = frame_low
+    while frame < frame_high:
+        mu_dict[frame] = []
+        for link_n in xrange(link_low, link_high):
+            # only take frames with valid bit set
+            if "1v" in frame_dict[frame] and "1v" in frame_dict[frame+1]: 
+                a = get_num(frame_dict, frame, link_n)
+                b = get_num(frame_dict, frame+1, link_n)
+                mu_dict[frame].append((b<<32) + a)
+        frame = frame+2 
 
-def twos_complement_sign(bits,bit_num=None):# reads a bitword in twos complement sign, currently only used for etaBits
+    return mu_dict
+
+def twos_complement_sign(bits, bit_num=None):# reads a bitword in twos complement sign, currently only used for etaBits
     if bit_num==None:
         bit_num = 9
 
@@ -117,35 +125,19 @@ def pt(obj,stepsize,pt_low,pt_high):
     if (obj.ptBits<pt_low) or (obj.ptBits>pt_high):
         print "ptBits out of range [{l},{h}]".format(l=pt_low,h=pt_high)
 
-def rank(obj,rank_link_low,rank_link_high,rank_frame_low,rank_frame_high,rank_bitlength,free_bits): # A very complicated function but it works: 
-    # It returns a list of the ranks from frame_low and link_low to frame_high and link_high. 
-    # Addtionally the bitlength of the rank_words (see below) can be changed as well as the number of free bits in the 32-bit-word
-    # This was implemented to keep it as flexible as possible. 
-
-    ranks = {}
+def get_rank_list(frame_dict, rank_link_low, rank_link_high, rank_frame_low, rank_frame_high, rank_bitlength, free_bits): 
+    # returns a list of valid ranks in the range specified
     rank_list = []
-    for i in xrange(rank_link_low,rank_link_high+1): 
-        for j in xrange(rank_frame_low,rank_frame_high):
-            ranks["Frame {j}, link {i}".format(j=j, i=i)] = get_num(obj,j,i)
-            a = ranks["Frame {j}, link {i}".format(j=j, i=i)]
-            b = (int(a,16)>>12) 
-            ranks["Frame {j}, link {i}".format(j=j, i=i)] = b
+    for frame in xrange(rank_frame_low, rank_frame_high):
+        for link in xrange(rank_link_low, rank_link_high+1): 
+            tmp = get_num(frame_dict, frame, link)
+            # gets rid of empty 12 LSBs
+            ranksword = tmp >> 12
+            rank2 = ranksword >> rank_bitlength
+            rank1 = get_masked_word(ranksword, 1+rank_bitlength, 2*rank_bitlength)
+            rank_list.append(rank1)
+            rank_list.append(rank2)
 
-    for i in xrange(rank_frame_low,rank_frame_high):
-        for j in xrange(2*(1+rank_link_high-rank_link_low)):
-            arg = (i-1)*2*(1+rank_link_high-rank_link_low)+j
-
-            if j<(1+rank_link_high-rank_link_low):
-                m = rank_link_low
-            else:
-                m = rank_link_high
-
-            if arg%2 == 0:
-                a = ranks["Frame {i}, link {m}".format(m=m, i=i)]>>rank_bitlength
-                rank_list.append(a)
-            else:
-                b = bit_mask_new(ranks["Frame {i}, link {m}".format(i=i,m=m)],1+rank_bitlength,2*rank_bitlength)
-                rank_list.append(b)
     return rank_list
 
 def find_nonzero_output(frame_dict, links=None, num_of_frames=None): # Finds the first non-zero valid (1v) entry from frame 0000 to frame "num_of_frames" in the input_links 
@@ -242,28 +234,25 @@ def non_zero(obj): # counts how many obj in an array are !=0
             vec.append(obj[i])
     return len(vec)
 
-def non_zero_block(vhdl_dict, m_list, m_dict, muon_option=None): # Outputs have 3 links a 6 frames -> correspond to 4 muons. m_dict is a dict that contains such a "block"
-    # m_list (the output) is a list of m_dict, with all the entries transformed to objects of the Muon_class, but only if any of them is !=0. This is to ensure that no empty blocks are taken.
-    # If the function is called with 3 arguments, only the entries are taken into the list without initialising them as Muon objects.
-    h_vec = []
-    for var in m_dict:
-        h_vec.append(m_dict[var])   
-    #if any(x != 0 for x in h_vec): # not very elegant, just a prototype!
-    for m in h_vec:
-        if muon_option==None:
-            m = Muon(vhdl_dict, bitword=m)
-        m_list.append(m)
+def get_muon_objects(vhdl_dict, frame_dict, start_frame, end_frame, start_link, end_link):
+    muon_dict = get_muon_dict(frame_dict, start_link, end_link, start_frame, end_frame)
+    muon_objs = []
+    for frame, muons in muon_dict.iteritems():
+        muon_objs += [ Muon(vhdl_dict, bitword) for bitword in muons ]
+    return muon_objs
 
-    return m_list
+# def non_zero_block(vhdl_dict, m_list, m_dict, muon_option=None): # Outputs have 3 links a 6 frames -> correspond to 4 muons. m_dict is a dict that contains such a "block"
+#     # m_list (the output) is a list of m_dict, with all the entries transformed to objects of the Muon_class, but only if any of them is !=0. This is to ensure that no empty blocks are taken.
+#     # If the function is called with 3 arguments, only the entries are taken into the list without initialising them as Muon objects.
 
-def sort_files(list): # Sorts the files of the os.walk(). Attention: All input_files start with "rx_", all output_files with "tx_" and all emu_files end with "root"!!!
-    o_list = [0, 0, 0]
-    for d in files:
-        if d[-4:]=="root":
-            o_list[2]=d
-        if d[:3]=="tx_":
-            o_list[1]=d
-        if d[:3]=="rx_":
-            o_list[0]=d
+#     h_vec = []
+#     for var in m_dict:
+#         h_vec.append(m_dict[var])   
+#     #if any(x != 0 for x in h_vec): # not very elegant, just a prototype!
+#     for m in h_vec:
+#         if muon_option==None:
+#             m = Muon(vhdl_dict, bitword=m)
+#         m_list.append(m)
 
-    return o_list
+#     return m_list
+
