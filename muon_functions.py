@@ -44,10 +44,11 @@ def get_muon_dict(frame_dict, link_low, link_high, frame_low, frame_high):
         mu_dict[frame] = []
         for link_n in xrange(link_low, link_high):
             # only take frames with valid bit set
-            if "1v" in frame_dict[frame] and "1v" in frame_dict[frame+1]: 
+            if "1v" in frame_dict[frame][link_n] and "1v" in frame_dict[frame+1][link_n]: 
                 a = get_num(frame_dict, frame, link_n)
                 b = get_num(frame_dict, frame+1, link_n)
                 mu_dict[frame].append((b<<32) + a)
+                print "found valid pair"
         frame = frame+2 
 
     return mu_dict
@@ -95,13 +96,6 @@ def single_bit(num,bit): # Gets one single bit defined by num
 def num_of_ones(x): # returns num of ones in a bitword...not very elegant, works only for positive numbers!
     return bin(x).count("1")
 
-def eta(obj,stepsize,eta_low,eta_high): # reads the etaBits in twos_complement.
-    # The discommented lines transform etaBits to the physical values for eta and print a warning if eta is out of physical senseful boundaries
-
-    obj.etaBits = twos_complement_sign(obj.etaBits,9)
-    #obj.etaBits = stepsize*obj.etaBits
-    #if (obj.etaBits<eta_low) or (obj.etaBits>eta_high):
-    #   print "etaBits out of range [{l},{h}]".format(l=eta_low,h=eta_high)
 
 def phi(obj,stepsize,phi_low,phi_high): # the following 2 functions are discommented in the script, but they return the physical phi and pT (see eta)
     obj.phiBits = stepsize*obj.phiBits
@@ -215,18 +209,18 @@ def zero_pt(obj, input_muon=None): # works as the function above for "ptBits"
             vec.append(obj[i])
     return len(vec)
 
-def non_zero(obj): # counts how many obj in an array are !=0
-    vec = []
-    for i in xrange(len(obj)):
-        if obj[i].bitword!=0:
-            vec.append(obj[i])
-    return len(vec)
+def non_zero(muon_objs): # counts how many obj in an array are !=0
+    counter = 0
+    for muon in muon_objs:
+        if muon.bitword != 0:
+            counter += 1
+    return counter
 
-def get_muon_objects(vhdl_dict, frame_dict, start_frame, end_frame, start_link, end_link):
+def get_muon_objects(vhdl_dict, frame_dict, start_frame, end_frame, start_link, end_link, mu_type = "IN"):
     muon_dict = get_muon_dict(frame_dict, start_link, end_link, start_frame, end_frame)
     muon_objs = []
     for frame, muons in muon_dict.iteritems():
-        muon_objs += [ Muon(vhdl_dict, bitword) for bitword in muons ]
+        muon_objs += [ Muon(vhdl_dict, mu_type, bitword) for bitword in muons ]
     return muon_objs
 
 # def non_zero_block(vhdl_dict, m_list, m_dict, muon_option=None): # Outputs have 3 links a 6 frames -> correspond to 4 muons. m_dict is a dict that contains such a "block"

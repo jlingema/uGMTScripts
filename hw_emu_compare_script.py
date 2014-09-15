@@ -4,7 +4,7 @@ import os
 from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1D, TLegend, THStack, TH1
 from DataFormats.FWLite import Events, Handle
 from muon import Muon 
-from muon_functions import file_converter, twos_complement_sign, plot_modifier, hist_creator1D, find_nonzero_output, input_frames, get_rank_list, eta, single_bit, isequal, get_muon_objects
+from muon_functions import file_converter, plot_modifier, hist_creator1D, find_nonzero_output, input_frames, get_rank_list, single_bit, isequal, get_muon_objects, non_zero
 from tools.vhdl import VHDLConstantsParser
 from optparse import OptionParser
 
@@ -105,11 +105,11 @@ if __name__ == "__main__":
             imd_prod = imd_handle.product()
 
             for mu in emu_out_muons:
-                mu_tmp = Muon(vhdl_dict, obj=mu)
+                mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj=mu)
                 emu_out_list.append(mu_tmp)
 
             for mu in imd_prod:
-                mu_tmp = Muon(vhdl_dict, obj=mu)
+                mu_tmp = Muon(vhdl_dict, mu_type="IN", obj=mu)
                 emu_imd_list.append(mu_tmp)
 
             fill_muon_hists(0, vec_list, emu_out_list)
@@ -164,7 +164,6 @@ if __name__ == "__main__":
 
         num_of_input_frames = input_frames(frame_dict_in)
         in_events = math.ceil(num_of_input_frames/6.)
-
         in_muons = get_muon_objects(vhdl_dict, frame_dict_in, 0, num_of_input_frames, 36, 72)
 
         ##### settings on where in the file the final output muons are may be set here and may be modified at any time:
@@ -202,22 +201,15 @@ if __name__ == "__main__":
         #####
 
         hw_endframe = min(1023, start_frame + num_of_input_frames-6)
-        hw_list = get_muon_objects(vhdl_dict, frame_dict_out, out_frame_low, hw_endframe, out_link_low, out_link_high)
+        hw_list = get_muon_objects(vhdl_dict, frame_dict_out, out_frame_low, hw_endframe, out_link_low, out_link_high, mu_type="OUT")
         
         inter_list = get_muon_objects(vhdl_dict, frame_dict_out, intermediate_frame_low, intermediate_link_high,
             intermediate_link_low, intermediate_link_high)
 
 
-        rank_list = []
-        while rank_frame_high<=min(1023, start_frame-offset+num_of_input_frames-6): 
-            a = get_rank_list(frame_dict_out,rank_link_low,rank_link_high,rank_frame_low,rank_frame_high,rank_bitlength,rank_free_bits)
-            for i in xrange(len(a)):
-                rank_list.append(a[i])
-            rank_frame_low = rank_frame_low + 6
-            rank_frame_high = rank_frame_high + 6
+        rank_frame_high = min(1023, start_frame-offset+num_of_input_frames-6)
+        rank_list = get_rank_list(frame_dict_out, rank_link_low, rank_link_high, rank_frame_low, rank_frame_high, rank_bitlength, rank_free_bits)
 
-        #for i in xrange(len(inter_list)):  # here each intermediate muon can be assigned a get_rank_list. Works only if len(inter_list)==len(rank_list)
-        #   inter_list[i].get_rank_list = rank_list[i]
 
         #### here the number of nonzero ranks is counted
         rank_num_of_non_zeros = 0
@@ -226,16 +218,13 @@ if __name__ == "__main__":
                 rank_num_of_non_zeros = rank_num_of_non_zeros+1
         ####
 
-        #print "{fn}_in_events :".format(fn=filename), in_events
-        #print "{fn}_in_muons :".format(fn=filename), len(in_muons), "/", len(in_muons_dict)
-        #print "{fn}_num of final non-zero Output-Muons: ".format(fn=filename), non_zero(hw_list), "/", len(hw_list)#,"), corresponds to ", len(hw_list)/8," Events"
-        #print "{fn}_Output-Muons behind end_frame:"
-        #print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(inter_list), "/" , len(inter_list)#, "), corresponds to ", len(inter_list)/24," Events" 
-        #print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(rank_list)
-        #print "{fn}_n_zero_pt".format(fn=filename), zero_pt(hw_list)
-        #print "{fn}_n_zero_qual".format(fn=filename), zero_qual(hw_list)
-        #print "{fn}_in_zero_pt".format(fn=filename), zero_pt(in_muons, "input")
-        #print "{fn}_in_zero_qual".format(fn=filename), zero_qual(in_muons, "input")
+        print "{fn}_in_events :".format(fn=filename), in_events
+        print "{fn}_in_muons :".format(fn=filename), non_zero(in_muons), "/", len(in_muons)
+        print "{fn}_num of final non-zero Output-Muons: ".format(fn=filename), non_zero(hw_list), "/", len(hw_list)#,"), corresponds to ", len(hw_list)/8," Events"
+        print "{fn}_Output-Muons behind end_frame:"
+        print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(inter_list), "/" , len(inter_list)#, "), corresponds to ", len(inter_list)/24," Events" 
+        print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(rank_list)
+
 
         #if len(hw_list) != len(emu_out_list): ### prints a warning if hardware- and Emulator-output have an unequal number of events
         #   print "Attention : Unequal number of Output- and Emulatormuons being compared! [occured at pattern {f}]".format(f=filename)
@@ -251,10 +240,10 @@ if __name__ == "__main__":
             hist_input_dict[var].SetYTitle("N")
 
         for i in xrange(len(in_muons)):
-            hist_input_dict["qualityBits"].Fill(in_muons[i].input_qualityBits)
-            hist_input_dict["ptBits"].Fill(in_muons[i].input_ptBits)
-            hist_input_dict["phiBits"].Fill(in_muons[i].input_phiBits)
-            hist_input_dict["etaBits"].Fill(twos_complement_sign(in_muons[i].input_etaBits))
+            hist_input_dict["qualityBits"].Fill(in_muons[i].qualityBits)
+            hist_input_dict["ptBits"].Fill(in_muons[i].ptBits)
+            hist_input_dict["phiBits"].Fill(in_muons[i].phiBits)
+            hist_input_dict["etaBits"].Fill(in_muons[i].etaBits)
         #######
 
         hist_dict = {}

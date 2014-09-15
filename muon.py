@@ -1,60 +1,41 @@
 
 class Muon():
-    def __init__(self, vhdl_dict, bitword=None, obj=None):
+    def __init__(self, vhdl_dict, mu_type, bitword = None, obj = None, ):
         # If the Muon object is a hardware output it has to be called with bitword
         # If....is a Emulator output ....with obj
     
-        phi_out_low = vhdl_dict["PHI_OUT_LOW"]
-        phi_out_high = vhdl_dict["PHI_OUT_HIGH"]
+        pt_low = vhdl_dict["PT_{t}_LOW".format(t=mu_type)]
+        pt_high = vhdl_dict["PT_{t}_HIGH".format(t=mu_type)]
 
-        qual_out_low = vhdl_dict["QUAL_OUT_LOW"]
-        qual_out_high = vhdl_dict["QUAL_OUT_HIGH"]
+        sysign_low = vhdl_dict["SYSIGN_{t}_LOW".format(t=mu_type)]
+        sysign_high = vhdl_dict["SYSIGN_{t}_HIGH".format(t=mu_type)]
 
-        pt_out_low = vhdl_dict["PT_OUT_HIGH"]
-        pt_out_high = vhdl_dict["PT_OUT_HIGH"]
+        qual_low = vhdl_dict["QUAL_{t}_HIGH".format(t=mu_type)]
+        qual_high = vhdl_dict["QUAL_{t}_HIGH".format(t=mu_type)]
 
-        sysign_out_low = vhdl_dict["SYSIGN_OUT_LOW"]
-        sysign_out_high = vhdl_dict["SYSIGN_OUT_HIGH"]
+        eta_low = vhdl_dict["ETA_{t}_LOW".format(t=mu_type)]
+        eta_high = vhdl_dict["ETA_{t}_HIGH".format(t=mu_type)]
 
-        iso_out_low = vhdl_dict["ISO_OUT_LOW"]
-        iso_out_high = vhdl_dict["ISO_OUT_HIGH"]
+        phi_low = vhdl_dict["PHI_{t}_LOW".format(t=mu_type)]
+        phi_high = vhdl_dict["PHI_{t}_HIGH".format(t=mu_type)]
 
-        eta_out_low = vhdl_dict["ETA_OUT_LOW"]
-        eta_out_high = vhdl_dict["ETA_OUT_HIGH"]
-
-        pt_in_low = vhdl_dict["PT_IN_LOW"]
-        pt_in_high = vhdl_dict["PT_IN_HIGH"]
-
-        sysign_in_low = vhdl_dict["SYSIGN_IN_LOW"]
-        sysign_in_high = vhdl_dict["SYSIGN_IN_HIGH"]
-
-        qual_in_low = vhdl_dict["QUAL_IN_HIGH"]
-        qual_in_high = vhdl_dict["QUAL_IN_HIGH"]
-
-        eta_in_low = vhdl_dict["ETA_IN_LOW"]
-        eta_in_high = vhdl_dict["ETA_IN_HIGH"]
-
-        phi_in_low = vhdl_dict["PHI_IN_LOW"]
-        phi_in_high = vhdl_dict["PHI_IN_HIGH"]
+        if mu_type == "OUT":
+            iso_low = vhdl_dict["ISO_OUT_LOW"]
+            iso_high = vhdl_dict["ISO_OUT_HIGH"]
 
         if obj == None:     # for hardware  
             self.bitword = bitword
 
-            # if the input_muons have to be investigated, one can call their properties by simply prepending "input_"
-            self.input_etaBits = self.bit_mask(eta_in_low ,eta_in_high)
-            self.input_etaBits = self.twos_complement_sign(self.input_etaBits, eta_in_high-eta_in_low)
-            self.input_qualityBits = self.bit_mask(qual_in_low, qual_in_high)
-            self.input_ptBits = self.bit_mask(pt_in_low, pt_in_high)
-            self.input_phiBits = self.bit_mask(phi_in_low, phi_in_high)
-            self.input_Sysign = self.bit_mask(sysign_in_low, sysign_in_high)
-
-            self.Sysign = self.bit_mask(sysign_out_low, sysign_out_high)
-            self.etaBits = self.bit_mask(eta_out_low, eta_out_high)
-            self.etaBits = self.twos_complement_sign(self.etaBits, eta_out_high-eta_out_low)
-            self.qualityBits = self.bit_mask(qual_out_low, qual_out_high)
-            self.ptBits = self.bit_mask(pt_out_low, pt_out_high)
-            self.phiBits = self.bit_mask(phi_out_low, phi_out_high)
-            self.Iso = self.bit_mask(iso_out_low, iso_out_high)
+            self.Sysign = self.bit_mask(sysign_low, sysign_high)
+            self.etaBits = self.bit_mask(eta_low, eta_high)
+            self.etaBits = self.twos_complement_sign(self.etaBits, eta_high-eta_low)
+            self.qualityBits = self.bit_mask(qual_low, qual_high)
+            self.ptBits = self.bit_mask(pt_low, pt_high)
+            self.phiBits = self.bit_mask(phi_low, phi_high)
+            if mu_type == "OUT":
+                self.Iso = self.bit_mask(iso_low, iso_high)
+            else:
+                self.Iso = -9999
             self.rank = -9999
 
         elif bitword == None: # for emulator
@@ -93,8 +74,9 @@ class Muon():
             else:
                 self.rank = -9999
 
-            self.bitword = (int(self.phiBits)<<phi_out_low) + (int(self.ptBits)<<pt_out_low) + (int(self.qualityBits)<<qual_out_low) + (int(self.etaBits)<<eta_out_low)
+            self.bitword = (int(self.phiBits)<<phi_low) + (int(self.ptBits)<<pt_low) + (int(self.qualityBits)<<qual_low) + (int(self.etaBits)<<eta_low)
 
+    @staticmethod
     def twos_complement_sign(bits, bit_num):
         # check sign bit and calculate signed int, if set
         if (bits>>(bit_num-1))==0:
