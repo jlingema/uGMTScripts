@@ -3,48 +3,33 @@ import ROOT
 from muon import Muon
 
 def file_converter(f_obj): # transforms data from txt-File to a dictionary, whos entries are named "Frame xxxx" and contain a list of all links in frame xxxx
-    obj_dict = {}
+    frame_dict = {}
     for line in f_obj:
         frames = line.split()
-        if "Frame" in frames[0]:
-            frame = frames[0]
-            obj_dict[frame] = frames[13:] ### 13: !!!
-    return obj_dict
+        if frames and frames[0] == "Frame":
+            frame_n = int(frames[1]) 
+            frame_dict[frame_n] = frames[13:] ### 13: !!!
+    return frame_dict
 
-def get_frame(obj,frame_number): # gets a frame (=list!)
-    frame_number = str(frame_number)
-    if len(frame_number)!=4:
-        frame_number = "0"*(4-len(frame_number))+frame_number
-    return obj["Frame {n}".format(n=frame_number)]
-
-def get_frames(obj,frame_numbers): # gets a dict of frames. Attention: frame_numbers have to be in ascending order!
-    frames_dict = {}
-    for x in frame_numbers:
-        x = str(x)
-    for num in frame_numbers:
-        frames_dict["{num}".format(num=num)] = get_frame(obj,num)
-    return frames_dict
-
-def frame_printer(obj,frame_numbers): #Prints the chosen frames to check them out. Attention: frame_numbers have to be in ascending order! frame(s) always within () [eg.: (1,2,3)]!!!
-    if isinstance(frame_numbers,str):
-        frame = get_frame(obj,frame_numbers)
-        print frame
+def frame_printer(frame_dict, frame_numbers): #Prints the chosen frames to check them out. Attention: frame_numbers have to be in ascending order! frame(s) always within () [eg.: (1,2,3)]!!!
+    if isinstance(frame_numbers, int):
+        print frame_dict[frame_numbers]
     else:
-        frames = get_frames(obj,frame_numbers)
-        for i in frames:
-            print frames[i]
+        frames = [ frame_dict[i] for i in frame_numbers ] 
+        for frame in frames:
+            print frame
 
-def get_num(obj,frame,num): # Get a number (=Frame[link]). The output is without the valid bits "1v"!!!
+def get_num(frame_dict, frame, num): # Get a number (=Frame[link]). The output is without the valid bits "1v"!!!
     if isinstance(num,str) and num[0]=="q":
         a = num[1:-2]
         a = int(a) + 1
         b = num[4]
         b = int(b) + 1 
         num = 4*a + b - 1
-
-    var = get_frame(obj,frame)
-    var[num] = var[num][2:]
-    return var[num]
+    print num, frame
+    var = frame_dict[frame]
+    frame_content = var[num][2:]
+    return frame_content
 
 def add_nums(num1,num2): # Essential function. Adds nums to the final 64-bit word
     a = int(num1,16)
@@ -173,7 +158,7 @@ def rank(obj,rank_link_low,rank_link_high,rank_frame_low,rank_frame_high,rank_bi
                 rank_list.append(b)
     return rank_list
 
-def find_nonzero_output(obj, links=None, num_of_frames=None): # Finds the first non-zero valid (1v) entry from frame 0000 to frame "num_of_frames" in the input_links 
+def find_nonzero_output(frame_dict, links=None, num_of_frames=None): # Finds the first non-zero valid (1v) entry from frame 0000 to frame "num_of_frames" in the input_links 
     # Attention: links is an array of length 2 !!!
 
     if num_of_frames==None:
@@ -188,12 +173,12 @@ def find_nonzero_output(obj, links=None, num_of_frames=None): # Finds the first 
 
     for j in xrange(k0, k1):
         for i in xrange(num_of_frames):
-            a = get_frame(obj,i)[j]
+            a = frame_dict[i][j]
             if (a[:2] == "1v") and (a!="1v00000000"):
                 return i
                 break
 
-def input_frames(obj, link=None, num_of_frames=None): # Function made for input_files. Returns the number of valid input_frames starting from link 36 (can be modified)
+def input_frames(frame_dict, link=None, num_of_frames=None): # Function made for input_files. Returns the number of valid input_frames starting from link 36 (can be modified)
     # Attention: Stops at first "0v" entry! (See code) If there should be other "1v" entries below, this function doesnt take them into consideration!
 
     if link==None:
@@ -205,20 +190,20 @@ def input_frames(obj, link=None, num_of_frames=None): # Function made for input_
     end_frame = num_of_frames
 
     for i in xrange(num_of_frames):
-        a = get_frame(obj, i)[link]
+        a = frame_dict[i][link]
         if a[:2] == "1v":
             start_frame = i
             break
 
     for i in xrange(start_frame,num_of_frames):
-        a = get_frame(obj, i)[link]
+        a = frame_dict[i][link]
         if a[:2] == "0v":
             end_frame = i
             break
 
     return end_frame-start_frame
 
-def find_nonzero_intermediate(obj,start_frame,link_low=None,link_high=None): # Function made for the intermediate_muons.
+def find_nonzero_intermediate(frame_dict,start_frame,link_low=None,link_high=None): # Function made for the intermediate_muons.
     # It finds the first intermediate-bitword that is identical to the first valid non-zero output-bitword. "start_frame" is the frame in which this output_word is.
     # This is to define the offset between output and intermediate if there are problems in the alignment.
 
@@ -230,8 +215,8 @@ def find_nonzero_intermediate(obj,start_frame,link_low=None,link_high=None): # F
 
     for i in xrange(start_frame+1):
         for j in xrange(link_low,link_high):
-            a = get_frame(obj,i)[j]
-            b = get_frame(obj,start_frame)[0] 
+            a = frame_dict[i][j]
+            b = frame_dict[start_frame][0] 
             if a==b:
                 return i
                 break
