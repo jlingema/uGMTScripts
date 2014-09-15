@@ -1,10 +1,10 @@
 import ROOT
 import math
 import os
-from ROOT import TCanvas, gStyle, gROOT, TH2D, TLegend, THStack, TH1
+from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1
 from DataFormats.FWLite import Events, Handle
 from muon import Muon 
-from muon_functions import plot_modifier, non_zero, single_bit, isequal
+from muon_functions import  non_zero, single_bit, isequal
 #file_converter, plot_modifier, find_nonzero_output, input_frames, get_rank_list, single_bit, isequal, get_muon_objects, non_zero
 from mp7_buffer_parser import InputBufferParser, OutputBufferParser
 from tools.vhdl import VHDLConstantsParser
