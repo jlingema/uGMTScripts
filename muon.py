@@ -10,7 +10,7 @@ class Muon():
         sysign_low = vhdl_dict["SYSIGN_{t}_LOW".format(t=mu_type)]
         sysign_high = vhdl_dict["SYSIGN_{t}_HIGH".format(t=mu_type)]
 
-        qual_low = vhdl_dict["QUAL_{t}_HIGH".format(t=mu_type)]
+        qual_low = vhdl_dict["QUAL_{t}_LOW".format(t=mu_type)]
         qual_high = vhdl_dict["QUAL_{t}_HIGH".format(t=mu_type)]
 
         eta_low = vhdl_dict["ETA_{t}_LOW".format(t=mu_type)]
@@ -82,7 +82,9 @@ class Muon():
         if (bits>>(bit_num-1))==0:
             return bits
         else:
-            return -((1<<bit_num)-bits)
+            mask = (1 << bit_num)-1
+            r = mask^bits
+            return -(r+1)
 
     def bit_mask(self,xlow,xup):
         x = (1<<(xup-xlow+1)) - 1
