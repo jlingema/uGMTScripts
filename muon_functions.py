@@ -52,19 +52,7 @@ def get_muon_dict(frame_dict, link_low, link_high, frame_low, frame_high):
 
     return mu_dict
 
-def twos_complement_sign(bits, bit_num=None):# reads a bitword in twos complement sign, currently only used for etaBits
-    if bit_num==None:
-        bit_num = 9
 
-    bits = int(bits)
-    bit_num = int(bit_num)
-    if (bits>>(bit_num-1))==0:
-        return bits
-    elif (bits>>(bit_num-1))==1:
-        #return (~bits) +1 ### doesnt work properly, while the following line looks strange but fullfills its purpose perfectly! :
-        return -((1<<bit_num)-bits)
-    else:
-        print "error in bitshifting, input>>{n} is neither 0 nor 1!".format(n=bit_num-1)
 
 def filler1D(hist,name,value):
     hist[name].Fill(value)

@@ -8,6 +8,11 @@ from muon_functions import file_converter, twos_complement_sign, plot_modifier, 
 from tools.vhdl import VHDLConstantsParser
 from optparse import OptionParser
 
+def parse_options():
+    parser = OptionParser()
+    parser.add_option("-f", "--directory", dest="directory")
+    return parser.parse_args()
+
 def fill_muon_hists(index, hist_list, muons):
     for mu in muons:
         hist_list[index][0]["phiBits"].Fill(mu.phiBits)
@@ -26,9 +31,7 @@ if __name__ == "__main__":
 
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 
-    parser = OptionParser()
-    parser.add_option("-f", "--directory", dest="directory")
-    (options, args) = parser.parse_args()
+    options, args = parse_options()
 
     file_dict = {}
 
@@ -201,18 +204,9 @@ if __name__ == "__main__":
         hw_endframe = min(1023, start_frame + num_of_input_frames-6)
         hw_list = get_muon_objects(vhdl_dict, frame_dict_out, out_frame_low, hw_endframe, out_link_low, out_link_high)
         
-        for m in hw_list:
-            eta(m, eta_unit, eta_low, eta_high)
-            #phi(m, phi_unit, phi_low, phi_high)
-            #pt(m, pt_unit, pt_low, pt_high)
-
         inter_list = get_muon_objects(vhdl_dict, frame_dict_out, intermediate_frame_low, intermediate_link_high,
             intermediate_link_low, intermediate_link_high)
-        
-        for m in inter_list:
-            eta(m,eta_unit,eta_low,eta_high)
-            #phi(m,phi_unit,phi_low,phi_high)
-            #pt(m,pt_unit,pt_low,pt_high)
+
 
         rank_list = []
         while rank_frame_high<=min(1023, start_frame-offset+num_of_input_frames-6): 
@@ -279,7 +273,6 @@ if __name__ == "__main__":
         ########
 
         for var in hist_parameters:
-
             hw_leg = TLegend(0.7, 0.7, 0.9, 0.85, "Legend")
             a = hist_input_dict[var].GetBinContent(hist_input_dict[var].GetMaximumBin())
             b = hist_dict[var].GetBinContent(hist_dict[var].GetMaximumBin())
