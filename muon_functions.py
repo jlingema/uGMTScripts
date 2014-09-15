@@ -8,7 +8,7 @@ def file_converter(f_obj): # transforms data from txt-File to a dictionary, whos
         frames = line.split()
         if frames and frames[0] == "Frame":
             frame_n = int(frames[1]) 
-            frame_dict[frame_n] = frames[13:] ### 13: !!!
+            frame_dict[frame_n] = frames[3:] # strips the frame identifier
     return frame_dict
 
 def frame_printer(frame_dict, frame_numbers): #Prints the chosen frames to check them out. Attention: frame_numbers have to be in ascending order! frame(s) always within () [eg.: (1,2,3)]!!!
@@ -19,23 +19,13 @@ def frame_printer(frame_dict, frame_numbers): #Prints the chosen frames to check
         for frame in frames:
             print frame
 
-def get_num(frame_dict, frame, num): # Get a number (=Frame[link]). The output is without the valid bits "1v"!!!
-    if isinstance(num,str) and num[0]=="q":
-        a = num[1:-2]
-        a = int(a) + 1
-        b = num[4]
-        b = int(b) + 1 
-        num = 4*a + b - 1
-    print num, frame
-    var = frame_dict[frame]
-    frame_content = var[num][2:]
-    return frame_content
+def get_num(frame_dict, frame, link): 
+    # Get the actual hex-number of frame and link
+    frame_content = frame_dict[frame][link]
+    frame_content = frame_content.replace("1v", "")
+    num = int(frame_content, 16)
+    return num
 
-def add_nums(num1,num2): # Essential function. Adds nums to the final 64-bit word
-    a = int(num1,16)
-    b = int(num2,16)
-    x = (b<<32) + a
-    return x
 
 def bit_mask_new(num,xlow,xup): # A bit_mask
     x = (1<<(xup-xlow+1)) - 1
@@ -43,15 +33,15 @@ def bit_mask_new(num,xlow,xup): # A bit_mask
     z = num & y
     return z>>xlow
     
-def select(obj,link_low,link_high,frame_low,frame_high): # Provides a dictionary whos entries are named "Frames link_a-link_b" and contain final combined muon_words.
+def select(frame_dict, link_low, link_high, frame_low, frame_high): # Provides a dictionary whos entries are named "Frames link_a-link_b" and contain final combined muon_words.
     m_dict = {}
-    for n in xrange(link_low, link_high):
-        c = frame_low
-        while c<frame_high:
-            a = get_num(obj,c,n)
-            b = get_num(obj,c+1,n)
-            m_dict["Frame {c}-{d},link {n}".format(c=c,d=c+1,n=n)] = add_nums(a,b)
-            c = c+2 
+    for link_n in xrange(link_low, link_high):
+        frame = frame_low
+        while frame<frame_high:
+            a = get_num(frame_dict, frame, link_n)
+            b = get_num(frame_dict, frame, link_n)
+            m_dict["Frame {c}-{d},link {n}".format(c=frame,d=frame+1,n=link_n)] = (b<<32) + a
+            frame = frame+2 
     return m_dict
 
 def twos_complement_sign(bits,bit_num=None):# reads a bitword in twos complement sign, currently only used for etaBits
