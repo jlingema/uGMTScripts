@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from tools.vhdl import VHDLConstantsParser
 from copy import copy
+
+from muon import Muon
 #BAR 0 9 4 58 0 1 3     # muon: pt = 4.5,  phi = 0.0436332,  eta = 0.58125,  charge = 0
 # muon format (separated by one space):
 # cable number only for debugging purposes
@@ -19,16 +21,24 @@ def twos_comp(val, bits):
     #print bin(val)
     return val
 
+def get_mask(xlow, xup):
+    ones = (1<<(xup-xlow+1)) - 1
+    mask = ones<<xlow
+    return mask
+
+
 def test(nbits):
     print "nbits:", nbits
     max_ = (1<<(nbits-1))-1
     min_ = -(1<<(nbits-1))
     middle = min_+max_/2
-    print "max pos:", max_, twos_comp(max_, nbits), hex(twos_comp(max_, nbits))
-    print "max neg:", min_, twos_comp(min_, nbits), hex(twos_comp(min_, nbits))
-    print "something:", middle, twos_comp(middle, nbits), hex(twos_comp(middle, nbits))
-    print "-1:", twos_comp(-1, nbits), hex(twos_comp(-1, nbits))
-    print "+1:", twos_comp(1, nbits), hex(twos_comp(1, nbits))
+    print "max pos:", max_, twos_comp(max_, nbits), hex(twos_comp(max_, nbits)), bin(twos_comp(max_, nbits))
+    print "max neg:", min_, twos_comp(min_, nbits), hex(twos_comp(min_, nbits)), bin(twos_comp(min_, nbits))
+    print "something:", middle, twos_comp(middle, nbits), hex(twos_comp(middle, nbits)), bin(twos_comp(middle, nbits))
+    print "-1:", twos_comp(-1, nbits), hex(twos_comp(-1, nbits)), bin(twos_comp(-1, nbits))
+    print "+1:", twos_comp(1, nbits), hex(twos_comp(1, nbits)), bin(twos_comp(1, nbits))
+import ROOT
+h = ROOT.TH1D("", "", 1000, -300, 300)
 
 def print_dformat(df, i, values = None):
     word = df[i]
@@ -56,6 +66,23 @@ def print_dformat(df, i, values = None):
     p_string += "\n"+start_end
     print p_string
 
+def print_64word(w):
+    pt_pre = '\x1b[31;01m'
+    q_pre = '\x1b[32;01m'
+    sys_pre = '\x1b[33;01m'
+    eta_pre = '\x1b[35;01m'
+    phi_pre = '\x1b[36;01m'
+    add_pre = '\x1b[34;01m'
+    reset = '\x1b[39;49;00m'
+    #print_w = bin(w)[2:]
+    print_w = w
+    while len(print_w) < 64:
+        print_w = "0"+print_w
+    pretty_print_w =  print_w[63] + add_pre + print_w[36:63] + phi_pre + print_w[25:31] + reset + print_w[31] +phi_pre+print_w[32:36]+ sys_pre + print_w[23:25] + eta_pre + print_w[13:23] + q_pre + print_w[9:13] + pt_pre + print_w[0:9]
+    pretty_print_w =  print_w[0] + add_pre + print_w[1:28] + phi_pre + print_w[28:32] + reset + print_w[32] +phi_pre+print_w[33:39]+ sys_pre + print_w[39:41] + reset + print_w[41] + eta_pre + print_w[42:51] + q_pre + print_w[51:54] + pt_pre + print_w[55:] + reset
+    print pretty_print_w
+    print  add_pre + "add" + phi_pre + "phi" + sys_pre + "sys" + eta_pre + "eta" + q_pre + "q"+ pt_pre + "pt"+ reset
+
 def mu_to_string(mu_line, line_no):
     mu_params = mu_line.split()
 
@@ -76,18 +103,32 @@ def mu_to_string(mu_line, line_no):
         high = cfg[name+"_IN_HIGH"]    
         shift = low
         nbits = high - low + 1
-        if name == "ADDRESS": 
-            # val = (1<<29)-1 #FIXME!
-            # mu_int += (val << shift)
-            val = 0
-        else: 
-            val = twos_comp(int(mu_params[p_key]), nbits)
-            #print name, val
-            mu_int += (val << shift)
-        #if name == "QUAL": print val, low
-        #print name, val
-        #bin_str=bin(val<<shift)
-        #print bin_str, len(bin_str)
+
+        if low < 31 and high > 31:
+            mask_lsw = get_mask(0, 5) #0-5 for phi
+            mask_msw = get_mask(6, 9) # 6-9 for phi
+            lsw = int(mu_params[p_key])&mask_lsw
+            msw = (int(mu_params[p_key])&mask_msw)>>6
+            mu_int += lsw << shift
+            mu_int += msw << 32
+            #print (lsw+(msw << 6)) == int(mu_params[p_key])
+            
+        else:
+            if name == "ADDRESS": 
+                # val = (1<<29)-1 #FIXME!
+                # mu_int += (val << shift)
+                val = 0
+            else: 
+                val = twos_comp(int(mu_params[p_key]), nbits)
+                if name == "ETA": 
+                    h.Fill(int(mu_params[p_key]))
+                    print int(mu_params[p_key]), ":"
+                    print val, bin(val)
+                    print Muon.twos_complement_sign(val, 9)
+                    print int(mu_params[p_key]) == Muon.twos_complement_sign(val, 9)
+                mu_int += (val << shift)
+            
+
     mask = (1 << 32)-1
     # print hex(mu_int)
     # first word is found by mask -- replace 0x prefix and py-long postfix
@@ -111,6 +152,14 @@ def mu_to_string(mu_line, line_no):
 
     word1=fill_word(word1)
     word2=fill_word(word2)
+
+    #print_64word(bin(mu_int)[2:])
+
+    tmp = bin(mu_int)[2:]
+    tmp = tmp[::-1]
+    #print_64word(tmp+(64-len(tmp))*"0")
+
+    print_64word(bin(int(word2[2:]+word1[2:], 16))[2:])
     #print word1, word2
     return id_, cable, word1, word2
 
@@ -317,7 +366,7 @@ if __name__ == "__main__":
 
         if "EVT" in line and newEvt:
             generate_calo_frames(cur_frames, calo_energies)
-            frames_string += generate_frames_string(cur_frames, (evts-1)*6)
+            frames_string += generate_frames_string(cur_frames, (evts-1)*6+1)
             if opts.verbose: print_counters("#Muons in evt {}:".format(evts), counters)
             for k in counters.iterkeys():
                 counters_tot[k] += counters[k]
@@ -342,7 +391,9 @@ if __name__ == "__main__":
 
         cur_frames[cable+offset].append(word1)
         cur_frames[cable+offset].append(word2)  
-    
+    #cv = ROOT.TCanvas()
+    #h.Draw()
+    #cv.Print("data/figures/what_i_think_i_do.pdf")
     print '-'*40
     print_counters("Total events processed: {} \nSummary of muons processed:".format(evts), counters_tot)
     
@@ -352,5 +403,5 @@ if __name__ == "__main__":
     print "Read muons from:", opts.infile
     print "Wrote to file:", opts.outfile
 
-    test(32)
+    test(9)
     

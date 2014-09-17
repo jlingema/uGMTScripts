@@ -10,7 +10,8 @@ class BufferParser(object):
         self.frame_dict = {}
         self.initialized = False
         self.vhdl_dict = vhdl_dict
-
+        self.max_frame = 0
+        self.valid_frames = -1
 
     def init(self): 
         # transforms data from txt-File to a dictionary the index is the frame-number
@@ -21,9 +22,18 @@ class BufferParser(object):
                 if frames and frames[0] == "Frame":
                     frame_n = int(frames[1]) 
                     self.frame_dict[frame_n] = frames[3:] # strips the frame identifier
-
+                    self.max_frame = frame_n
             self.initialized = True
             
+    def get_n_valid(self):
+        if self.valid_frames > 0: 
+            return self.valid_frames
+
+        self.valid_frames = 0
+        for s in filter(lambda x: "1v" in x[47], self.frame_dict.values()): # just look at one input link they should be in synch!
+            self.valid_frames += 1
+        print self.valid_frames
+        return self.valid_frames
 
     def frame_printer(self, frame_numbers):
         # Prints frames specified by frame_numbers (either list/tuple or int)
@@ -60,12 +70,8 @@ class BufferParser(object):
 
         return mu_dict
 
-    def get_muon_objects(self, start_frame, end_frame, start_link, end_link):
+    def get_muon_objects(self, start_frame, end_frame, start_link, end_link, mu_type):
         if not self.initialized: self.init() 
-        if "rx_" in self.fname: 
-            mu_type = "IN"
-        else:
-            mu_type = "OUT"
         muon_dict = self.get_muon_dict(start_link, end_link, start_frame, end_frame)
         muon_objs = []
         for frame, muons in muon_dict.iteritems():
@@ -88,14 +94,14 @@ class InputBufferParser(BufferParser):
         self.link_high = 71
 
         for link in xrange(self.link_low, self.link_high+1):
-            for frame in xrange(self.frame_low, 1024):
+            for frame in xrange(self.frame_low, self.max_frame+1):
                 a = self.frame_dict[frame][link]
                 if a[:2] == "1v":
                     self.frame_low = frame
                     break
 
         for link in xrange(self.link_low, self.link_high):
-            for frame in xrange(self.frame_low, 1024):
+            for frame in xrange(self.frame_low, self.max_frame+1):
                 a = self.frame_dict[frame][link]
                 if a[:2] == "0v" and self.frame_high == -1:
                     self.frame_high = frame-1
@@ -103,11 +109,11 @@ class InputBufferParser(BufferParser):
                     self.frame_high = -1
 
         if self.frame_high == -1:
-            self.frame_high = 1023
+            self.frame_high = self.max_frame
 
     def get_input_muons(self):
         if not self.initialized: self.init()
-        return self.get_muon_objects(self.frame_low, self.frame_high, self.link_low, self.link_high)
+        return self.get_muon_objects(self.frame_low, self.frame_high, self.link_low, self.link_high, "IN")
 
 class OutputBufferParser(BufferParser):
     """docstring for OutputBufferParser"""
@@ -119,8 +125,8 @@ class OutputBufferParser(BufferParser):
         self.get_ranges()
 
     def get_ranges(self):
-        self.intermediate_offset = 6
-        self.rank_offset = 6
+        self.intermediate_offset = -6
+        self.rank_offset = -5
 
         self.frame_low = 0
         self.frame_high = -1
@@ -135,29 +141,31 @@ class OutputBufferParser(BufferParser):
         self.link_rank_high = 13
 
         for link in xrange(self.link_out_low, self.link_out_high+1):
-            for frame in xrange(self.frame_low, 1024):
+            for frame in xrange(self.frame_low, self.max_frame+1):
                 a = self.frame_dict[frame][link]
                 if a[:2] == "1v" and a != "1v00000000":
                     self.frame_low = frame
                     break
 
         for link in xrange(self.link_out_low, self.link_out_high+1):
-            for frame in xrange(self.frame_low, 1024):
+            for frame in xrange(self.frame_low, self.max_frame+1):
                 a = self.frame_dict[frame][link]
                 if a[:2] == "0v" and self.frame_high == -1:
                     self.frame_high = frame-1
                 if self.frame_high != -1 and (a[:2] == "1v" and a != "1v00000000"):
                     self.frame_high = -1
+
         if self.frame_high == -1:
-            self.frame_high = 1023
+            self.frame_high = self.max_frame
+        
 
     def get_output_muons(self):
         if not self.initialized: self.init()
-        return self.get_muon_objects(self.frame_low, self.frame_high, self.link_out_low, self.link_out_high)
+        return self.get_muon_objects(self.frame_low, self.frame_high, self.link_out_low, self.link_out_high, "OUT")
 
     def get_intermediate_muons(self):
         if not self.initialized: self.init()
-        return self.get_muon_objects(self.frame_low+self.intermediate_offset, self.frame_high+self.intermediate_offset, self.link_intermediate_low, self.link_intermediate_high)
+        return self.get_muon_objects(self.frame_low+self.intermediate_offset, self.frame_high+self.intermediate_offset, self.link_intermediate_low, self.link_intermediate_high, "OUT")
 
     def get_ranks(self): 
         # returns a list of valid ranks in the range specified

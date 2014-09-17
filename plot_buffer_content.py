@@ -1,10 +1,11 @@
 import ROOT
 import math
 import os
-from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1
-from muon_functions import non_zero, plot_modifier
+from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1, TLatex
+from muon_functions import non_zero
 from mp7_buffer_parser import InputBufferParser, OutputBufferParser
 from tools.vhdl import VHDLConstantsParser
+from tools.TDRStyle import TDRStyle
 from optparse import OptionParser
 
 def parse_options():
@@ -12,25 +13,59 @@ def parse_options():
     parser.add_option("-f", "--directory", dest="directory")
     return parser.parse_args()
 
-def create_and_fill_hists(hist_parameters, muon_list):
+def create_and_fill_muon_hists(hist_parameters, muon_list, pfix):
     hist_dict = {}
     for var, options in hist_parameters.iteritems():
-        hist_dict[var] = ROOT.TH1D("input_"+var+"_{f}".format(f=filename), "hw_input_"+var+" [{f}]".format(f=filename), options[1], options[2], options[3])
-        hist_dict[var].SetXTitle(options[0])
-        hist_dict[var].SetYTitle("N")
+        hist_dict[var] = ROOT.TH1D(var+"_{pfix}".format(pfix=pfix), "", options[1], options[2], options[3])
 
     for mu in muon_list:
+        # only plot non-zero muons!
+        if mu.bitword == 0: continue
         hist_dict["qualityBits"].Fill(mu.qualityBits)
         hist_dict["ptBits"].Fill(mu.ptBits)
         hist_dict["phiBits"].Fill(mu.phiBits)
         hist_dict["etaBits"].Fill(mu.etaBits)
     return hist_dict
 
+def create_and_fill_rank_hist(rank_list, pfix):
+    hist = ROOT.TH1D("rank_{pfix}".format(pfix=pfix), "", 512, 0, 512)
+    for rnk in rank_list:
+        # only plot non-zero muons!
+        hist.Fill(rnk)
+    return hist
+
+def set_legend_style(legend):
+    legend.SetFillColor(ROOT.kWhite)
+    legend.SetLineColor(0)
+    legend.SetTextFont(42)
+    legend.SetTextSize(0.04)
+    legend.SetFillStyle(0)
+    legend.SetLineStyle(0)
+    legend.SetLineWidth(0)
+    legend.SetBorderSize(0)
+
+def set_text_style(txt):
+    txt.SetNDC()
+    txt.SetTextFont(42)
+    txt.SetTextSize(0.04)
+
+def plot_modifier(hist, xlabel, ylabel, color, marker_style=None):
+    hist.GetXaxis().SetTitle(xlabel)
+    hist.GetYaxis().SetTitle(ylabel)
+    if not marker_style == None:
+        hist.SetMarkerStyle(marker_style)
+        hist.SetMarkerColor(color)
+    hist.SetLineColor(color)
+    if color != ROOT.kBlack:
+        hist.SetFillColor(color)
+
+
 if __name__ == "__main__":
+    TDRStyle.initialize()
     TH1.AddDirectory(False)
     pi = math.pi
     gROOT.SetBatch()
-    gStyle.SetOptStat("ne")
+    # gStyle.SetOptStat("ne")
     gStyle.SetHistMinimumZero()
     gStyle.SetPalette(1)
     canvas = TCanvas("canvas_of_plots","comparisons")
@@ -66,18 +101,20 @@ if __name__ == "__main__":
 
     #### Parameters for histograms may be changed here at any time
     hist_parameters = {
-        "qualityBits": ["qualityBits", 16, 0, 16],
+        "qualityBits": ["qualityBits", 16, -0.5, 15.5],
         "ptBits": ["ptBits", 128, 0, 512],#(pt_high-pt_low)/pt_unit, pt_low, pt_high],
-        "phiBits": ["phiBits", 256, 0, 1024], #(phi_high-phi_low)/phi_unit, phi_low, phi_high],
-        "etaBits": ["etaBits", 256, -512, 512] #(eta_high-eta_low)/eta_unit, eta_low, eta_high]
+        "phiBits": ["phiBits", 128, 0, 1024], #(phi_high-phi_low)/phi_unit, phi_low, phi_high],
+        "etaBits": ["etaBits", 128, -256, 256] #(eta_high-eta_low)/eta_unit, eta_low, eta_high]
     }
 
     for filename in file_dict:
+        print "*"*30, filename, "*"*30
         # Reading and processing the hardware data
         input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
         output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict)
 
         in_muons = input_parser.get_input_muons()
+
         out_muons = output_parser.get_output_muons()
         intermediate_muons = output_parser.get_intermediate_muons()
         ranks = output_parser.get_ranks()
@@ -94,26 +131,46 @@ if __name__ == "__main__":
         print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
         print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(ranks)
 
-        hists_input = create_and_fill_hists(hist_parameters, in_muons)
-        hists_output = create_and_fill_hists(hist_parameters, out_muons)
+        
+        hist_rnk = create_and_fill_rank_hist(ranks, file_dict[filename]["rx"])
+        plot_modifier(hist_rnk, "rank", "N", ROOT.kBlack)
+        hist_rnk.Draw()
+        canvas.Print("{f}/figures/hw_rank.pdf".format(f=filename))
+
+        
+
+        hists_input = create_and_fill_muon_hists(hist_parameters, in_muons, file_dict[filename]["rx"]+"in")
+        hists_output = create_and_fill_muon_hists(hist_parameters, out_muons, file_dict[filename]["rx"]+"out")
+        hists_imd = create_and_fill_muon_hists(hist_parameters, intermediate_muons, file_dict[filename]["rx"]+"imd")
 
         for var in hist_parameters:
-            hw_leg = TLegend(0.7, 0.7, 0.9, 0.85, "Legend")
+            hw_leg = TLegend(0.4, 0.7, 0.7, 0.85)
+            set_legend_style(hw_leg)
             a = hists_input[var].GetBinContent(hists_input[var].GetMaximumBin())
             b = hists_output[var].GetBinContent(hists_output[var].GetMaximumBin())
             c = max(a,b)
 
-            plot_modifier(hists_output[var], "{x}".format(x=hist_parameters[var][0]), "", ROOT.kBlack)
-            hists_output[var].GetYaxis().SetRangeUser(0, 1.01*c)
-            hists_output[var].GetYaxis().SetTitle("N")
-            hw_leg.AddEntry(hists_output[var], "Output", "f")
-            hists_output[var].Draw()
+            plot_modifier(hists_input[var], hist_parameters[var][0], "N", ROOT.kAzure-4)
+            plot_modifier(hists_output[var], hist_parameters[var][0], "N", ROOT.kBlack, 20)
+            plot_modifier(hists_imd[var], hist_parameters[var][0], "N", ROOT.kBlack)
+            hists_imd[var].SetFillStyle(0)
+            hists_imd[var].SetLineStyle(2)
 
-            plot_modifier(hists_input[var], "{x}".format(x=hist_parameters[var][0]), "", ROOT.kBlue)
-            hists_input[var].GetYaxis().SetRangeUser(0, 1.01*c)
+            hists_input[var].GetYaxis().SetRangeUser(0, 1.1*c)
             hists_input[var].GetYaxis().SetTitle("N")
-            hw_leg.AddEntry(hists_input[var], "Input", "f")
-            hists_input[var].Draw("same")
+            
+            txt = TLatex(0.48, 0.87, "N input events: {n}".format(n=input_parser.get_n_valid()/6))
+            set_text_style(txt)
+            
+            hw_leg.AddEntry(hists_input[var], "RX content (N={tot})".format(tot=hists_input[var].Integral()), "f")
+            hw_leg.AddEntry(hists_imd[var], "TX: intermediate (N={tot})".format(tot=hists_imd[var].Integral()), "f")
+            hw_leg.AddEntry(hists_output[var], "TX: final (N={tot})".format(tot=hists_output[var].Integral()), "P")
 
-            hw_leg.Draw("same")
+            hists_input[var].Draw()
+            hists_output[var].Draw("textPsame")
+            hw_leg.Draw()
+            hists_imd[var].Draw("same")
+
+            txt.Draw()
             canvas.Print("{f}/figures/hw_{name}.pdf".format(f=filename, name=hist_parameters[var][0]))
+        print "*"*100

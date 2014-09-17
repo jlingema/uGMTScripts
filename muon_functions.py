@@ -14,15 +14,6 @@ def hist_creator2D(namesdict,hist,xname,yname,title): # xname & yname are string
         namesdict[xname][1],namesdict[xname][2],namesdict[xname][3],
         namesdict[yname][1],namesdict[yname][2],namesdict[yname][3])
 
-def plot_modifier(hist,xlabel,ylabel,color):
-    hist.GetXaxis().SetTitle("{xlabel}".format(xlabel=xlabel))
-    hist.GetYaxis().SetTitle("{ylabel}".format(ylabel=ylabel))
-    if color == ROOT.kBlack:
-        hist.SetLineColor(color)
-    else:
-        hist.SetFillColor(color)
-        hist.SetLineWidth(0)
-
 def isequal(a,b): # gives 1 if a==b and 0 otherwise
     x = int(a)^int(b)
     if x==0 or x==1:
