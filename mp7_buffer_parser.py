@@ -99,7 +99,7 @@ class InputBufferParser(BufferParser):
                     self.frame_low = frame
                     break
         
-        if not self.frame_low > 0:
+        if not self.frame_low >= 0:
             self._log.error("Found no valid, non-zero frames in this file {fn}".format(fn=self.fname))
             return
 
