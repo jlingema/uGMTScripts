@@ -1,5 +1,5 @@
 from muon import Muon 
-from muon_functions import get_masked_word
+from tools.muon_helpers import get_masked_word
 from tools.logger import log
 
 class BufferParser(object):
@@ -199,11 +199,7 @@ class OutputBufferParser(BufferParser):
         while frame < self.frame_high:
             for i in xrange(4): #4 links
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i])) 
-                muon_objs[len(muon_objs)-1].frame=frame
-                muon_objs[len(muon_objs)-1].link=i
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i]))
-                muon_objs[len(muon_objs)-1].frame=frame+2
-                muon_objs[len(muon_objs)-1].link=i
             frame += 6 # next event
             
         return muon_objs

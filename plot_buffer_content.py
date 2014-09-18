@@ -2,10 +2,10 @@ import ROOT
 import math
 import os
 from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1, TLatex
-from muon_functions import non_zero
 from mp7_buffer_parser import InputBufferParser, OutputBufferParser
 from tools.vhdl import VHDLConstantsParser
 from tools.TDRStyle import TDRStyle
+from tools.muon_helpers import non_zero, print_out_word
 from optparse import OptionParser
 
 def parse_options():
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     }
 
     for filename in file_dict:
-        print "*"*30, filename, "*"*30
+        print "+"*30, filename, "+"*30
         # Reading and processing the hardware data
         input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
         output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict)
