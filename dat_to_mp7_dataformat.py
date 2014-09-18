@@ -1,42 +1,18 @@
 #!/usr/bin/env python
 from tools.vhdl import VHDLConstantsParser
-from copy import copy
-
-from muon import Muon
+from tools.bithelper import bithlp
+from tools.muon_helpers import print_in_word
 #BAR 0 9 4 58 0 1 3     # muon: pt = 4.5,  phi = 0.0436332,  eta = 0.58125,  charge = 0
 # muon format (separated by one space):
 # cable number only for debugging purposes
 # variable: ID cable no pT phi eta sign valid sign quality
 # n bits  : -  -        9  10  9   1    1          4
-def twos_comp(val, bits):
-    """compute the 2's compliment of int value val"""
-    if val >= 0:
-        return val
-    #sprint bin(val)
-    all_one = (1 << bits)-1
-    #print "al", len(bin(all_one).replace("0b", "")), hex(all_one)
-    val = ((-val)^all_one)+1
 
-    #val = ~(val)+1 
-    #print bin(val)
-    return val
 
 def get_mask(xlow, xup):
     ones = (1<<(xup-xlow+1)) - 1
     mask = ones<<xlow
     return mask
-
-
-def test(nbits):
-    print "nbits:", nbits
-    max_ = (1<<(nbits-1))-1
-    min_ = -(1<<(nbits-1))
-    middle = min_+max_/2
-    print "max pos:", max_, twos_comp(max_, nbits), hex(twos_comp(max_, nbits)), bin(twos_comp(max_, nbits))
-    print "max neg:", min_, twos_comp(min_, nbits), hex(twos_comp(min_, nbits)), bin(twos_comp(min_, nbits))
-    print "something:", middle, twos_comp(middle, nbits), hex(twos_comp(middle, nbits)), bin(twos_comp(middle, nbits))
-    print "-1:", twos_comp(-1, nbits), hex(twos_comp(-1, nbits)), bin(twos_comp(-1, nbits))
-    print "+1:", twos_comp(1, nbits), hex(twos_comp(1, nbits)), bin(twos_comp(1, nbits))
 
 def print_dformat(df, i, values = None):
     word = df[i]
@@ -64,22 +40,6 @@ def print_dformat(df, i, values = None):
     p_string += "\n"+start_end
     print p_string
 
-def print_64word(w):
-    pt_pre = '\x1b[31;01m'
-    q_pre = '\x1b[32;01m'
-    sys_pre = '\x1b[33;01m'
-    eta_pre = '\x1b[35;01m'
-    phi_pre = '\x1b[36;01m'
-    add_pre = '\x1b[34;01m'
-    reset = '\x1b[39;49;00m'
-    #print_w = bin(w)[2:]
-    print_w = w
-    while len(print_w) < 64:
-        print_w = "0"+print_w
-    pretty_print_w =  print_w[63] + add_pre + print_w[36:63] + phi_pre + print_w[25:31] + reset + print_w[31] +phi_pre+print_w[32:36]+ sys_pre + print_w[23:25] + eta_pre + print_w[13:23] + q_pre + print_w[9:13] + pt_pre + print_w[0:9]
-    pretty_print_w =  print_w[0] + add_pre + print_w[1:28] + phi_pre + print_w[28:32] + reset + print_w[32] +phi_pre+print_w[33:39]+ sys_pre + print_w[39:41] + reset + print_w[41] + eta_pre + print_w[42:51] + q_pre + print_w[51:54] + pt_pre + print_w[55:] + reset
-    print pretty_print_w
-    print  add_pre + "add" + phi_pre + "phi" + sys_pre + "sys" + eta_pre + "eta" + q_pre + "q"+ pt_pre + "pt"+ reset
 
 def mu_to_string(mu_line, line_no):
     mu_params = mu_line.split()
@@ -109,37 +69,29 @@ def mu_to_string(mu_line, line_no):
             msw = (int(mu_params[p_key])&mask_msw)>>6
             mu_int += lsw << shift
             mu_int += msw << 32
-            #print (lsw+(msw << 6)) == int(mu_params[p_key])
-            
         else:
             if name == "ADDRESS": 
                 # val = (1<<29)-1 #FIXME!
-                # mu_int += (val << shift)
                 val = 0
             else: 
-                val = twos_comp(int(mu_params[p_key]), nbits)
+                val = bithlp.twos_complement_to_unsigned(int(mu_params[p_key]), nbits)
                 mu_int += (val << shift)
             
 
     mask = (1 << 32)-1
-    # print hex(mu_int)
     # first word is found by mask -- replace 0x prefix and py-long postfix
     word1 = hex(mu_int & mask).replace("0x", "").replace("L", "")
     # second word are the trailing 32 bits:
     word2 = hex(mu_int >> 32).replace("0x", "").replace("L", "")
-    # print word1, word2
 
     if len(word1) > 8:
         print "*"*40
         print "\033[22;30m[error]\033[22;0m overflow:", word1, "in line", line_no
-        # print_dformat([s_word1, s_word2], 0, values)
         print "*"*40
 
-    #word2 = hex(i_word2).replace("0x", "")
     if len(word2) > 8:
         print "*"*40
         print "\033[22;30m[error]\033[22;0m overflow:", word2, "in line", line_no
-        # print_dformat([s_word1, s_word2], 1, values)
         print "*"*40
 
     word1=fill_word(word1)
@@ -151,7 +103,7 @@ def mu_to_string(mu_line, line_no):
     tmp = tmp[::-1]
     #print_64word(tmp+(64-len(tmp))*"0")
     if opts.verbose:
-        print_64word(bin(int(word2[2:]+word1[2:], 16))[2:])
+        print_in_word(int(word2[2:]+word1[2:], 16))
     #print word1, word2
     return id_, cable, word1, word2
 

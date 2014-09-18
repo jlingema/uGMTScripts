@@ -1,0 +1,217 @@
+EVT 0
+BAR 0 9 7 58 0 1 3 	# muon: pt = 4.5,  phi = 0.0436332,  eta = 0.58125,  charge = 0
+EVT
+BAR 0 24 0 -73 1 1 3 	# muon: pt = 12,  phi = 0,  eta = -0.73125,  charge = 1
+EVT
+BAR 0 16 42 -65 0 1 2 	# muon: pt = 8,  phi = 0.261799,  eta = -0.65625,  charge = 0
+EVT
+BAR 1 24 92 -39 0 1 7 	# muon: pt = 12,  phi = 0.567232,  eta = -0.39375,  charge = 0
+EVT
+BAR 1 32 92 -65 0 1 7 	# muon: pt = 16,  phi = 0.567232,  eta = -0.65625,  charge = 0
+EVT
+BAR 1 70 128 50 0 1 3 	# muon: pt = 35,  phi = 0.785398,  eta = 0.50625,  charge = 0
+EVT
+BAR 2 24 228 65 1 1 4 	# muon: pt = 12,  phi = 1.39626,  eta = 0.65625,  charge = 1
+EVT
+BAR 2 24 213 -76 1 1 3 	# muon: pt = 12,  phi = 1.309,  eta = -0.76875,  charge = 1
+EVT
+BAR 2 28 213 1 0 1 3 	# muon: pt = 14,  phi = 1.309,  eta = 0.01875,  charge = 0
+EVT
+BAR 3 40 320 -31 1 1 1 	# muon: pt = 20,  phi = 1.9635,  eta = -0.31875,  charge = 1
+EVT
+BAR 3 280 306 31 0 1 1 	# muon: pt = 140,  phi = 1.87623,  eta = 0.31875,  charge = 0
+EVT
+BAR 3 24 278 -73 0 1 7 	# muon: pt = 12,  phi = 1.7017,  eta = -0.73125,  charge = 0
+EVT
+BAR 4 70 406 28 1 1 1 	# muon: pt = 35,  phi = 2.48709,  eta = 0.28125,  charge = 1
+EVT
+BAR 4 50 342 -50 0 1 3 	# muon: pt = 25,  phi = 2.0944,  eta = -0.50625,  charge = 0
+EVT
+BAR 4 28 356 -20 0 1 3 	# muon: pt = 14,  phi = 2.18166,  eta = -0.20625,  charge = 0
+EVT
+BAR 5 40 484 43 1 1 4 	# muon: pt = 20,  phi = 2.96706,  eta = 0.43125,  charge = 1
+EVT
+BAR 5 16 499 9 1 1 7 	# muon: pt = 8,  phi = 3.05433,  eta = 0.09375,  charge = 1
+EVT
+BAR 5 10 499 -28 1 1 3 	# muon: pt = 5,  phi = 3.05433,  eta = -0.28125,  charge = 1
+EVT
+BAR 6 32 513 -43 0 1 7 	# muon: pt = 16,  phi = 3.14159,  eta = -0.43125,  charge = 0
+EVT
+BAR 6 40 570 -35 0 1 4 	# muon: pt = 20,  phi = 3.49066,  eta = -0.35625,  charge = 0
+EVT
+BAR 6 24 556 69 1 1 3 	# muon: pt = 12,  phi = 3.40339,  eta = 0.69375,  charge = 1
+EVT
+BAR 7 28 613 -20 1 1 3 	# muon: pt = 14,  phi = 3.75246,  eta = -0.20625,  charge = 1
+EVT
+BAR 7 24 677 -50 0 1 7 	# muon: pt = 12,  phi = 4.14516,  eta = -0.50625,  charge = 0
+EVT
+BAR 7 24 677 24 0 1 5 	# muon: pt = 12,  phi = 4.14516,  eta = 0.24375,  charge = 0
+EVT
+BAR 8 32 691 50 1 1 6 	# muon: pt = 16,  phi = 4.23242,  eta = 0.50625,  charge = 1
+EVT
+BAR 8 24 720 9 0 1 5 	# muon: pt = 12,  phi = 4.40696,  eta = 0.09375,  charge = 0
+EVT
+BAR 8 80 763 -5 0 1 3 	# muon: pt = 40,  phi = 4.66876,  eta = -0.05625,  charge = 0
+EVT
+BAR 9 16 820 -73 0 1 5 	# muon: pt = 8,  phi = 5.01782,  eta = -0.73125,  charge = 0
+EVT
+BAR 9 28 827 1 1 1 4 	# muon: pt = 14,  phi = 5.06145,  eta = 0.01875,  charge = 1
+EVT
+BAR 9 10 798 -43 0 1 3 	# muon: pt = 5,  phi = 4.88692,  eta = -0.43125,  charge = 0
+EVT
+BAR 10 24 884 69 0 1 5 	# muon: pt = 12,  phi = 5.41052,  eta = 0.69375,  charge = 0
+EVT
+BAR 10 32 920 1 1 1 3 	# muon: pt = 16,  phi = 5.62869,  eta = 0.01875,  charge = 1
+EVT
+BAR 10 120 877 -50 0 1 3 	# muon: pt = 60,  phi = 5.36689,  eta = -0.50625,  charge = 0
+EVT
+BAR 11 32 1005 35 1 1 1 	# muon: pt = 16,  phi = 6.15229,  eta = 0.35625,  charge = 1
+EVT
+BAR 11 24 969 50 0 1 7 	# muon: pt = 12,  phi = 5.93412,  eta = 0.50625,  charge = 0
+EVT
+BAR 11 40 955 -50 0 1 3 	# muon: pt = 20,  phi = 5.84685,  eta = -0.50625,  charge = 0
+EVT
+OVL+ 0 14 135 95 1 1 3 	# muon: pt = 7,  phi = 0.829031,  eta = 0.95625,  charge = 1
+EVT
+OVL+ 0 32 14 95 0 1 3 	# muon: pt = 16,  phi = 0.0872665,  eta = 0.95625,  charge = 0
+EVT
+OVL+ 0 24 78 117 1 1 3 	# muon: pt = 12,  phi = 0.479966,  eta = 1.175,  charge = 1
+EVT
+OVL+ 1 70 206 88 1 1 3 	# muon: pt = 35,  phi = 1.26536,  eta = 0.88125,  charge = 1
+EVT
+OVL+ 1 36 228 117 0 1 3 	# muon: pt = 18,  phi = 1.39626,  eta = 1.175,  charge = 0
+EVT
+OVL+ 1 24 263 117 1 1 3 	# muon: pt = 12,  phi = 1.61443,  eta = 1.175,  charge = 1
+EVT
+OVL+ 2 24 349 106 0 1 3 	# muon: pt = 12,  phi = 2.13803,  eta = 1.06875,  charge = 0
+EVT
+OVL+ 2 28 463 91 1 1 3 	# muon: pt = 14,  phi = 2.83616,  eta = 0.91875,  charge = 1
+EVT
+OVL+ 2 140 477 112 0 1 1 	# muon: pt = 70,  phi = 2.92343,  eta = 1.125,  charge = 0
+EVT
+OVL+ 3 28 563 80 0 1 2 	# muon: pt = 14,  phi = 3.44703,  eta = 0.80625,  charge = 0
+EVT
+OVL+ 3 24 670 117 1 1 3 	# muon: pt = 12,  phi = 4.10152,  eta = 1.175,  charge = 1
+EVT
+OVL+ 3 40 527 112 0 1 3 	# muon: pt = 20,  phi = 3.22886,  eta = 1.125,  charge = 0
+EVT
+OVL+ 4 36 848 91 0 1 6 	# muon: pt = 18,  phi = 5.19235,  eta = 0.91875,  charge = 0
+EVT
+OVL+ 4 24 691 117 1 1 3 	# muon: pt = 12,  phi = 4.23242,  eta = 1.175,  charge = 1
+EVT
+OVL+ 4 40 748 107 0 1 1 	# muon: pt = 20,  phi = 4.58149,  eta = 1.075,  charge = 0
+EVT
+OVL+ 5 40 912 99 1 1 2 	# muon: pt = 20,  phi = 5.58505,  eta = 0.99375,  charge = 1
+EVT
+OVL+ 5 6 877 92 1 1 3 	# muon: pt = 3,  phi = 5.36689,  eta = 0.925,  charge = 1
+EVT
+OVL+ 5 24 977 106 1 1 3 	# muon: pt = 12,  phi = 5.97775,  eta = 1.06875,  charge = 1
+EVT
+OVL- 6 36 135 -99 0 1 2 	# muon: pt = 18,  phi = 0.829031,  eta = -0.99375,  charge = 0
+EVT
+OVL- 6 20 64 -80 0 1 5 	# muon: pt = 10,  phi = 0.392699,  eta = -0.80625,  charge = 0
+EVT
+OVL- 6 24 164 -112 1 1 3 	# muon: pt = 12,  phi = 1.00356,  eta = -1.125,  charge = 1
+EVT
+OVL- 7 36 235 -117 1 1 1 	# muon: pt = 18,  phi = 1.4399,  eta = -1.175,  charge = 1
+EVT
+OVL- 7 28 320 -95 1 1 3 	# muon: pt = 14,  phi = 1.9635,  eta = -0.95625,  charge = 1
+EVT
+OVL- 7 24 263 -80 0 1 2 	# muon: pt = 12,  phi = 1.61443,  eta = -0.80625,  charge = 0
+EVT
+OVL- 8 32 484 -112 0 1 1 	# muon: pt = 16,  phi = 2.96706,  eta = -1.125,  charge = 0
+EVT
+OVL- 8 50 399 -107 1 1 1 	# muon: pt = 25,  phi = 2.44346,  eta = -1.075,  charge = 1
+EVT
+OVL- 8 24 492 -88 1 1 6 	# muon: pt = 12,  phi = 3.01069,  eta = -0.88125,  charge = 1
+EVT
+OVL- 9 28 663 -95 0 1 3 	# muon: pt = 14,  phi = 4.05789,  eta = -0.95625,  charge = 0
+EVT
+OVL- 9 32 577 -80 0 1 2 	# muon: pt = 16,  phi = 3.53429,  eta = -0.80625,  charge = 0
+EVT
+OVL- 9 16 556 -106 1 1 3 	# muon: pt = 8,  phi = 3.40339,  eta = -1.06875,  charge = 1
+EVT
+OVL- 10 24 706 -106 0 1 3 	# muon: pt = 12,  phi = 4.31969,  eta = -1.06875,  charge = 0
+EVT
+OVL- 10 28 798 -106 1 1 3 	# muon: pt = 14,  phi = 4.88692,  eta = -1.06875,  charge = 1
+EVT
+OVL- 10 24 706 -80 1 1 2 	# muon: pt = 12,  phi = 4.31969,  eta = -0.80625,  charge = 1
+EVT
+OVL- 11 24 977 -112 1 1 3 	# muon: pt = 12,  phi = 5.97775,  eta = -1.125,  charge = 1
+EVT
+OVL- 11 12 934 -102 0 1 3 	# muon: pt = 6,  phi = 5.71595,  eta = -1.025,  charge = 0
+EVT
+OVL- 11 28 984 -92 0 1 3 	# muon: pt = 14,  phi = 6.02139,  eta = -0.925,  charge = 0
+EVT
+FWD+ 0 32 114 132 1 1 3 	# muon: pt = 16,  phi = 0.698132,  eta = 1.325,  charge = 1
+EVT
+FWD+ 0 6 142 232 0 1 1 	# muon: pt = 3,  phi = 0.872665,  eta = 2.325,  charge = 0
+EVT
+FWD+ 0 8 71 192 0 1 3 	# muon: pt = 4,  phi = 0.436332,  eta = 1.925,  charge = 0
+EVT
+FWD+ 1 4 335 177 0 1 1 	# muon: pt = 2,  phi = 2.05076,  eta = 1.775,  charge = 0
+EVT
+FWD+ 1 24 178 227 0 1 3 	# muon: pt = 12,  phi = 1.09083,  eta = 2.275,  charge = 0
+EVT
+FWD+ 1 240 313 227 0 1 3 	# muon: pt = 120,  phi = 1.91986,  eta = 2.275,  charge = 0
+EVT
+FWD+ 2 24 413 147 0 1 3 	# muon: pt = 12,  phi = 2.53073,  eta = 1.475,  charge = 0
+EVT
+FWD+ 2 12 342 202 0 1 3 	# muon: pt = 6,  phi = 2.0944,  eta = 2.025,  charge = 0
+EVT
+FWD+ 2 4 499 222 0 1 1 	# muon: pt = 2,  phi = 3.05433,  eta = 2.225,  charge = 0
+EVT
+FWD+ 3 240 513 237 0 1 3 	# muon: pt = 120,  phi = 3.14159,  eta = 2.375,  charge = 0
+EVT
+FWD+ 3 24 641 207 0 1 3 	# muon: pt = 12,  phi = 3.92699,  eta = 2.075,  charge = 0
+EVT
+FWD+ 3 28 563 222 0 1 3 	# muon: pt = 14,  phi = 3.44703,  eta = 2.225,  charge = 0
+EVT
+FWD+ 4 5 791 227 0 1 1 	# muon: pt = 2.5,  phi = 4.84329,  eta = 2.275,  charge = 0
+EVT
+FWD+ 4 240 734 152 0 1 1 	# muon: pt = 120,  phi = 4.49422,  eta = 1.525,  charge = 0
+EVT
+FWD+ 4 240 827 212 0 1 3 	# muon: pt = 120,  phi = 5.06145,  eta = 2.125,  charge = 0
+EVT
+FWD+ 5 240 927 227 0 1 3 	# muon: pt = 120,  phi = 5.67232,  eta = 2.275,  charge = 0
+EVT
+FWD+ 5 60 870 147 0 1 1 	# muon: pt = 30,  phi = 5.32325,  eta = 1.475,  charge = 0
+EVT
+FWD+ 5 24 855 217 0 1 3 	# muon: pt = 12,  phi = 5.23599,  eta = 2.175,  charge = 0
+EVT
+FWD- 6 32 14 -207 0 1 3 	# muon: pt = 16,  phi = 0.0872665,  eta = -2.075,  charge = 0
+EVT
+FWD- 6 240 21 -232 0 1 3 	# muon: pt = 120,  phi = 0.1309,  eta = -2.325,  charge = 0
+EVT
+FWD- 6 32 99 -177 1 1 3 	# muon: pt = 16,  phi = 0.610865,  eta = -1.775,  charge = 1
+EVT
+FWD- 7 28 178 -232 0 1 3 	# muon: pt = 14,  phi = 1.09083,  eta = -2.325,  charge = 0
+EVT
+FWD- 7 24 335 -217 0 1 3 	# muon: pt = 12,  phi = 2.05076,  eta = -2.175,  charge = 0
+EVT
+FWD- 7 24 242 -232 0 1 3 	# muon: pt = 12,  phi = 1.48353,  eta = -2.325,  charge = 0
+EVT
+FWD- 8 40 463 -137 1 1 3 	# muon: pt = 20,  phi = 2.83616,  eta = -1.375,  charge = 1
+EVT
+FWD- 8 4 435 -222 0 1 1 	# muon: pt = 2,  phi = 2.66163,  eta = -2.225,  charge = 0
+EVT
+FWD- 8 7 477 -217 0 1 3 	# muon: pt = 3.5,  phi = 2.92343,  eta = -2.175,  charge = 0
+EVT
+FWD- 9 10 534 -237 1 1 1 	# muon: pt = 5,  phi = 3.27249,  eta = -2.375,  charge = 1
+EVT
+FWD- 9 24 606 -187 1 1 3 	# muon: pt = 12,  phi = 3.70882,  eta = -1.875,  charge = 1
+EVT
+FWD- 9 24 613 -122 1 1 1 	# muon: pt = 12,  phi = 3.75246,  eta = -1.225,  charge = 1
+EVT
+FWD- 10 32 798 -162 1 1 2 	# muon: pt = 16,  phi = 4.88692,  eta = -1.625,  charge = 1
+EVT
+FWD- 10 240 713 -217 0 1 1 	# muon: pt = 120,  phi = 4.36332,  eta = -2.175,  charge = 0
+EVT
+FWD- 10 240 791 -227 1 1 3 	# muon: pt = 120,  phi = 4.84329,  eta = -2.275,  charge = 1
+EVT
+FWD- 11 24 984 -182 0 1 3 	# muon: pt = 12,  phi = 6.02139,  eta = -1.825,  charge = 0
+EVT
+FWD- 11 8 855 -132 1 1 3 	# muon: pt = 4,  phi = 5.23599,  eta = -1.325,  charge = 1
+EVT
+FWD- 11 9 905 -217 0 1 3 	# muon: pt = 4.5,  phi = 5.54142,  eta = -2.175,  charge = 0
+EVT
