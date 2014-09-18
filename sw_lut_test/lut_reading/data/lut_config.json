@@ -1,5 +1,5 @@
 {
-    "FONegMatchQualLUT": {
+    "OvlNegSingleMatchQual": {
         "function": "0", 
         "inputs": [
             "deltaEtaRed", 
@@ -22,12 +22,12 @@
         "data_out_width": 4, 
         "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
         "input_widths": [
-            5, 
-            5, 
+            1, 
+            8, 
             5
         ]
     }, 
-    "OvlPosSingleMatchQualLUT": {
+    "BrlSingleMatchQual": {
         "function": "0", 
         "inputs": [
             "deltaEtaRed", 
@@ -40,19 +40,7 @@
             3
         ]
     }, 
-    "IdxSelMemEtaF": {
-        "function": "",
-        "map": "etamap",
-        "inputs": [
-            "eta"
-        ], 
-        "data_out_width": 5, 
-        "docstring": "Has to be manually generated for unknown reason!", 
-        "input_widths": [
-            9
-        ]
-    }, 
-    "IdxSelMemEtaB": {
+    "IdxSelMemEta": {
         "function": "",
         "map" : "etamap", 
         "inputs": [
@@ -64,17 +52,19 @@
             9
         ]
     }, 
-    "BrlSingleMatchQualLUT": {
-        "function": "0", 
+
+    "SortRank": {
+        "function": "pT+qual", 
+        "function_tmp": "(pT>>4)+qual*5", 
         "inputs": [
-            "deltaEtaRed", 
-            "deltaPhiRed"
+            "qual", 
+            "pT"
         ], 
-        "data_out_width": 1, 
-        "docstring": "", 
+        "data_out_width": 10, 
+        "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
         "input_widths": [
             4, 
-            3
+            9
         ]
     }, 
     "AbsIsoCheckMem": {
@@ -88,7 +78,20 @@
             5
         ]
     }, 
-    "BOPosMatchQualLUT": {
+    "FwdPosSingleMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "FOPosMatchQual": {
         "function": "0", 
         "inputs": [
             "deltaEtaRed", 
@@ -114,19 +117,6 @@
             9
         ]
     }, 
-    "FwdPosSingleMatchQualLUT": {
-        "function": "0", 
-        "inputs": [
-            "deltaEtaRed", 
-            "deltaPhiRed"
-        ], 
-        "data_out_width": 1, 
-        "docstring": "", 
-        "input_widths": [
-            4, 
-            3
-        ]
-    }, 
     "FEtaExtrapolation": {
         "function": "0", 
         "inputs": [
@@ -137,8 +127,8 @@
         "data_out_width": 4, 
         "docstring": "?", 
         "input_widths": [
-            5, 
-            5, 
+            1, 
+            7, 
             5
         ]
     }, 
@@ -152,8 +142,8 @@
         "data_out_width": 4, 
         "docstring": "?", 
         "input_widths": [
-            5, 
-            5, 
+            1, 
+            7, 
             5
         ]
     }, 
@@ -167,12 +157,12 @@
         "data_out_width": 4, 
         "docstring": "?", 
         "input_widths": [
-            5, 
-            5, 
+            1, 
+            7, 
             5
         ]
     }, 
-    "OvlNegSingleMatchQualLUT": {
+    "BONegMatchQual": {
         "function": "0", 
         "inputs": [
             "deltaEtaRed", 
@@ -185,7 +175,7 @@
             3
         ]
     }, 
-    "IdxSelMemPhiO": {
+    "IdxSelMemPhi": {
         "function": "",
         "map" : "phimap",
         "inputs": [
@@ -195,55 +185,6 @@
         "docstring": "Has to be manually generated for unknown reason!", 
         "input_widths": [
             10
-        ]
-    }, 
-    "IdxSelMemPhiB": {
-        "function": "",
-        "map" : "phimap",
-        "inputs": [
-            "phi"
-        ], 
-        "data_out_width": 6, 
-        "docstring": "Has to be manually generated for unknown reason!", 
-        "input_widths": [
-            10
-        ]
-    }, 
-    "IdxSelMemPhiF": {
-        "function": "",
-        "map" : "phimap",
-        "inputs": [
-            "phi"
-        ], 
-        "data_out_width": 6, 
-        "docstring": "Has to be manually generated for unknown reason!", 
-        "input_widths": [
-            10
-        ]
-    }, 
-    "IdxSelMemEtaO": {
-        "function": "",
-        "map" : "etamap",
-        "inputs": [
-            "eta"
-        ], 
-        "data_out_width": 5, 
-        "docstring": "Has to be manually generated for unknown reason!", 
-        "input_widths": [
-            9
-        ]
-    }, 
-    "SortRankLUT": {
-        "function": "pT+qual", 
-        "inputs": [
-            "pT", 
-            "qual"
-        ], 
-        "data_out_width": 10, 
-        "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
-        "input_widths": [
-            9, 
-            4
         ]
     }, 
     "OPhiExtrapolation": {
@@ -256,12 +197,12 @@
         "data_out_width": 4, 
         "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
         "input_widths": [
-            5, 
-            5, 
+            1, 
+            8, 
             5
         ]
     }, 
-    "FwdNegSingleMatchQualLUT": {
+    "FwdNegSingleMatchQual": {
         "function": "0", 
         "inputs": [
             "deltaEtaRed", 
@@ -274,7 +215,7 @@
             3
         ]
     }, 
-    "FOPosMatchQualLUT": {
+    "BOPosMatchQual": {
         "function": "0", 
         "inputs": [
             "deltaEtaRed", 
@@ -287,7 +228,7 @@
             3
         ]
     }, 
-    "BONegMatchQualLUT": {
+    "OvlPosSingleMatchQual": {
         "function": "0", 
         "inputs": [
             "deltaEtaRed", 
@@ -310,9 +251,22 @@
         "data_out_width": 4, 
         "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
         "input_widths": [
-            5, 
-            5, 
+            1, 
+            8, 
             5
+        ]
+    }, 
+    "FONegMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
         ]
     }
 }
