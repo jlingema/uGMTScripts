@@ -1,5 +1,4 @@
 import ROOT
-from muon import Muon
 
 # non member functions
 def get_masked_word(complete_word, bit_low, bit_high): 
@@ -29,8 +28,6 @@ def single_bit(num,bit): # Gets one single bit defined by num
 def num_of_ones(x): # returns num of ones in a bitword...not very elegant, works only for positive numbers!
     return bin(x).count("1")
 
-
-
 def non_zero(muon_objs): # counts how many obj in an array are !=0
     counter = 0
     for muon in muon_objs:
@@ -39,3 +36,32 @@ def non_zero(muon_objs): # counts how many obj in an array are !=0
     return counter
 
 
+def print_in_word(w, show_legend = False):
+    pt_pre = '\x1b[31;01m'
+    q_pre = '\x1b[32;01m'
+    sys_pre = '\x1b[33;01m'
+    eta_pre = '\x1b[35;01m'
+    phi_pre = '\x1b[36;01m'
+    add_pre = '\x1b[34;01m'
+    reset = '\x1b[39;49;00m'
+    print_w = bin(w)[2:]
+    print_w = "0"*(64-len(print_w))+print_w
+    pretty_print_w =  print_w[0] + add_pre + print_w[1:28] + phi_pre + print_w[28:32] + reset + print_w[32] + phi_pre + print_w[33:39]+ sys_pre + print_w[39:41] + reset + print_w[41] + eta_pre + print_w[42:51] + q_pre + print_w[51:55] + pt_pre + print_w[55:] + reset
+    print pretty_print_w
+    if show_legend:
+        print  add_pre + "add" + phi_pre + "phi" + sys_pre + "sys" + eta_pre + "eta" + q_pre + "q"+ pt_pre + "pt"+ reset
+
+def print_out_word(w, show_legend = False):
+    pt_pre = '\x1b[31;01m'
+    q_pre = '\x1b[32;01m'
+    sys_pre = '\x1b[33;01m'
+    eta_pre = '\x1b[35;01m'
+    phi_pre = '\x1b[36;01m'
+    iso_pre = '\x1b[34;01m'
+    reset = '\x1b[39;49;00m'
+    print_w = bin(w)[2:]
+    print_w = "0"*(64-len(print_w))+print_w
+    pretty_print_w =  print_w[:29] + sys_pre + print_w[29:31] + iso_pre + print_w[31:33] + eta_pre + print_w[33:42] + q_pre + print_w[42:45] + pt_pre + print_w[45:54] + phi_pre + print_w[54:] + reset
+    print pretty_print_w
+    if show_legend:
+        print  sys_pre + "sys" + iso_pre + "iso" + eta_pre + "eta" + q_pre + "q" + pt_pre + "pt" + phi_pre + "phi" + reset
