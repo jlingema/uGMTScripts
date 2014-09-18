@@ -1,8 +1,8 @@
-; Auto-generated Memory-Initialization .COE file for uGMT bench-tests
+; Auto-generated Memory-Initialization .COE file for Core Generator, used in uGMT bench-tests
 ; LUT:        IdxSelMemPhiB
 ; Function:   
 ; Version:    1
-; Generated:  2014-07-23
+; Generated:  2014-08-05
 memory_initialization_radix=16;
 memory_initialization_vector=0,
 0,

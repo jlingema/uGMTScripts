@@ -1,8 +1,8 @@
 ; Auto-generated Memory-Initialization .COE file for Core Generator, used in uGMT bench-tests
-; LUT:        BrlSingleMatchQualLUT
+; LUT:        BrlSingleMatchQual
 ; Function:   0
 ; Version:    1
-; Generated:  2014-08-01
+; Generated:  2014-09-17
 memory_initialization_radix=16;
 memory_initialization_vector=0,
 0,
