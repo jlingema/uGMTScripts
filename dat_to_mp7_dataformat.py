@@ -37,8 +37,6 @@ def test(nbits):
     print "something:", middle, twos_comp(middle, nbits), hex(twos_comp(middle, nbits)), bin(twos_comp(middle, nbits))
     print "-1:", twos_comp(-1, nbits), hex(twos_comp(-1, nbits)), bin(twos_comp(-1, nbits))
     print "+1:", twos_comp(1, nbits), hex(twos_comp(1, nbits)), bin(twos_comp(1, nbits))
-import ROOT
-h = ROOT.TH1D("", "", 1000, -300, 300)
 
 def print_dformat(df, i, values = None):
     word = df[i]
@@ -120,12 +118,6 @@ def mu_to_string(mu_line, line_no):
                 val = 0
             else: 
                 val = twos_comp(int(mu_params[p_key]), nbits)
-                if name == "ETA": 
-                    h.Fill(int(mu_params[p_key]))
-                    print int(mu_params[p_key]), ":"
-                    print val, bin(val)
-                    print Muon.twos_complement_sign(val, 9)
-                    print int(mu_params[p_key]) == Muon.twos_complement_sign(val, 9)
                 mu_int += (val << shift)
             
 
@@ -158,8 +150,8 @@ def mu_to_string(mu_line, line_no):
     tmp = bin(mu_int)[2:]
     tmp = tmp[::-1]
     #print_64word(tmp+(64-len(tmp))*"0")
-
-    print_64word(bin(int(word2[2:]+word1[2:], 16))[2:])
+    if opts.verbose:
+        print_64word(bin(int(word2[2:]+word1[2:], 16))[2:])
     #print word1, word2
     return id_, cable, word1, word2
 
@@ -295,7 +287,8 @@ def generate_calo_frames(frames, calo_energies):
         shift = i%6
         word += en_sum << shift
 
-    print "Total words for CALO in this event:", tot_words
+    if opts.verbose:
+        print "Total words for CALO in this event:", tot_words
 
 
 
@@ -345,7 +338,6 @@ if __name__ == "__main__":
     infile = open(opts.infile, "r")
     outfile = open(opts.outfile, "w")
     cfg = VHDLConstantsParser.parse_vhdl_file(opts.config)
-    print cfg
     newEvt = False
     evts = 0
     counters_tot = {
@@ -366,7 +358,7 @@ if __name__ == "__main__":
 
         if "EVT" in line and newEvt:
             generate_calo_frames(cur_frames, calo_energies)
-            frames_string += generate_frames_string(cur_frames, (evts-1)*6+1)
+            frames_string += generate_frames_string(cur_frames, (evts-1)*6)
             if opts.verbose: print_counters("#Muons in evt {}:".format(evts), counters)
             for k in counters.iterkeys():
                 counters_tot[k] += counters[k]
@@ -386,22 +378,12 @@ if __name__ == "__main__":
             string_to_mu([word1, word2], cfg, "IN")
             offset = determine_offset_count(counters)
         
-
-        
-
         cur_frames[cable+offset].append(word1)
         cur_frames[cable+offset].append(word2)  
-    #cv = ROOT.TCanvas()
-    #h.Draw()
-    #cv.Print("data/figures/what_i_think_i_do.pdf")
     print '-'*40
     print_counters("Total events processed: {} \nSummary of muons processed:".format(evts), counters_tot)
     
-
     outfile.write(header+frames_string)
     print "Data blocks were written for board:", args[0]
     print "Read muons from:", opts.infile
     print "Wrote to file:", opts.outfile
-
-    test(9)
-    
