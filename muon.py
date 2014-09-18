@@ -77,6 +77,8 @@ class Muon():
 
             # FIXME!
             self.bitword = 0
+            self.frame = 0
+            self.link = 0
 
 
     @staticmethod

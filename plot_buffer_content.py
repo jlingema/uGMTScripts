@@ -127,11 +127,9 @@ if __name__ == "__main__":
 
         print "{fn}_in_muons :".format(fn=filename), non_zero(in_muons), "/", len(in_muons)
         print "{fn}_num of final non-zero Output-Muons: ".format(fn=filename), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"
-        print "{fn}_Output-Muons behind end_frame:"
         print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
         print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(ranks)
 
-        
         hist_rnk = create_and_fill_rank_hist(ranks, file_dict[filename]["rx"])
         plot_modifier(hist_rnk, "rank", "N", ROOT.kBlack)
         hist_rnk.Draw()
@@ -173,4 +171,3 @@ if __name__ == "__main__":
 
             txt.Draw()
             canvas.Print("{f}/figures/hw_{name}.pdf".format(f=filename, name=hist_parameters[var][0]))
-        print "*"*100
