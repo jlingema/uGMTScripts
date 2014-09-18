@@ -19,7 +19,7 @@ class VHDLConstantsParser(object):
                 values[i] = "val_dict['"+values[i]+"']"
             eval_str += values[i]
 
-        VHDLConstantsParser._log.warning("Found combinatorical expression, please check (assuming the values are stored in dict val_dict):")
+        VHDLConstantsParser._log.info("Found combinatorical expression, please check (assuming the values are stored in dict val_dict):")
         value = eval(eval_str)
         print "\t\t", eval_str, "=", value
         return value
