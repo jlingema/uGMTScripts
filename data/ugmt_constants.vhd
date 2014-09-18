@@ -72,7 +72,7 @@ package ugmt_constants is
   constant PHI_IN_HIGH : natural := 34;
 
   constant ADDRESS_IN_LOW  : natural := 35;
-  constant ADDRESS_IN_HIGH : natural := 62;
+  constant ADDRESS_IN_HIGH : natural := 61;
 
   --
   -- out
