@@ -2,15 +2,19 @@ import ROOT
 import math
 import os
 from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1, TLatex
-from mp7_buffer_parser import InputBufferParser, OutputBufferParser
+from mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
 from tools.TDRStyle import TDRStyle
-from tools.muon_helpers import non_zero, print_out_word
+from tools.muon_helpers import non_zero, print_out_word, print_in_word
 from optparse import OptionParser
+from tools.logger import log
+from logging import  INFO
+import re
 
 def parse_options():
     parser = OptionParser()
     parser.add_option("-f", "--directory", dest="directory")
+    parser.add_option('-v', '--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False,              action='store_true')
     return parser.parse_args()
 
 def create_and_fill_muon_hists(hist_parameters, muon_list, pfix):
@@ -59,6 +63,13 @@ def plot_modifier(hist, xlabel, ylabel, color, marker_style=None):
     if color != ROOT.kBlack:
         hist.SetFillColor(color)
 
+def determine_version_from_filename (fname):
+    version_re = re.compile("[0-9]_[0-9]_[0-9]")
+    version_match = version_re.search(fname)
+    if version_match:
+        # get rid of starting constant
+        version = Version(version_match.group(0))
+    return version
 
 if __name__ == "__main__":
     TDRStyle.initialize()
@@ -74,9 +85,17 @@ if __name__ == "__main__":
 
     options, args = parse_options()
 
+    _log = None
+    if options.verbose:
+        _log = log.init_logging("BufferAnalyzer")
+    else:
+        _log = log.init_logging("BufferAnalyzer", INFO)
+
     file_dict = {}
 
-    for roots, dirs, files in os.walk("{d}".format(d=options.directory)):
+    for roots, dirs, files in os.walk(options.directory):
+        if "random" in roots: 
+            continue
         tmp_dict = {}
         for fname in files:
             if "tx_" in fname:
@@ -108,13 +127,19 @@ if __name__ == "__main__":
     }
 
     for filename in file_dict:
+        version = determine_version_from_filename(filename)
         print "+"*30, filename, "+"*30
         # Reading and processing the hardware data
         input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
-        output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict)
+        output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict, version)
 
         in_muons = input_parser.get_input_muons()
 
+        for mu in in_muons:
+            if mu.bitword != 0:
+                if mu.qualityBits == 2:
+                    _log.debug(print_in_word(mu.bitword))
+                    _log.debug(hex(mu.bitword))
         out_muons = output_parser.get_output_muons()
         intermediate_muons = output_parser.get_intermediate_muons()
         ranks = output_parser.get_ranks()
@@ -125,10 +150,32 @@ if __name__ == "__main__":
                 rank_num_of_non_zeros = rank_num_of_non_zeros+1
         ####
 
-        print "{fn}_in_muons :".format(fn=filename), non_zero(in_muons), "/", len(in_muons)
-        print "{fn}_num of final non-zero Output-Muons: ".format(fn=filename), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"
-        print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
-        print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(ranks)
+        _log.info("in_muons : {nz} / {all}".format(nz=non_zero(in_muons), all=len(in_muons)))
+        _log.info("num of final non-zero Output-Muons: {nz} / {all}".format(nz=non_zero(out_muons), all=len(out_muons)))#,"), corresponds to ", len(out_muons)/8," Events")
+        _log.info("num of intermediate non-zero Output-Muons: {nz} / {all}".format(nz=non_zero(intermediate_muons), all=len(intermediate_muons)))#, "), corresponds to ", len(intermediate_muons)/24," Events" )
+        _log.info("n_ranks {nz} / {all}".format(nz=rank_num_of_non_zeros, all=len(ranks)))
+
+        cntr = 0
+        while cntr < len(out_muons)+1:
+            event = cntr/8
+            if non_zero(out_muons[cntr:cntr+8]) == 0:
+                for mu in in_muons[event*108:(event+1)*108]:
+                    if mu.bitword != 0:
+                        _log.debug("input-link, frame: {l}, {fr}".format(l=mu.link, fr=mu.frame))
+                        #print "imd: ", non_zero(intermediate_muons[event*24:(event+1)*24])
+            else: # do some sorting analysis
+                _log.debug("-"*10+"sorting analysis"+"-"*10)
+                _log.debug("-- final muons: --")
+                for out_mu in out_muons[cntr:cntr+8]:
+                    _log.debug("out rank: {r}".format(r=out_mu.ptBits+out_mu.qualityBits))
+                _log.debug("-- inter muons: --")
+                for imd_mu in intermediate_muons[event*24:(event+1)*24]:
+                    _log.debug("out rank: {r}".format(r=imd_mu.ptBits+imd_mu.qualityBits))
+
+            cntr += 8
+
+
+
 
         hist_rnk = create_and_fill_rank_hist(ranks, file_dict[filename]["rx"])
         plot_modifier(hist_rnk, "rank", "N", ROOT.kBlack)

@@ -15,7 +15,7 @@ class log:
 
     @staticmethod
     def init_logging(name = "", level = None):
-        if not log.init:
+        if not log.init or level!= None:
             log._log = logging.getLogger()
             if level != None:
                 log._log.setLevel(level)

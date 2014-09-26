@@ -47,9 +47,10 @@ def print_in_word(w, show_legend = False):
     print_w = bin(w)[2:]
     print_w = "0"*(64-len(print_w))+print_w
     pretty_print_w =  print_w[0] + add_pre + print_w[1:28] + phi_pre + print_w[28:32] + reset + print_w[32] + phi_pre + print_w[33:39]+ sys_pre + print_w[39:41] + reset + print_w[41] + eta_pre + print_w[42:51] + q_pre + print_w[51:55] + pt_pre + print_w[55:] + reset
-    print pretty_print_w
     if show_legend:
         print  add_pre + "add" + phi_pre + "phi" + sys_pre + "sys" + eta_pre + "eta" + q_pre + "q"+ pt_pre + "pt"+ reset
+    return pretty_print_w
+    
 
 def print_out_word(w, show_legend = False):
     pt_pre = '\x1b[31;01m'
@@ -62,6 +63,7 @@ def print_out_word(w, show_legend = False):
     print_w = bin(w)[2:]
     print_w = "0"*(64-len(print_w))+print_w
     pretty_print_w =  print_w[:29] + sys_pre + print_w[29:31] + iso_pre + print_w[31:33] + eta_pre + print_w[33:42] + q_pre + print_w[42:45] + pt_pre + print_w[45:54] + phi_pre + print_w[54:] + reset
-    print pretty_print_w
     if show_legend:
         print  sys_pre + "sys" + iso_pre + "iso" + eta_pre + "eta" + q_pre + "q" + pt_pre + "pt" + phi_pre + "phi" + reset
+    return pretty_print_w
+    
