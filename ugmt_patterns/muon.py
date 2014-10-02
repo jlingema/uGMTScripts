@@ -81,8 +81,9 @@ class Muon():
                             (self.phiBits << phi_low) + \
                             (self.etaBits << eta_low) + \
                             (self.ptBits << pt_low) + \
-                            (self.Iso << iso_low) + \
                             (self.qualityBits << qual_low)
+            if mu_type == "OUT": 
+                self.bitword += (self.Iso << iso_low)
         self.frame = frame
         self.link = link
 
