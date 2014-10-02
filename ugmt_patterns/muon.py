@@ -1,7 +1,7 @@
 from tools.bithelper import bithlp
 
 class Muon():
-    def __init__(self, vhdl_dict, mu_type, bitword = None, obj = None, ):
+    def __init__(self, vhdl_dict, mu_type, bitword = None, obj = None, link = -1, frame = -1):
         # If the Muon object is a hardware output it has to be called with bitword
         # If....is a Emulator output ....with obj
     
@@ -77,9 +77,14 @@ class Muon():
                 self.rank = -9999
 
             # FIXME!
-            self.bitword = 0
-            self.frame = 0
-            self.link = 0
+            self.bitword = (self.Sysign << sysign_low) + \
+                            (self.phiBits << phi_low) + \
+                            (self.etaBits << eta_low) + \
+                            (self.ptBits << pt_low) + \
+                            (self.Iso << iso_low) + \
+                            (self.qualityBits << qual_low)
+        self.frame = frame
+        self.link = link
 
 
     def get_phi(self, xlow, xup):
