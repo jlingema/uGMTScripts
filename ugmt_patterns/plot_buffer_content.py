@@ -64,7 +64,7 @@ def plot_modifier(hist, xlabel, ylabel, color, marker_style=None):
         hist.SetFillColor(color)
 
 def determine_version_from_filename (fname):
-    version_re = re.compile("[0-9]_[0-9]_[0-9]")
+    version_re = re.compile("[0-9]*_[0-9]*_[0-9]*")
     version_match = version_re.search(fname)
     if version_match:
         # get rid of starting constant
@@ -164,14 +164,19 @@ if __name__ == "__main__":
                         _log.debug("input-link, frame: {l}, {fr}".format(l=mu.link, fr=mu.frame))
                         #print "imd: ", non_zero(intermediate_muons[event*24:(event+1)*24])
             else: # do some sorting analysis
-                _log.debug("-"*10+"sorting analysis"+"-"*10)
+                _log.debug("-"*10+"sorting analysis BX"+str(event)+"-"*10)
                 _log.debug("-- final muons: --")
                 for out_mu in out_muons[cntr:cntr+8]:
-                    _log.debug("out rank: {r}".format(r=out_mu.ptBits+out_mu.qualityBits))
+                    _log.debug("out rank (pT+Q): {r}".format(r=out_mu.ptBits+out_mu.qualityBits))
                 _log.debug("-- inter muons: --")
-                for imd_mu in intermediate_muons[event*24:(event+1)*24]:
-                    _log.debug("out rank: {r}".format(r=imd_mu.ptBits+imd_mu.qualityBits))
-
+                for i, imd_mu in enumerate(intermediate_muons[event*24:(event+1)*24]):
+                    if i == 0: _log.debug("-"*5+"EMTF-")
+                    if i == 4: _log.debug("-"*5+"EMTF+")
+                    if i == 8: _log.debug("-"*5+"OMTF-")
+                    if i == 12: _log.debug("-"*5+"OMTF+")
+                    if i == 16: _log.debug("-"*5+"BMTF")
+                    _log.debug("imd rank (pT+Q): {r} ({pt}+{q}={calc})".format(r=ranks[event*24+i], pt=imd_mu.ptBits, q=imd_mu.qualityBits, calc=imd_mu.ptBits+imd_mu.qualityBits))
+                    
             cntr += 8
 
 
