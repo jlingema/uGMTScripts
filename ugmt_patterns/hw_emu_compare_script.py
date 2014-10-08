@@ -1,14 +1,15 @@
 import ROOT
 import math
 import os
-from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1
+from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1, TLine
 from DataFormats.FWLite import Events, Handle
 from muon import Muon 
-from tools.muon_helpers import  non_zero, single_bit, isequal
+from tools.muon_helpers import  non_zero, single_bit, isequal, print_out_word
 #file_converter, plot_modifier, find_nonzero_output, input_frames, get_rank_list, single_bit, isequal, get_muon_objects, non_zero
 from mp7_buffer_parser import InputBufferParser, OutputBufferParser
 from tools.vhdl import VHDLConstantsParser
 from optparse import OptionParser
+from plot_buffer_content import determine_version_from_filename
 
 def parse_options():
     parser = OptionParser()
@@ -52,7 +53,7 @@ if __name__ == "__main__":
                 tmp_dict["root"] = fname
             if "rx_" in fname:
                 tmp_dict["rx"] = fname
-        if tmp_dict != {}: 
+        if tmp_dict != {}:
             file_dict[roots] = tmp_dict
 
     ##### if the physical properties should be calculated, then the functions phi, eta and pt just have to be discommented. Doing this, the following parameters are their input.
@@ -77,6 +78,7 @@ if __name__ == "__main__":
     }
 
     for filename in file_dict:
+        version = determine_version_from_filename(filename)
         # Reading and initilaising the Emulator data
         emu_out_list = []
         emu_imd_list = []
@@ -101,7 +103,6 @@ if __name__ == "__main__":
             emu_ovl_muons = ovl_handle.product()
             emu_fwd_muons = fwd_handle.product()
             imd_prod = imd_handle.product()
-
             for mu in emu_out_muons:
                 mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj=mu)
                 emu_out_list.append(mu_tmp)
@@ -112,7 +113,7 @@ if __name__ == "__main__":
 
         # Reading and processing the hardware data
         input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
-        output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict)
+        output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict, version)
 
         in_muons = input_parser.get_input_muons()
         out_muons = output_parser.get_output_muons()
@@ -132,42 +133,72 @@ if __name__ == "__main__":
         print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
         print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(ranks)
 
-
-        #if len(out_muons) != len(emu_out_list): ### prints a warning if hardware- and Emulator-output have an unequal number of events
-        #   print "Attention : Unequal number of Output- and Emulatormuons being compared! [occured at pattern {f}]".format(f=filename)
-        #   print "len(out_muons) = ", len(out_muons), ", corresponds to ", len(out_muons)/8, " events"
-        #   print "len(emu_out_list) = ", len(emu_out_list), ", corresponds to ", len(emu_out_list)/8, " events"
-
-        hist1 = TH2D("{f}_comparison1".format(f=filename),"comparison of hardware: all bits [{f}]".format(f=filename),64,0,64,8,1,min(len(out_muons),len(emu_out_list)))
-        for y in xrange(min(len(out_muons),len(emu_out_list))):
+        hist1 = TH2D("{f}_comparison1".format(f=file_dict[filename]["root"]), "", 64, 0, 64, 8, 1, 9)
+        #for y in xrange(min(len(out_muons),len(emu_out_list))):
+        mucnt = 0
+        for mu, emu_mu in zip(out_muons, emu_out_list):
+            if mu.bitword == emu_mu.bitword: continue
             for x in xrange(64):
-                hw = single_bit(out_muons[y].bitword,x)
-                emu = single_bit(emu_out_list[y].bitword,x)
-                hist1.Fill(x,(y+1)*isequal(hw, emu))
+                hw = single_bit(mu.bitword, x)
+                emu = single_bit(emu_mu.bitword, x)                
+                if hw != emu:
+                    hist1.Fill(x, mucnt%8+1)
+            mucnt += 1
 
         hist1.Draw("TEXT COLZ")
-        hist1.SetMaximum(90)
-        hist1.SetMinimum(-1)
+
+        var_list = ["PHI", "ETA", "PT", "QUAL", "ISO", "SYSIGN"]
+        bs = []
+        for v in var_list:
+            low = vhdl_dict[v+"_OUT_LOW"]
+            high = (vhdl_dict[v+"_OUT_HIGH"]+1)
+            
+            b = TLine(low, 1, low, 9)
+            b.SetLineStyle(2)
+            b.SetLineWidth(2)
+
+            b.Draw()
+            bs.append(b)
+            b = TLine(high, 1, high, 9)
+            b.SetLineStyle(2)
+            b.SetLineWidth(2)
+            b.Draw()
+            bs.append(b)
+
         hist1.SetContour(5)
         hist1.SetStats(0)
         hist1.GetXaxis().SetTitle("Bits")
         for n in xrange(64):
-            hist1.GetXaxis().SetBinLabel(n+1,"{n}".format(n=n+1))
+            hist1.GetXaxis().SetBinLabel(n+1,"{n}".format(n=n))
         for n in xrange(8):
             hist1.GetYaxis().SetBinLabel(n+1,"Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/bitplot1.pdf".format(f=filename))
 
-        hist2 = TH2D("{f}_comparison2".format(f=filename),"comparison of hardware: overview [{f}]".format(f=filename),4,0,4,8,1,min(len(out_muons),len(emu_out_list)))
-        for y in xrange(min(len(out_muons),len(emu_out_list))):
-            hist2.Fill(0,(y+1)*isequal(out_muons[y].phiBits, emu_out_list[y].phiBits))
-            hist2.Fill(1,(y+1)*isequal(out_muons[y].ptBits,emu_out_list[y].ptBits))
-            hist2.Fill(2,(y+1)*isequal(out_muons[y].qualityBits,emu_out_list[y].qualityBits))
-            hist2.Fill(3,(y+1)*isequal(out_muons[y].etaBits,emu_out_list[y].etaBits))
+        hist2 = TH2D("{f}_comparison2".format(f=file_dict[filename]["root"]), "", 4, 0, 4, 8, 1, 9)
+        mucnt = 0
+        for mu, emu_mu in zip(out_muons, emu_out_list):
+            if mu.phiBits != emu_mu.phiBits:
+                hist2.Fill(0, mucnt%8+1)
+            if mu.ptBits != emu_mu.ptBits:
+                hist2.Fill(1, mucnt%8+1)
+            if mu.qualityBits != emu_mu.qualityBits:
+                hist2.Fill(2, mucnt%8+1)
+            if mu.etaBits != emu_mu.etaBits:
+                hist2.Fill(3, mucnt%8+1)
+            if mu.bitword != emu_mu.bitword:
+                if mucnt%8 == 0: print " ************************ new event ********************************"
+                print "---"
+                print "hw", print_out_word(mu.bitword)
+                print "em", print_out_word(emu_mu.bitword)    
+            mucnt += 1
             #hist2.Fill(3,(y+1)*isequal(twos_complement_sign(out_muons[y].etaBits,9),emu_out_list[y].etaBits()))  ### for mistakes on purpose
 
         hist2.Draw("TEXT COLZ")
-        hist2.SetMaximum(90)
-        hist2.SetMinimum(-1)
+
+
+
+        # hist2.SetMaximum(90)
+        # hist2.SetMinimum(-1)
         hist2.SetContour(5)
         hist2.SetStats(0)
         hist2.GetXaxis().SetBinLabel(1,"phiBits")

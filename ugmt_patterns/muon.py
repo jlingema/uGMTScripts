@@ -44,10 +44,10 @@ class Muon():
             if hasattr(obj,"Sysign"):
                 self.Sysign = obj.Sysign()
             else:
-                self.Sysign = -9999
-                
+                self.Sysign = 0
+
             if hasattr(obj,"etaBits"):
-                self.etaBits = obj.etaBits()
+                self.etaBits = bithlp.twos_complement_to_unsigned(obj.etaBits(), 9)
             else:
                 self.etaBits = -9999
 
@@ -66,8 +66,8 @@ class Muon():
             else:
                 self.phiBits = -9999
 
-            if hasattr(obj,"Iso"):
-                self.Iso = obj.Iso()
+            if hasattr(obj,"relIsolationBits") and hasattr(obj,"absIsolationBits"):
+                self.Iso = (obj.relIsolationBits() << 1)+obj.absIsolationBits()
             else:
                 self.Iso = -9999
 
@@ -76,13 +76,19 @@ class Muon():
             else:
                 self.rank = -9999
 
-            # FIXME!
+
+            # print "sign", bin(self.Sysign << sysign_low)
+            # print "phi ", bin(self.phiBits << phi_low)
+            # print "eta ", bin(self.etaBits << eta_low)
+            # print "pt  ", bin(self.ptBits << pt_low)
+            # print "q   ", bin(self.qualityBits << qual_low)
+
             self.bitword = (self.Sysign << sysign_low) + \
                             (self.phiBits << phi_low) + \
                             (self.etaBits << eta_low) + \
                             (self.ptBits << pt_low) + \
                             (self.qualityBits << qual_low)
-            if mu_type == "OUT": 
+            if mu_type == "OUT":
                 self.bitword += (self.Iso << iso_low)
         self.frame = frame
         self.link = link
@@ -92,7 +98,7 @@ class Muon():
         # this is a specialized function because phi reaches over the word boundary
         ctrl_mask = bithlp.get_mask(31, 31)
         # +1 because dinyar shaves off the 32nd bit in the vhdl-file
-        raw_mask = bithlp.get_mask(xlow, xup+1) 
+        raw_mask = bithlp.get_mask(xlow, xup+1)
         # mask is 11110111111 for phi
         mask = raw_mask^ctrl_mask
         raw_val = self.bitword & mask
