@@ -37,6 +37,7 @@ if __name__ == "__main__":
     gStyle.SetHistMinimumZero()
     gStyle.SetPalette(1)
     canvas = TCanvas("canvas_of_plots","comparisons")
+    canvas.SetFillStyle(0)
 
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 
@@ -85,17 +86,17 @@ if __name__ == "__main__":
 
         events = Events('{f}/{fn}'.format(f=filename, fn=file_dict[filename]["root"]))
 
-        out_handle = Handle('std::vector<GMTMuonCandidate>')
-        bar_handle = Handle('std::vector<GMTInputMuon>')
-        fwd_handle = Handle('std::vector<GMTInputMuon>')
-        ovl_handle = Handle('std::vector<GMTInputMuon>')
-        imd_handle = Handle('std::vector<GMTMuonCandidate>')
+        out_handle = Handle('BXVector<l1t::Muon>')
+        bar_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
+        fwd_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
+        ovl_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
+        imd_handle = Handle('BXVector<l1t::Muon>')
 
         for i, event in enumerate(events):
             event.getByLabel("microGMTEmulator", out_handle)
-            event.getByLabel("microGMTInputProducer", "BarrelTFMuons", bar_handle)
-            event.getByLabel("microGMTInputProducer", "ForwardTFMuons", fwd_handle)
-            event.getByLabel("microGMTInputProducer", "OverlapTFMuons", ovl_handle)
+            event.getByLabel("uGMTInputProducer", "BarrelTFMuons", bar_handle)
+            event.getByLabel("uGMTInputProducer", "ForwardTFMuons", fwd_handle)
+            event.getByLabel("uGMTInputProducer", "OverlapTFMuons", ovl_handle)
             event.getByLabel("microGMTEmulator", "intermediateMuons", imd_handle)
 
             emu_out_muons = out_handle.product()
@@ -103,14 +104,27 @@ if __name__ == "__main__":
             emu_ovl_muons = ovl_handle.product()
             emu_fwd_muons = fwd_handle.product()
             imd_prod = imd_handle.product()
-            for mu in emu_out_muons:
+            for j in xrange(emu_out_muons.size(0)):
+                mu = emu_out_muons.at(0, j)
                 mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj=mu)
                 emu_out_list.append(mu_tmp)
 
-            for mu in imd_prod:
+            add_muons = 8-emu_out_muons.size(0)
+            while add_muons != 0:
+                mu_tmp = Muon(vhdl_dict, mu_type="OUT", bitword=0)    
+                emu_out_list.append(mu_tmp)
+                add_muons -= 1
+
+            for j in xrange(imd_prod.size(0)):
+                mu = imd_prod.at(0, j)
                 mu_tmp = Muon(vhdl_dict, mu_type="IN", obj=mu)
                 emu_imd_list.append(mu_tmp)
 
+            add_muons = 24-imd_prod.size(0)
+            while add_muons != 0:
+                mu_tmp = Muon(vhdl_dict, mu_type="OUT", bitword=0)    
+                emu_imd_list.append(mu_tmp)
+                add_muons -= 1
         # Reading and processing the hardware data
         input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
         output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict, version)
@@ -135,15 +149,20 @@ if __name__ == "__main__":
 
         hist1 = TH2D("{f}_comparison1".format(f=file_dict[filename]["root"]), "", 64, 0, 64, 8, 1, 9)
         #for y in xrange(min(len(out_muons),len(emu_out_list))):
-        mucnt = 0
+        mucnt = -1
+        print len(out_muons), len(emu_out_list)
         for mu, emu_mu in zip(out_muons, emu_out_list):
-            if mu.bitword == emu_mu.bitword: continue
+            mucnt += 1
+            if mu.bitword == emu_mu.bitword: 
+                continue
             for x in xrange(64):
                 hw = single_bit(mu.bitword, x)
-                emu = single_bit(emu_mu.bitword, x)                
+                emu = single_bit(emu_mu.bitword, x)
                 if hw != emu:
                     hist1.Fill(x, mucnt%8+1)
-            mucnt += 1
+                # if mucnt%8+1 != 1:
+                #     print "hw", print_out_word(mu.bitword)
+                #     print "em", print_out_word(emu_mu.bitword)  
 
         hist1.Draw("TEXT COLZ")
 
@@ -175,22 +194,27 @@ if __name__ == "__main__":
         canvas.Print("{f}/figures/bitplot1.pdf".format(f=filename))
 
         hist2 = TH2D("{f}_comparison2".format(f=file_dict[filename]["root"]), "", 4, 0, 4, 8, 1, 9)
-        mucnt = 0
+        mucnt = -1
         for mu, emu_mu in zip(out_muons, emu_out_list):
+            mucnt += 1
+
             if mu.phiBits != emu_mu.phiBits:
                 hist2.Fill(0, mucnt%8+1)
+                # print "phi", mu.phiBits, emu_mu.phiBits
             if mu.ptBits != emu_mu.ptBits:
                 hist2.Fill(1, mucnt%8+1)
+                # print "pt", mu.ptBits, emu_mu.ptBits
             if mu.qualityBits != emu_mu.qualityBits:
                 hist2.Fill(2, mucnt%8+1)
+                # print "q", mu.qualityBits, emu_mu.qualityBits, type(mu.qualityBits), type(emu_mu.qualityBits)
             if mu.etaBits != emu_mu.etaBits:
                 hist2.Fill(3, mucnt%8+1)
-            if mu.bitword != emu_mu.bitword:
-                if mucnt%8 == 0: print " ************************ new event ********************************"
-                print "---"
-                print "hw", print_out_word(mu.bitword)
-                print "em", print_out_word(emu_mu.bitword)    
-            mucnt += 1
+                # print "eta", mu.etaBits, emu_mu.etaBits
+            
+                # print "---"
+                # print "hw", print_out_word(mu.bitword)
+                # print "em", print_out_word(emu_mu.bitword, True)    
+            # print print_out_word(mu.bitword, True)
             #hist2.Fill(3,(y+1)*isequal(twos_complement_sign(out_muons[y].etaBits,9),emu_out_list[y].etaBits()))  ### for mistakes on purpose
 
         hist2.Draw("TEXT COLZ")

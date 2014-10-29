@@ -24,7 +24,7 @@ class Muon():
             iso_low = vhdl_dict["ISO_OUT_LOW"]
             iso_high = vhdl_dict["ISO_OUT_HIGH"]
 
-        if obj == None:     # for hardware  
+        if obj == None and bitword != None:     # for hardware  
             self.bitword = bitword
             self.Sysign = bithlp.get_shifted_subword(self.bitword, sysign_low, sysign_high)
             self.etaBits = bithlp.get_shifted_subword(self.bitword, eta_low, eta_high)
@@ -35,47 +35,20 @@ class Muon():
                 self.phiBits = bithlp.get_shifted_subword(self.bitword, phi_low, phi_high)
                 self.Iso = bithlp.get_shifted_subword(self.bitword, iso_low, iso_high)
             else:
-                self.Iso = -9999
+                self.Iso = 0
                 # for input have to mask the 31st bit as it is control bit
                 self.phiBits = self.get_phi(phi_low, phi_high)
-            self.rank = -9999
+            self.rank = 0
 
-        elif bitword == None: # for emulator
-            if hasattr(obj,"Sysign"):
-                self.Sysign = obj.Sysign()
-            else:
-                self.Sysign = 0
-
-            if hasattr(obj,"etaBits"):
-                self.etaBits = bithlp.twos_complement_to_unsigned(obj.etaBits(), 9)
-            else:
-                self.etaBits = -9999
-
-            if hasattr(obj,"qualityBits"):
-                self.qualityBits = obj.qualityBits()
-            else:
-                self.qualityBits = -9999
-
-            if hasattr(obj,"ptBits"):
-                self.ptBits = obj.ptBits()
-            else:
-                self.ptBits = -9999
-
-            if hasattr(obj,"phiBits"):
-                self.phiBits = obj.phiBits()
-            else:
-                self.phiBits = -9999
-
-            if hasattr(obj,"relIsolationBits") and hasattr(obj,"absIsolationBits"):
-                self.Iso = (obj.relIsolationBits() << 1)+obj.absIsolationBits()
-            else:
-                self.Iso = -9999
-
-            if hasattr(obj, "rank"):
-                self.rank = obj.rank()
-            else:
-                self.rank = -9999
-
+        elif bitword == None and obj != None: # for emulator
+            self.Sysign = obj.hwCharge() + (obj.hwChargeValid() << 1)
+            self.etaBits = obj.hwEta()
+            unsigned_eta = bithlp.twos_complement_to_unsigned(obj.hwEta(), 9)
+            self.qualityBits = obj.hwQual()
+            self.ptBits = obj.hwPt()
+            self.phiBits = obj.hwPhi()
+            self.Iso = obj.hwIso()
+            self.rank = 0
 
             # print "sign", bin(self.Sysign << sysign_low)
             # print "phi ", bin(self.phiBits << phi_low)
@@ -85,7 +58,7 @@ class Muon():
 
             self.bitword = (self.Sysign << sysign_low) + \
                             (self.phiBits << phi_low) + \
-                            (self.etaBits << eta_low) + \
+                            (unsigned_eta << eta_low) + \
                             (self.ptBits << pt_low) + \
                             (self.qualityBits << qual_low)
             if mu_type == "OUT":

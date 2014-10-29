@@ -80,6 +80,7 @@ if __name__ == "__main__":
     gStyle.SetHistMinimumZero()
     gStyle.SetPalette(1)
     canvas = TCanvas("canvas_of_plots","comparisons")
+    canvas.SetFillStyle(0)
 
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 

@@ -47,6 +47,11 @@ def mu_to_string(mu_line, line_no):
             if name == "ADDRESS": 
                 # val = (1<<29)-1 #FIXME!
                 val = 0
+            elif name == "SYSIGN":
+                sign_valid = int(mu_params[6])
+                sign = int(mu_params[7])
+                sysign = (sign_valid << 1) + sign
+                mu_int += (sysign << shift)
             else: 
                 val = bithlp.twos_complement_to_unsigned(int(mu_params[p_key]), nbits)
                 mu_int += (val << shift)
