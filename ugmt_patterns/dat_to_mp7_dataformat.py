@@ -14,32 +14,6 @@ def get_mask(xlow, xup):
     mask = ones<<xlow
     return mask
 
-def print_dformat(df, i, values = None):
-    word = df[i]
-
-    header = "\n| Word "+str(i)
-    names = "\n| Name:  "
-    widths = "\n| Width: "
-    starts = "\n| Start: "
-    value_str = "\n| Vals:  "
-    for name, cf in word.iteritems():
-        names += " "+name
-        widths +=  " "+"{}".format(cf[1] - cf[0]+1).rjust(len(name))
-        starts +=  " "+"{}".format(cf[2]).rjust(len(name))
-        if values != None:
-            value_str += " "+"{}".format(values[name]).rjust(len(name))
-    start_end = "+"+"-"*(len(names)+2)+"+"
-    header += " "*(len(start_end)-len(header))+"|"
-    names+=" "*(len(start_end)-len(names))+"|"
-    value_str += " "*(len(start_end)-len(value_str))+"|"
-    widths+=" "*(len(start_end)-len(widths))+"|"
-    starts+=" "*(len(start_end)-len(starts))+"|"
-    p_string = start_end+header+names+starts+widths
-    if values != None:
-        p_string += value_str
-    p_string += "\n"+start_end
-    print p_string
-
 
 def mu_to_string(mu_line, line_no):
     mu_params = mu_line.split()
