@@ -62,7 +62,7 @@ def print_out_word(w, show_legend = False):
     reset = '\x1b[39;49;00m'
     print_w = bin(w)[2:]
     print_w = "0"*(64-len(print_w))+print_w
-    pretty_print_w =  print_w[:29] + sys_pre + print_w[29:31] + iso_pre + print_w[31:33] + eta_pre + print_w[33:42] + q_pre + print_w[42:45] + pt_pre + print_w[45:54] + phi_pre + print_w[54:] + reset
+    pretty_print_w =  print_w[:28] + sys_pre + print_w[28:30] + iso_pre + print_w[30:32] + eta_pre + print_w[32:41] + q_pre + print_w[41:45] + pt_pre + print_w[45:54] + phi_pre + print_w[54:] + reset
     if show_legend:
         print  sys_pre + "sys" + iso_pre + "iso" + eta_pre + "eta" + q_pre + "q" + pt_pre + "pt" + phi_pre + "phi" + reset
     return pretty_print_w
