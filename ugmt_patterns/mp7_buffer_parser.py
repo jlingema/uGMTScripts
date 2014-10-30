@@ -5,9 +5,9 @@ from tools.logger import log
 class Version(object):
     def __init__(self, versionstring):
         v_parts = versionstring.split("_")
-        self.full = int(v_parts[0])
-        self.sub = int(v_parts[1])
-        self.subsub = int(v_parts[2])
+        self.major = int(v_parts[0])
+        self.minor = int(v_parts[1])
+        self.patch = int(v_parts[2])
 
 class BufferParser(object):
     """
@@ -71,7 +71,6 @@ class BufferParser(object):
             mu_dict[frame] = []
             for link_n in xrange(link_low, link_high+1):
                 # only take frames with valid bit set
-                
                 if "1v" in self.frame_dict[frame][link_n] and "1v" in self.frame_dict[frame+1][link_n]:
                     a = self.get_num(frame, link_n)
                     b = self.get_num(frame+1, link_n)
@@ -128,10 +127,11 @@ class InputBufferParser(BufferParser):
         # for frame, muons in muon_dict.iteritems():
         #     muon_objs += [ Muon(self.vhdl_dict, "IN", bitword=info[0], link=info[1], frame = frame) for info in muons ]
         while frame < (self.frame_high):
+            bx = (frame+1) / 6
             for i in xrange(36): #8 links
-                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame)) 
-                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2)) 
-                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4))
+                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx)) 
+                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
+                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
             frame += 6
         return muon_objs
 
@@ -146,10 +146,9 @@ class OutputBufferParser(BufferParser):
         self.get_ranges()
 
     def get_ranges(self):
-        if self.version.subsub >= 6:
-            self.intermediate_offset = 0
-            self.rank_offset = 0
-        else:
+        self.intermediate_offset = 0
+        self.rank_offset = 0
+        if self.version.patch < 6 and self.version.major == 0 and self.version.minor == 0:
             self.intermediate_offset = -6
             self.rank_offset = -6
 
@@ -212,9 +211,10 @@ class OutputBufferParser(BufferParser):
 
         frame = self.frame_low
         while frame < self.frame_high:
+            bx = (frame + 1 - self.frame_low) / 6
             for i in xrange(4): #4 links
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame)) 
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2))
+                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx)) 
+                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx))
             frame += 6 # next event
             
         return muon_objs
@@ -229,10 +229,12 @@ class OutputBufferParser(BufferParser):
 
         frame = self.frame_low+self.intermediate_offset
         while frame < (self.frame_high+self.intermediate_offset):
-            for i in xrange(8): #8 links
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame)) 
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2)) 
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4))
+            bx = (frame + 1 - self.frame_low + self.intermediate_offset) / 6
+            # 8 links NOTE: when getting dict the link-offsets are already defined...
+            for i in xrange(8): 
+                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx)) 
+                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
+                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
             frame += 6
         return muon_objs
 
