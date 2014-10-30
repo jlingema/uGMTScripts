@@ -14,8 +14,11 @@ import re
 def parse_options():
     parser = OptionParser()
     parser.add_option("-f", "--directory", dest="directory")
-    parser.add_option('-v', '--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False,              action='store_true')
-    return parser.parse_args()
+    parser.add_option('-v', '--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False, action='store_true')
+    parser.add_option("-u", '--veryverbose', dest="detaildump", help="Even more output (%defahult)", default=False, action="store_true")
+    opts, args = parser.parse_args()
+    if opts.detaildump: opts.verbose = True
+    return opts, args
 
 def create_and_fill_muon_hists(hist_parameters, muon_list, pfix):
     hist_dict = {}
