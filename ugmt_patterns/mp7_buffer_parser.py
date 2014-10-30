@@ -166,13 +166,17 @@ class OutputBufferParser(BufferParser):
         self.link_rank_high = 13
 
         last_0v_frame = 0
+        escape = False
         for link in xrange(self.link_out_low, self.link_out_high+1):
+            if escape: break
             for frame in xrange(0, self.max_frame+1):
                 a = self.frame_dict[frame][link]
+                #if frame >= 41 and frame <= 84: print a;
                 if a[:2] == "0v":
                     last_0v_frame = frame
                 if a[:2] == "1v" and a != "1v00000000":
                     self.frame_low = last_0v_frame+1
+                    escape = True
                     break
 
         if self.frame_low == -1:
@@ -206,13 +210,14 @@ class OutputBufferParser(BufferParser):
 
     def get_output_muons(self):
         if not self.initialized: self.init() 
+        # check if initialization failed
         if not self.frame_low > 0: return []
         muon_dict = self.get_muon_dict(self.link_out_low, self.link_out_high, self.frame_low, self.frame_high, "OUT")
         muon_objs = []
 
         frame = self.frame_low
         while frame < self.frame_high:
-            for i in xrange(4): #4 links
+            for i in xrange(4): # 4 links
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame)) 
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2))
             frame += 6 # next event
@@ -229,27 +234,35 @@ class OutputBufferParser(BufferParser):
 
         frame = self.frame_low+self.intermediate_offset
         while frame < (self.frame_high+self.intermediate_offset):
-            for i in xrange(8): #8 links
+            for i in xrange(8): # 8 links
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame)) 
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2)) 
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4))
             frame += 6
         return muon_objs
 
+    def extract_rank_words(self, bitword):
+        rank_bitlength = 10
+        freebits = 32-rank_bitlength*2
+        ranksword = bitword >> freebits
+        rank1 = ranksword >> rank_bitlength #msw
+        rank2 = get_masked_word(ranksword, 0, rank_bitlength-1) #lsw
+        return rank1, rank2
+
     def get_ranks(self): 
         # returns a list of valid ranks in the range specified
         if not self.initialized: self.init()
         if not self.frame_low > 0: return []
-        rank_bitlength = 10
-        freebits = 32-rank_bitlength*2
+
         rank_list = []
-        for frame in xrange(self.frame_low+self.intermediate_offset, self.frame_high+self.intermediate_offset):
-            for link in xrange(self.link_rank_low, self.link_rank_high+1): 
-                tmp = self.get_num(frame, link)
-                # gets rid of empty 12 LSBs
-                ranksword = tmp >> freebits
-                rank2 = ranksword >> rank_bitlength
-                rank1 = get_masked_word(ranksword, 1+rank_bitlength, 2*rank_bitlength)
-                rank_list.append(rank1)
-                rank_list.append(rank2)
+        frame = self.frame_low+self.rank_offset
+        while frame < (self.frame_high+self.rank_offset):
+        # for frame in xrange(self.frame_low+self.intermediate_offset, self.frame_high+self.intermediate_offset):
+            for link in xrange(self.link_rank_low, self.link_rank_high+1):
+                for i in xrange(6): # every frame contains ranks
+                    tmp = self.get_num(frame+i, link)
+                    rank1, rank2 = self.extract_rank_words(tmp)
+                    rank_list.append(rank1)
+                    rank_list.append(rank2)
+            frame += 6
         return rank_list
