@@ -1,7 +1,8 @@
 from tools.bithelper import bithlp
+from tools.muon_helpers import  non_zero, single_bit, isequal, print_out_word
 
 class Muon():
-    def __init__(self, vhdl_dict, mu_type, bitword = None, obj = None, link = -1, frame = -1):
+    def __init__(self, vhdl_dict, mu_type, bitword = None, obj = None, link = -1, frame = -1, bx = -1):
         # If the Muon object is a hardware output it has to be called with bitword
         # If....is a Emulator output ....with obj
     
@@ -41,32 +42,36 @@ class Muon():
             self.rank = 0
 
         elif bitword == None and obj != None: # for emulator
-            self.Sysign = obj.hwCharge() + (obj.hwChargeValid() << 1)
+            if mu_type == "OUT":
+                self.Iso = obj.hwIso()
+                self.Sysign = obj.hwCharge() + (obj.hwChargeValid() << 1)
+            else:
+                self.Iso = 0
+                self.Sysign = obj.hwSign() + (obj.hwSignValid() << 1)
+
             self.etaBits = obj.hwEta()
             unsigned_eta = bithlp.twos_complement_to_unsigned(obj.hwEta(), 9)
             self.qualityBits = obj.hwQual()
             self.ptBits = obj.hwPt()
             self.phiBits = obj.hwPhi()
-            self.Iso = obj.hwIso()
             self.rank = 0
 
-            # print "sign", bin(self.Sysign << sysign_low)
-            # print "phi ", bin(self.phiBits << phi_low)
-            # print "eta ", bin(self.etaBits << eta_low)
-            # print "pt  ", bin(self.ptBits << pt_low)
-            # print "q   ", bin(self.qualityBits << qual_low)
-
-            self.bitword = (self.Sysign << sysign_low) + \
-                            (self.phiBits << phi_low) + \
-                            (unsigned_eta << eta_low) + \
+            self.bitword = (self.phiBits << phi_low) + \
                             (self.ptBits << pt_low) + \
-                            (self.qualityBits << qual_low)
-            if mu_type == "OUT":
+                            (self.qualityBits << qual_low) + \
+                            (self.Sysign << sysign_low) + \
+                            (unsigned_eta << eta_low) 
+
+            if mu_type == "OUT" and self.Iso > 0:
                 self.bitword += (self.Iso << iso_low)
+
         self.frame = frame
         self.link = link
+        self.bx = bx
 
-
+    def getBx(self):
+        return self.bx
+        
     def get_phi(self, xlow, xup):
         # this is a specialized function because phi reaches over the word boundary
         ctrl_mask = bithlp.get_mask(31, 31)
