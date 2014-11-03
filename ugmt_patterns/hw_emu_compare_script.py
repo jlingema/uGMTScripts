@@ -3,7 +3,7 @@ import math
 import os
 from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1, TLine
 from DataFormats.FWLite import Events, Handle
-from muon import Muon 
+from helpers.muon import Muon 
 from tools.muon_helpers import  non_zero, single_bit, isequal, print_out_word
 from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
             for j in xrange(imd_prod.size(0)):
                 mu = imd_prod.at(0, j)
-                mu_tmp = Muon(vhdl_dict, mu_type="IN", obj=mu)
+                mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj=mu)
                 emu_imd_list.append(mu_tmp)
 
             add_muons = 24-imd_prod.size(0)
