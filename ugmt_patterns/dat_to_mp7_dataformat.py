@@ -49,7 +49,7 @@ def mu_to_string(mu_line, line_no):
                 val = 0
             elif name == "SYSIGN":
                 sign_valid = int(mu_params[6])
-                sign = int(mu_params[7])
+                sign = int(mu_params[5])
                 sysign = (sign_valid << 1) + sign
                 mu_int += (sysign << shift)
             else: 
