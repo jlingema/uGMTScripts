@@ -2,77 +2,15 @@ import ROOT
 import math
 import os
 from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1, TLatex
-from mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
+from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
 from tools.TDRStyle import TDRStyle
-from tools.muon_helpers import non_zero, print_out_word, print_in_word
-from optparse import OptionParser
+from tools.muon_helpers import print_in_word, non_zero
+from helpers.options import parse_options
+from helpers.buffer_plotting import create_and_fill_rank_hist, plot_modifier, create_and_fill_muon_hists, set_legend_style, set_text_style
 from tools.logger import log
 from logging import  INFO
-import re
 
-def parse_options():
-    parser = OptionParser()
-    parser.add_option("-f", "--directory", dest="directory")
-    parser.add_option('-v', '--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False, action='store_true')
-    parser.add_option("-u", '--veryverbose', dest="detaildump", help="Even more output (%defahult)", default=False, action="store_true")
-    opts, args = parser.parse_args()
-    if opts.detaildump: opts.verbose = True
-    return opts, args
-
-def create_and_fill_muon_hists(hist_parameters, muon_list, pfix):
-    hist_dict = {}
-    for var, options in hist_parameters.iteritems():
-        hist_dict[var] = ROOT.TH1D(var+"_{pfix}".format(pfix=pfix), "", options[1], options[2], options[3])
-
-    for mu in muon_list:
-        # only plot non-zero muons!
-        if mu.bitword == 0: continue
-        hist_dict["qualityBits"].Fill(mu.qualityBits)
-        hist_dict["ptBits"].Fill(mu.ptBits)
-        hist_dict["phiBits"].Fill(mu.phiBits)
-        hist_dict["etaBits"].Fill(mu.etaBits)
-    return hist_dict
-
-def create_and_fill_rank_hist(rank_list, pfix):
-    hist = ROOT.TH1D("rank_{pfix}".format(pfix=pfix), "", 512, 0, 512)
-    for rnk in rank_list:
-        # only plot non-zero muons!
-        hist.Fill(rnk)
-    return hist
-
-def set_legend_style(legend):
-    legend.SetFillColor(ROOT.kWhite)
-    legend.SetLineColor(0)
-    legend.SetTextFont(42)
-    legend.SetTextSize(0.04)
-    legend.SetFillStyle(0)
-    legend.SetLineStyle(0)
-    legend.SetLineWidth(0)
-    legend.SetBorderSize(0)
-
-def set_text_style(txt):
-    txt.SetNDC()
-    txt.SetTextFont(42)
-    txt.SetTextSize(0.04)
-
-def plot_modifier(hist, xlabel, ylabel, color, marker_style=None):
-    hist.GetXaxis().SetTitle(xlabel)
-    hist.GetYaxis().SetTitle(ylabel)
-    if not marker_style == None:
-        hist.SetMarkerStyle(marker_style)
-        hist.SetMarkerColor(color)
-    hist.SetLineColor(color)
-    if color != ROOT.kBlack:
-        hist.SetFillColor(color)
-
-def determine_version_from_filename (fname):
-    version_re = re.compile("[0-9]*_[0-9]*_[0-9]*")
-    version_match = version_re.search(fname)
-    if version_match:
-        # get rid of starting constant
-        version = Version(version_match.group(0))
-    return version
 
 if __name__ == "__main__":
     TDRStyle.initialize()
@@ -131,7 +69,7 @@ if __name__ == "__main__":
     }
 
     for filename in file_dict:
-        version = determine_version_from_filename(filename)
+        version = Version.from_filename(filename)
         print "+"*30, filename, "+"*30
         # Reading and processing the hardware data
         input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)

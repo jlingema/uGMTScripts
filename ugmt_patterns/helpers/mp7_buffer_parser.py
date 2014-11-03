@@ -1,6 +1,7 @@
 from muon import Muon 
 from tools.muon_helpers import get_masked_word
 from tools.logger import log
+import re
 
 class Version(object):
     def __init__(self, versionstring):
@@ -8,6 +9,15 @@ class Version(object):
         self.major = int(v_parts[0])
         self.minor = int(v_parts[1])
         self.patch = int(v_parts[2])
+
+    @staticmethod
+    def from_filename(foldername):
+        version_re = re.compile("[0-9]*_[0-9]*_[0-9]*")
+        version_match = version_re.search(foldername)
+        if version_match:
+            # get rid of starting constant
+            version = Version(version_match.group(0))
+        return version
 
 class BufferParser(object):
     """
@@ -170,7 +180,6 @@ class OutputBufferParser(BufferParser):
             if escape: break
             for frame in xrange(0, self.max_frame+1):
                 a = self.frame_dict[frame][link]
-                #if frame >= 41 and frame <= 84: print a;
                 if a[:2] == "0v":
                     last_0v_frame = frame
                 if a[:2] == "1v" and a != "1v00000000":

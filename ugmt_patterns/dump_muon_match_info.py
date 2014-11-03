@@ -1,8 +1,8 @@
 import os
-from mp7_buffer_parser import InputBufferParser, OutputBufferParser
+from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
 from tools.muon_helpers import print_out_word, print_in_word
-from plot_buffer_content import determine_version_from_filename,  parse_options
+from helpers.options import  parse_options
 
 
 class Relation():
@@ -79,7 +79,7 @@ if __name__ == "__main__":
             file_dict[roots] = tmp_dict
 
     for filename in file_dict:
-        version = determine_version_from_filename(filename)
+        version = Version.from_filename(filename)
         print "+"*30, filename, "+"*30
 
         # Reading and processing the hardware data

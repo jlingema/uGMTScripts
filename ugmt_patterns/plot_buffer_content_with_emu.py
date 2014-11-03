@@ -2,14 +2,14 @@ import ROOT
 import math
 import os
 from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1, TLatex
-from mp7_buffer_parser import InputBufferParser, OutputBufferParser
+from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
 from DataFormats.FWLite import Events, Handle
 from muon import Muon
 from tools.TDRStyle import TDRStyle
 from tools.muon_helpers import non_zero, print_out_word, print_in_word
-from plot_buffer_content import determine_version_from_filename, set_legend_style, create_and_fill_rank_hist, create_and_fill_muon_hists, parse_options, set_text_style, plot_modifier
-
+from helpers.options import parse_options
+from helpers.buffer_plotting import create_and_fill_rank_hist, plot_modifier, create_and_fill_muon_hists, set_legend_style, set_text_style
 
 def append_non_zero(non_zero_mus, all_mus):
     for mu in all_mus:
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     }
 
     for filename in file_dict:
-    	version = determine_version_from_filename(filename)
+    	version = Version.from_filename(filename)
         print "+"*30, filename, "+"*30
 
 

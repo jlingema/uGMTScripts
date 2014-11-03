@@ -36,3 +36,9 @@ class bithlp():
         val = ((-val)^all_one)+1
 
         return val
+
+    @staticmethod
+    def single_bit(num,bit): # Gets one single bit defined by num
+        a = 1<<bit
+        b = num&a
+        return b >> bit

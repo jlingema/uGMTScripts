@@ -5,16 +5,9 @@ from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1, TLine
 from DataFormats.FWLite import Events, Handle
 from muon import Muon 
 from tools.muon_helpers import  non_zero, single_bit, isequal, print_out_word
-#file_converter, plot_modifier, find_nonzero_output, input_frames, get_rank_list, single_bit, isequal, get_muon_objects, non_zero
-from mp7_buffer_parser import InputBufferParser, OutputBufferParser
+from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
-from optparse import OptionParser
-from plot_buffer_content import determine_version_from_filename
-
-def parse_options():
-    parser = OptionParser()
-    parser.add_option("-f", "--directory", dest="directory")
-    return parser.parse_args()
+from helpers.options import parse_options
 
 def fill_muon_hists(index, hist_list, muons):
     for mu in muons:
@@ -79,7 +72,7 @@ if __name__ == "__main__":
     }
 
     for filename in file_dict:
-        version = determine_version_from_filename(filename)
+        version = Version.from_filename(filename)
         # Reading and initilaising the Emulator data
         emu_out_list = []
         emu_imd_list = []

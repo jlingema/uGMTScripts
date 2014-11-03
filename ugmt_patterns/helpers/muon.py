@@ -1,5 +1,4 @@
 from tools.bithelper import bithlp
-from tools.muon_helpers import  non_zero, single_bit, isequal, print_out_word
 
 class Muon():
     def __init__(self, vhdl_dict, mu_type, bitword = None, obj = None, link = -1, frame = -1, bx = -1):
