@@ -1,10 +1,22 @@
 from tools.bithelper import bithlp
 
 class Muon():
+    """
+    A class capable of interpreting the uGMT emulator and hardware muon representations
+    """
     def __init__(self, vhdl_dict, mu_type, bitword = None, obj = None, link = -1, frame = -1, bx = -1):
-        # If the Muon object is a hardware output it has to be called with bitword
-        # If....is a Emulator output ....with obj
+        """
+        ctor:
+        TAKES: 
+            vhdl_dict   as returned by ../../tools/vhdl.VHDLConstantsParser
+            mu_type     either IN (inputs) or OUT (intermediates/outputs)
+            bitword     can be None or a 64bit integer (for HW muons)
+            obj         can be None or one of the emulator objects (for emulator muons)
+            link        integer representing link the muon was received / is sent (HW only)
+            bx          integer indicating the bunch-crossing the muon is associated with
+        """
     
+        # get the bit boundaries for the muon quantities
         pt_low = vhdl_dict["PT_{t}_LOW".format(t=mu_type)]
         pt_high = vhdl_dict["PT_{t}_HIGH".format(t=mu_type)]
 
@@ -55,6 +67,7 @@ class Muon():
             self.phiBits = obj.hwPhi()
             self.rank = 0
 
+            # calculate the bitword to make comparison with HW easy
             self.bitword = (self.phiBits << phi_low) + \
                             (self.ptBits << pt_low) + \
                             (self.qualityBits << qual_low) + \
@@ -69,9 +82,16 @@ class Muon():
         self.bx = bx
 
     def getBx(self):
+        """
+        returns the assiciated bunch-crossing
+        """
         return self.bx
         
     def get_phi(self, xlow, xup):
+        """
+        for the HW represntation: the phi variable goes across 32bit word boundary
+        at the boundary a control bit is reserved 
+        """
         # this is a specialized function because phi reaches over the word boundary
         ctrl_mask = bithlp.get_mask(31, 31)
         # +1 because dinyar shaves off the 32nd bit in the vhdl-file

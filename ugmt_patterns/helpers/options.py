@@ -1,6 +1,9 @@
 from optparse import OptionParser
 
 def parse_options():
+    """
+    Adds often used options to the OptionParser...
+    """
     parser = OptionParser()
     parser.add_option("-f", "--directory", dest="directory")
     parser.add_option('-v', '--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False, action='store_true')
