@@ -1,12 +1,19 @@
-import ROOT
-import math
+
+# pylib:
 import os
-from ROOT import TCanvas, gStyle, gROOT, TH2D, TH1, TLine
+# ROOT:
+import ROOT
+# CMSSW:
 from DataFormats.FWLite import Events, Handle
-from helpers.muon import Muon 
-from tools.muon_helpers import  non_zero, single_bit, isequal, print_out_word
-from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
+
+# ../tools:
+from tools.muon_helpers import  non_zero, isequal, print_out_word
+from tools.bithelper import bithlp
 from tools.vhdl import VHDLConstantsParser
+
+# ./helpers:
+from helpers.muon import Muon 
+from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from helpers.options import parse_options
 
 def fill_muon_hists(index, hist_list, muons):
@@ -23,13 +30,12 @@ def hist_creator1D(namesdict,hist,title):
         hist[varname].SetXTitle(hist_property[0])
 
 if __name__ == "__main__":
-    TH1.AddDirectory(False)
-    pi = math.pi
-    gROOT.SetBatch()
-    gStyle.SetOptStat("ne")
-    gStyle.SetHistMinimumZero()
-    gStyle.SetPalette(1)
-    canvas = TCanvas("canvas_of_plots","comparisons")
+    ROOT.TH1.AddDirectory(False)
+    ROOT.gROOT.SetBatch()
+    ROOT.gStyle.SetOptStat("ne")
+    ROOT.gStyle.SetHistMinimumZero()
+    ROOT.gStyle.SetPalette(1)
+    canvas = ROOT.TCanvas("canvas_of_plots","comparisons")
     canvas.SetFillStyle(0)
 
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
@@ -50,20 +56,8 @@ if __name__ == "__main__":
         if tmp_dict != {}:
             file_dict[roots] = tmp_dict
 
-    ##### if the physical properties should be calculated, then the functions phi, eta and pt just have to be discommented. Doing this, the following parameters are their input.
-    ##### They dont have any other use
-    eta_unit = 0.01
-    eta_low = -240
-    eta_high = 239
-    phi_unit = 2*pi/576
-    phi_low = 0
-    phi_high = 57
-    pt_unit = 0.5
-    pt_low = 0
-    pt_high = 280
-    ####
 
-    #### Parameters for histograms may be changed here at any time
+    # binning of plots:
     hist_parameters = {
         "qualityBits": ["qualityBits", 16, 0, 16],
         "ptBits": ["ptBits", 128, 0, 512],#(pt_high-pt_low)/pt_unit, pt_low, pt_high],
@@ -140,8 +134,7 @@ if __name__ == "__main__":
         print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
         print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(ranks)
 
-        hist1 = TH2D("{f}_comparison1".format(f=file_dict[filename]["root"]), "", 64, 0, 64, 8, 1, 9)
-        #for y in xrange(min(len(out_muons),len(emu_out_list))):
+        hist1 = ROOT.TH2D("{f}_comparison1".format(f=file_dict[filename]["root"]), "", 64, 0, 64, 8, 1, 9)
         mucnt = -1
         print len(out_muons), len(emu_out_list)
         for mu, emu_mu in zip(out_muons, emu_out_list):
@@ -149,13 +142,10 @@ if __name__ == "__main__":
             if mu.bitword == emu_mu.bitword: 
                 continue
             for x in xrange(64):
-                hw = single_bit(mu.bitword, x)
-                emu = single_bit(emu_mu.bitword, x)
+                hw = bithlp.single_bit(mu.bitword, x)
+                emu = bithlp.single_bit(emu_mu.bitword, x)
                 if hw != emu:
                     hist1.Fill(x, mucnt%8+1)
-                # if mucnt%8+1 != 1:
-                #     print "hw", print_out_word(mu.bitword)
-                #     print "em", print_out_word(emu_mu.bitword)  
 
         hist1.Draw("TEXT COLZ")
 
@@ -165,13 +155,13 @@ if __name__ == "__main__":
             low = vhdl_dict[v+"_OUT_LOW"]
             high = (vhdl_dict[v+"_OUT_HIGH"]+1)
             
-            b = TLine(low, 1, low, 9)
+            b = ROOT.TLine(low, 1, low, 9)
             b.SetLineStyle(2)
             b.SetLineWidth(2)
 
             b.Draw()
             bs.append(b)
-            b = TLine(high, 1, high, 9)
+            b = ROOT.TLine(high, 1, high, 9)
             b.SetLineStyle(2)
             b.SetLineWidth(2)
             b.Draw()
@@ -186,36 +176,22 @@ if __name__ == "__main__":
             hist1.GetYaxis().SetBinLabel(n+1,"Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/bitplot1.pdf".format(f=filename))
 
-        hist2 = TH2D("{f}_comparison2".format(f=file_dict[filename]["root"]), "", 4, 0, 4, 8, 1, 9)
+        hist2 = ROOT.TH2D("{f}_comparison2".format(f=file_dict[filename]["root"]), "", 4, 0, 4, 8, 1, 9)
         mucnt = -1
         for mu, emu_mu in zip(out_muons, emu_out_list):
             mucnt += 1
 
             if mu.phiBits != emu_mu.phiBits:
                 hist2.Fill(0, mucnt%8+1)
-                # print "phi", mu.phiBits, emu_mu.phiBits
             if mu.ptBits != emu_mu.ptBits:
                 hist2.Fill(1, mucnt%8+1)
-                # print "pt", mu.ptBits, emu_mu.ptBits
             if mu.qualityBits != emu_mu.qualityBits:
                 hist2.Fill(2, mucnt%8+1)
-                # print "q", mu.qualityBits, emu_mu.qualityBits, type(mu.qualityBits), type(emu_mu.qualityBits)
             if mu.etaBits != emu_mu.etaBits:
                 hist2.Fill(3, mucnt%8+1)
-                # print "eta", mu.etaBits, emu_mu.etaBits
-            
-                # print "---"
-                # print "hw", print_out_word(mu.bitword)
-                # print "em", print_out_word(emu_mu.bitword, True)    
-            # print print_out_word(mu.bitword, True)
-            #hist2.Fill(3,(y+1)*isequal(twos_complement_sign(out_muons[y].etaBits,9),emu_out_list[y].etaBits()))  ### for mistakes on purpose
+
 
         hist2.Draw("TEXT COLZ")
-
-
-
-        # hist2.SetMaximum(90)
-        # hist2.SetMinimum(-1)
         hist2.SetContour(5)
         hist2.SetStats(0)
         hist2.GetXaxis().SetBinLabel(1,"phiBits")
@@ -226,11 +202,11 @@ if __name__ == "__main__":
             hist2.GetYaxis().SetBinLabel(n+1,"Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/bitplot2.pdf".format(f=filename))
 
-        hist_inter_1 = TH2D("{f}_comparison_inter_1".format(f=filename), "comparison of intermediates: all bits [{f}]".format(f=filename), 64, 0, 64, 24, 0, min(len(intermediate_muons), len(emu_imd_list)))
+        hist_inter_1 = ROOT.TH2D("{f}_comparison_inter_1".format(f=filename), "comparison of intermediates: all bits [{f}]".format(f=filename), 64, 0, 64, 24, 0, min(len(intermediate_muons), len(emu_imd_list)))
         for y in xrange(min(len(intermediate_muons), len(emu_imd_list))):
             for x in xrange(64):
-                hw = single_bit(intermediate_muons[y].bitword, x)
-                emu = single_bit(emu_imd_list[y].bitword, x)
+                hw = bithlp.single_bit(intermediate_muons[y].bitword, x)
+                emu = bithlp.single_bit(emu_imd_list[y].bitword, x)
                 hist_inter_1.Fill(x, (y+1)*isequal(hw, emu))
 
         hist_inter_1.Draw("TEXT COLZ")
@@ -245,7 +221,7 @@ if __name__ == "__main__":
             hist_inter_1.GetYaxis().SetBinLabel(n+1,"Inter-Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/intermediate_bitplot1.pdf".format(f=filename))
 
-        hist_inter_2 = TH2D("{f}_inter_comparison2".format(f=filename), "comparison of intermediate: overview [{f}]".format(f=filename), 4, 0, 4, 24, 1, min(len(intermediate_muons), len(emu_imd_list)))
+        hist_inter_2 = ROOT.TH2D("{f}_inter_comparison2".format(f=filename), "comparison of intermediate: overview [{f}]".format(f=filename), 4, 0, 4, 24, 1, min(len(intermediate_muons), len(emu_imd_list)))
         for y in xrange(min(len(intermediate_muons), len(emu_imd_list))):
             hist_inter_2.Fill(0,(y+1)*isequal(intermediate_muons[y].phiBits,emu_imd_list[y].phiBits))
             hist_inter_2.Fill(1,(y+1)*isequal(intermediate_muons[y].ptBits,emu_imd_list[y].ptBits))
