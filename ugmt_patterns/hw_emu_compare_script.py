@@ -49,13 +49,11 @@ if __name__ == "__main__":
         for fname in files:
             if "tx_" in fname:
                 tmp_dict["tx"] = fname
-            if ".root" in fname:
-                tmp_dict["root"] = fname
             if "rx_" in fname:
                 tmp_dict["rx"] = fname
         if tmp_dict != {}:
             file_dict[roots] = tmp_dict
-
+            file_dict[roots]["root"] = os.path.join(options.emudirectory, os.path.basename(roots)+".root")
 
     # binning of plots:
     hist_parameters = {
@@ -71,7 +69,7 @@ if __name__ == "__main__":
         emu_out_list = []
         emu_imd_list = []
 
-        events = Events('{f}/{fn}'.format(f=filename, fn=file_dict[filename]["root"]))
+        events = Events(file_dict[filename]["root"])
 
         out_handle = Handle('BXVector<l1t::Muon>')
         bar_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
