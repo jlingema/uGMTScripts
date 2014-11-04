@@ -204,14 +204,23 @@ if __name__ == "__main__":
             hist2.GetYaxis().SetBinLabel(n+1,"Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/bitplot2.pdf".format(f=filename))
 
-        print "intermediate muons"
         hist_inter_1 = ROOT.TH2D("{f}_comparison_inter_1".format(f=filename), "comparison of intermediates: all bits [{f}]".format(f=filename), 64, 0, 64, 24, 0, min(len(intermediate_muons), len(emu_imd_list)))
         mucnt = -1
+
+        # non_zero_ranks = [rank for rank in ranks if rank != 0]
+        # non_zero_emu = [emu for emu in emu_imd_list if emu.bitword != 0]
+        # for mu, rank in zip(non_zero_emu, non_zero_ranks):
+        #     if mu.rank != rank: print mu.rank, rank
+
         for emu_mu, hw_mu, hw_rank in zip(emu_imd_list, intermediate_muons, ranks):
             mucnt += 1
             if emu_mu.bitword == hw_mu.bitword: 
                 continue
-            print "mismatch in BX", hw_mu.bx, "rank hw:", hw_rank, "rank emu:", emu_mu.rank
+            if options.verbose:
+                print "mismatch in BX", hw_mu.bx, "rank hw:", hw_rank, "rank emu:", emu_mu.rank
+                print print_out_word(hw_mu.bitword)
+                print print_out_word(emu_mu.bitword)
+                print "-"*80
             for x in xrange(64):
                 hw = bithlp.single_bit(hw_mu.bitword, x)
                 emu = bithlp.single_bit(emu_mu.bitword, x)
