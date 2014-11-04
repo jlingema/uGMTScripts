@@ -65,7 +65,7 @@ class Muon():
             self.qualityBits = obj.hwQual()
             self.ptBits = obj.hwPt()
             self.phiBits = obj.hwPhi()
-            self.rank = 0
+            self.rank = obj.hwRank()
 
             # calculate the bitword to make comparison with HW easy
             self.bitword = (self.phiBits << phi_low) + \
