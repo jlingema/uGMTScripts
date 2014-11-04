@@ -166,7 +166,8 @@ if __name__ == "__main__":
             b.SetLineWidth(2)
             b.Draw()
             bs.append(b)
-
+        hist1.SetMaximum(1)
+        hist1.SetMinimum(-1)
         hist1.SetContour(5)
         hist1.SetStats(0)
         hist1.GetXaxis().SetTitle("Bits")
@@ -180,7 +181,6 @@ if __name__ == "__main__":
         mucnt = -1
         for mu, emu_mu in zip(out_muons, emu_out_list):
             mucnt += 1
-
             if mu.phiBits != emu_mu.phiBits:
                 hist2.Fill(0, mucnt%8+1)
             if mu.ptBits != emu_mu.ptBits:
@@ -192,6 +192,8 @@ if __name__ == "__main__":
 
 
         hist2.Draw("TEXT COLZ")
+        hist2.SetMaximum(1)
+        hist2.SetMinimum(-1)
         hist2.SetContour(5)
         hist2.SetStats(0)
         hist2.GetXaxis().SetBinLabel(1,"phiBits")
@@ -202,15 +204,23 @@ if __name__ == "__main__":
             hist2.GetYaxis().SetBinLabel(n+1,"Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/bitplot2.pdf".format(f=filename))
 
+        print "intermediate muons"
         hist_inter_1 = ROOT.TH2D("{f}_comparison_inter_1".format(f=filename), "comparison of intermediates: all bits [{f}]".format(f=filename), 64, 0, 64, 24, 0, min(len(intermediate_muons), len(emu_imd_list)))
-        for y in xrange(min(len(intermediate_muons), len(emu_imd_list))):
+        mucnt = -1
+        for emu_mu, hw_mu, hw_rank in zip(emu_imd_list, intermediate_muons, ranks):
+            mucnt += 1
+            if emu_mu.bitword == hw_mu.bitword: 
+                continue
+            print "mismatch in BX", hw_mu.bx, "rank hw:", hw_rank, "rank emu:", emu_mu.rank
             for x in xrange(64):
-                hw = bithlp.single_bit(intermediate_muons[y].bitword, x)
-                emu = bithlp.single_bit(emu_imd_list[y].bitword, x)
-                hist_inter_1.Fill(x, (y+1)*isequal(hw, emu))
+                hw = bithlp.single_bit(hw_mu.bitword, x)
+                emu = bithlp.single_bit(emu_mu.bitword, x)
+                if hw != emu:
+                    hist_inter_1.Fill(x, mucnt%24+1)
+
 
         hist_inter_1.Draw("TEXT COLZ")
-        hist_inter_1.SetMaximum(90)
+        hist_inter_1.SetMaximum(1)
         hist_inter_1.SetMinimum(-1)
         hist_inter_1.SetContour(5)
         hist_inter_1.SetStats(0)
@@ -222,21 +232,30 @@ if __name__ == "__main__":
         canvas.Print("{f}/figures/intermediate_bitplot1.pdf".format(f=filename))
 
         hist_inter_2 = ROOT.TH2D("{f}_inter_comparison2".format(f=filename), "comparison of intermediate: overview [{f}]".format(f=filename), 4, 0, 4, 24, 1, min(len(intermediate_muons), len(emu_imd_list)))
-        for y in xrange(min(len(intermediate_muons), len(emu_imd_list))):
-            hist_inter_2.Fill(0,(y+1)*isequal(intermediate_muons[y].phiBits,emu_imd_list[y].phiBits))
-            hist_inter_2.Fill(1,(y+1)*isequal(intermediate_muons[y].ptBits,emu_imd_list[y].ptBits))
-            hist_inter_2.Fill(2,(y+1)*isequal(intermediate_muons[y].qualityBits,emu_imd_list[y].qualityBits))
-            hist_inter_2.Fill(3,(y+1)*isequal(intermediate_muons[y].etaBits,emu_imd_list[y].etaBits))
+        mucnt = -1
+        for imd_mu, imd_emu_mu in zip(intermediate_muons, emu_imd_list):
+            mucnt += 1
+            if imd_mu.bitword == imd_emu_mu: 
+                continue
+            if imd_mu.phiBits != imd_emu_mu.phiBits:
+                hist_inter_2.Fill(0, mucnt%24+1)
+            if imd_mu.ptBits != imd_emu_mu.ptBits:
+                hist_inter_2.Fill(1, mucnt%24+1)
+            if imd_mu.qualityBits != imd_emu_mu.qualityBits:
+                hist_inter_2.Fill(2, mucnt%24+1)
+            if imd_mu.etaBits != imd_emu_mu.etaBits:
+                hist_inter_2.Fill(3, mucnt%24+1)
+
 
         hist_inter_2.Draw("TEXT COLZ")
-        hist_inter_2.SetMaximum(90)
+        hist_inter_2.SetMaximum(1)
         hist_inter_2.SetMinimum(-1)
         hist_inter_2.SetContour(5)
         hist_inter_2.SetStats(0)
-        hist_inter_2.GetXaxis().SetBinLabel(1,"phiBits")
-        hist_inter_2.GetXaxis().SetBinLabel(2,"ptBits")
-        hist_inter_2.GetXaxis().SetBinLabel(3,"qualityBits")
-        hist_inter_2.GetXaxis().SetBinLabel(4,"etaBits")
-        for n in xrange(8):
+        hist_inter_2.GetXaxis().SetBinLabel(1,"phi")
+        hist_inter_2.GetXaxis().SetBinLabel(2,"pt")
+        hist_inter_2.GetXaxis().SetBinLabel(3,"quality")
+        hist_inter_2.GetXaxis().SetBinLabel(4,"eta")
+        for n in xrange(24):
             hist_inter_2.GetYaxis().SetBinLabel(n+1,"Inter-Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/intermediate_bitplot2.pdf".format(f=filename))
