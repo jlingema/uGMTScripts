@@ -5,7 +5,7 @@ from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1, TLatex
 from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
 from DataFormats.FWLite import Events, Handle
-from muon import Muon
+from helpers.muon import Muon
 from tools.TDRStyle import TDRStyle
 from tools.muon_helpers import non_zero, print_out_word, print_in_word
 from helpers.options import parse_options
