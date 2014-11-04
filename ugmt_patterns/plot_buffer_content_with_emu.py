@@ -5,7 +5,7 @@ from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1, TLatex
 from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
 from DataFormats.FWLite import Events, Handle
-from muon import Muon
+from helpers.muon import Muon
 from tools.TDRStyle import TDRStyle
 from tools.muon_helpers import non_zero, print_out_word, print_in_word
 from helpers.options import parse_options
@@ -42,10 +42,9 @@ if __name__ == "__main__":
                 tmp_dict["tx"] = fname
             if "rx_" in fname:
                 tmp_dict["rx"] = fname
-            if ".root" in fname:
-                tmp_dict["root"] = fname
         if tmp_dict != {}: 
             file_dict[roots] = tmp_dict
+            file_dict[roots]["root"] = os.path.join(options.emudirectory, os.path.basename(roots)+".root")
 
     ##### if the physical properties should be calculated, then the functions phi, eta and pt just have to be discommented. Doing this, the following parameters are their input.
     ##### They dont have any other use
@@ -76,7 +75,7 @@ if __name__ == "__main__":
         emu_out_list = []
         emu_imd_list = []
 
-        events = Events('{f}/{fn}'.format(f=filename, fn=file_dict[filename]["root"]))
+        events = Events(file_dict[filename]["root"])
         print "using .root:", file_dict[filename]["root"]
         out_handle = Handle('BXVector<l1t::Muon>')
         bar_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')

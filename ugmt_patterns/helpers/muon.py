@@ -55,9 +55,11 @@ class Muon():
         elif bitword == None and obj != None: # for emulator
             if mu_type == "OUT":
                 self.Iso = obj.hwIso()
+                self.rank = obj.hwRank()
                 self.Sysign = obj.hwCharge() + (obj.hwChargeValid() << 1)
             else:
                 self.Iso = 0
+                self.rank = 0
                 self.Sysign = obj.hwSign() + (obj.hwSignValid() << 1)
 
             self.etaBits = obj.hwEta()
@@ -65,7 +67,7 @@ class Muon():
             self.qualityBits = obj.hwQual()
             self.ptBits = obj.hwPt()
             self.phiBits = obj.hwPhi()
-            self.rank = 0
+
 
             # calculate the bitword to make comparison with HW easy
             self.bitword = (self.phiBits << phi_low) + \
