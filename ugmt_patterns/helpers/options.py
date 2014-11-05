@@ -19,7 +19,8 @@ def discover_files(opts):
     Tries to find tx_*/rx_* files in --directory and root-file in --emudirectory
     TAKES: the options as returned by parse_options, above
     RETURNS: dict with all valid buffer-dump / root-file triples in the directories, structure:
-                dict[pattern_name] = {'root':'/abspath/to/root-file.root', 'tx':'/abspath/to/tx_*.txt', 'rx':'/abspath/to/rx_*.txt'}
+                dict[pattern_name] = {'root':'/abspath/to/emu/root-file.root', 'tx':'/abspath/to/dir/tx_*.txt', 'rx':'/abspath/to/dir/rx_*.txt',
+                                        'base':'/abspath/to/dir/pattern/'}
     """
     file_dict = {}
     for roots, dirs, files in walk("{d}".format(d=opts.directory)):
@@ -31,6 +32,7 @@ def discover_files(opts):
                 tmp_dict["rx"] = path.join(path.abspath(roots), fname)
         if tmp_dict != {}: 
             pattern_name = path.basename(roots)
+            tmp_dict['base'] = path.abspath(roots)
             file_dict[pattern_name] = tmp_dict
             if path.exists(opts.emudirectory):
                 file_dict[pattern_name]["root"] = path.join(path.abspath(opts.emudirectory), pattern_name+".root")
