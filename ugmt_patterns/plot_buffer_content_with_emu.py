@@ -1,6 +1,5 @@
 import ROOT
 import math
-import os
 from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1, TLatex
 from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
@@ -8,7 +7,7 @@ from DataFormats.FWLite import Events, Handle
 from helpers.muon import Muon
 from tools.TDRStyle import TDRStyle
 from tools.muon_helpers import non_zero, print_out_word, print_in_word
-from helpers.options import parse_options
+from helpers.options import parse_options, discover_files
 from helpers.buffer_plotting import create_and_fill_rank_hist, plot_modifier, create_and_fill_muon_hists, set_legend_style, set_text_style
 
 def append_non_zero(non_zero_mus, all_mus):
@@ -32,20 +31,7 @@ if __name__ == "__main__":
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 
     options, args = parse_options()
-
-    file_dict = {}
-
-    for roots, dirs, files in os.walk("{d}".format(d=options.directory)):
-        tmp_dict = {}
-        for fname in files:
-            if "tx_" in fname:
-                tmp_dict["tx"] = fname
-            if "rx_" in fname:
-                tmp_dict["rx"] = fname
-        if tmp_dict != {}: 
-            file_dict[roots] = tmp_dict
-            file_dict[roots]["root"] = os.path.join(options.emudirectory, os.path.basename(roots)+".root")
-
+    file_dict = discover_files(options)
     ##### if the physical properties should be calculated, then the functions phi, eta and pt just have to be discommented. Doing this, the following parameters are their input.
     ##### They dont have any other use
     eta_unit = 0.01
@@ -67,16 +53,16 @@ if __name__ == "__main__":
         "etaBits": ["etaBits", 128, -256, 256] #(eta_high-eta_low)/eta_unit, eta_low, eta_high]
     }
 
-    for filename in file_dict:
-    	version = Version.from_filename(filename)
-        print "+"*30, filename, "+"*30
+    for pattern, fnames in file_dict.iteritems():
+    	version = Version.from_filename(fnames['base'])
+        print "+"*30, pattern, "+"*30
 
 
         emu_out_list = []
         emu_imd_list = []
 
-        events = Events(file_dict[filename]["root"])
-        print "using .root:", file_dict[filename]["root"]
+        events = Events(fnames["root"])
+        print "using .root:", fnames["root"]
         out_handle = Handle('BXVector<l1t::Muon>')
         bar_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
         fwd_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
@@ -116,8 +102,8 @@ if __name__ == "__main__":
 
         print "total number of events in emulator: ", i
         # Reading and processing the hardware data
-        input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
-        output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict, version)
+        input_parser = InputBufferParser(fnames["rx"], vhdl_dict)
+        output_parser = OutputBufferParser(fnames["tx"], vhdl_dict, version)
 
         in_muons = input_parser.get_input_muons()
         out_muons = output_parser.get_output_muons()
@@ -146,24 +132,24 @@ if __name__ == "__main__":
                 rank_num_of_non_zeros = rank_num_of_non_zeros+1
         ####
 
-        print "{fn}_in_muons :".format(fn=filename), non_zero(in_muons), "/", len(in_muons)
-        print "{fn}_num of final non-zero Output-Muons: ".format(fn=filename), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"
-        print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
-        print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(ranks)
+        print "{fn}_in_muons :".format(fn=pattern), non_zero(in_muons), "/", len(in_muons)
+        print "{fn}_num of final non-zero Output-Muons: ".format(fn=pattern), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"
+        print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=pattern), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
+        print "{fn}_n_ranks".format(fn=pattern), rank_num_of_non_zeros, "/", len(ranks)
 
-        hist_rnk = create_and_fill_rank_hist(ranks, file_dict[filename]["rx"])
+        hist_rnk = create_and_fill_rank_hist(ranks, pattern)
         plot_modifier(hist_rnk, "rank", "N", ROOT.kBlack)
         hist_rnk.Draw()
-        canvas.Print("{f}/figures/hw_rank.pdf".format(f=filename))
+        canvas.Print("{f}/figures/hw_rank.pdf".format(f=fnames['base']))
 
         
 
-        hists_input = create_and_fill_muon_hists(hist_parameters, in_muons, file_dict[filename]["rx"]+"in")
-        hists_output = create_and_fill_muon_hists(hist_parameters, out_muons, file_dict[filename]["rx"]+"out")
-        hists_imd = create_and_fill_muon_hists(hist_parameters, intermediate_muons, file_dict[filename]["rx"]+"imd")
+        hists_input = create_and_fill_muon_hists(hist_parameters, in_muons, pattern+"in")
+        hists_output = create_and_fill_muon_hists(hist_parameters, out_muons, pattern+"out")
+        hists_imd = create_and_fill_muon_hists(hist_parameters, intermediate_muons, pattern+"imd")
         
-        hists_emu_output = create_and_fill_muon_hists(hist_parameters, emu_out_list, file_dict[filename]["rx"]+"emuout")
-        hists_emu_imd = create_and_fill_muon_hists(hist_parameters, emu_imd_list, file_dict[filename]["rx"]+"emuimd")
+        hists_emu_output = create_and_fill_muon_hists(hist_parameters, emu_out_list, pattern+"emuout")
+        hists_emu_imd = create_and_fill_muon_hists(hist_parameters, emu_imd_list, pattern+"emuimd")
 
         for var in hist_parameters:
             hw_leg = TLegend(0.4, 0.7, 0.7, 0.85)
@@ -206,4 +192,4 @@ if __name__ == "__main__":
             hists_emu_imd[var].Draw("same")
 
             txt.Draw()
-            canvas.Print("{f}/figures/hw_{name}.pdf".format(f=filename, name=hist_parameters[var][0]))
+            canvas.Print("{f}/figures/hw_{name}.pdf".format(f=fnames['base'], name=hist_parameters[var][0]))

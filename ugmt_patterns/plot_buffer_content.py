@@ -6,7 +6,7 @@ from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Ver
 from tools.vhdl import VHDLConstantsParser
 from tools.TDRStyle import TDRStyle
 from tools.muon_helpers import print_in_word, non_zero
-from helpers.options import parse_options
+from helpers.options import parse_options, discover_files
 from helpers.buffer_plotting import create_and_fill_rank_hist, plot_modifier, create_and_fill_muon_hists, set_legend_style, set_text_style
 from tools.logger import log
 from logging import  INFO
@@ -33,19 +33,7 @@ if __name__ == "__main__":
     else:
         _log = log.init_logging("BufferAnalyzer", INFO)
 
-    file_dict = {}
-
-    for roots, dirs, files in os.walk(options.directory):
-        if "random" in roots: 
-            continue
-        tmp_dict = {}
-        for fname in files:
-            if "tx_" in fname:
-                tmp_dict["tx"] = fname
-            if "rx_" in fname:
-                tmp_dict["rx"] = fname
-        if tmp_dict != {}: 
-            file_dict[roots] = tmp_dict
+    file_dict = discover_files(options)
 
     ##### if the physical properties should be calculated, then the functions phi, eta and pt just have to be discommented. Doing this, the following parameters are their input.
     ##### They dont have any other use
@@ -68,12 +56,12 @@ if __name__ == "__main__":
         "etaBits": ["etaBits", 128, -256, 256] #(eta_high-eta_low)/eta_unit, eta_low, eta_high]
     }
 
-    for filename in file_dict:
-        version = Version.from_filename(filename)
-        print "+"*30, filename, "+"*30
+    for pattern, fnames in file_dict.iteritems():
+        version = Version.from_filename(fnames['base'])
+        print "+"*30, pattern, "+"*30
         # Reading and processing the hardware data
-        input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
-        output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict, version)
+        input_parser = InputBufferParser(fnames["rx"], vhdl_dict)
+        output_parser = OutputBufferParser(fnames["tx"], vhdl_dict, version)
 
         in_muons = input_parser.get_input_muons()
 
@@ -121,19 +109,16 @@ if __name__ == "__main__":
                     
             cntr += 8
 
-
-
-
-        hist_rnk = create_and_fill_rank_hist(ranks, file_dict[filename]["rx"])
+        hist_rnk = create_and_fill_rank_hist(ranks, pattern)
         plot_modifier(hist_rnk, "rank", "N", ROOT.kBlack)
         hist_rnk.Draw()
-        canvas.Print("{f}/figures/hw_rank.pdf".format(f=filename))
+        canvas.Print("{f}/figures/hw_rank.pdf".format(f=fnames['base']))
 
         
 
-        hists_input = create_and_fill_muon_hists(hist_parameters, in_muons, file_dict[filename]["rx"]+"in")
-        hists_output = create_and_fill_muon_hists(hist_parameters, out_muons, file_dict[filename]["rx"]+"out")
-        hists_imd = create_and_fill_muon_hists(hist_parameters, intermediate_muons, file_dict[filename]["rx"]+"imd")
+        hists_input = create_and_fill_muon_hists(hist_parameters, in_muons, pattern+"in")
+        hists_output = create_and_fill_muon_hists(hist_parameters, out_muons, pattern+"out")
+        hists_imd = create_and_fill_muon_hists(hist_parameters, intermediate_muons, pattern+"imd")
 
         for var in hist_parameters:
             hw_leg = TLegend(0.4, 0.7, 0.7, 0.85)
@@ -164,4 +149,4 @@ if __name__ == "__main__":
             hists_imd[var].Draw("same")
 
             txt.Draw()
-            canvas.Print("{f}/figures/hw_{name}.pdf".format(f=filename, name=hist_parameters[var][0]))
+            canvas.Print("{f}/figures/hw_{name}.pdf".format(f=fnames['base'], name=hist_parameters[var][0]))
