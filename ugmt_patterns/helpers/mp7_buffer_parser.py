@@ -29,6 +29,9 @@ class Version(object):
             version = Version(version_match.group(0).replace("ugmt_v", ""))
         return version
 
+    def __repr__(self):
+        return "v{ma}_{mi}_{pat}".format(ma=self.major, mi=self.minor, pat=self.patch)
+
 class BufferParser(object):
     """
     Parses MP7 buffer files and can create lists of objects
