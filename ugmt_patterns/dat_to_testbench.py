@@ -69,9 +69,9 @@ def get_muon_lines(mu_list, muid, addIso):
     themuid = muid
     for i, mu in enumerate(mu_list):
         if muid == "IMD":
-            if i < 8: themuid = "BIMD"
-            elif i < 16: themuid = "OIMD" 
-            else: themuid = "FIMD"
+            if i < 4 or i > 19: themuid = "FIMD"
+            elif i < 8 or i > 15: themuid = "OIMD" 
+            else: themuid = "BIMD"
         string += get_muon_line(mu, themuid, i, addIso)
     
     return string
@@ -118,6 +118,11 @@ def convert_input_vector_to_strings(vec, vhdl_dict, mutype, size):
         if i%3 == 0 and i != 0:
             track_string += "{id:<6}".format(id=track_id)
             for j in [3, 2, 1]:
+                track_string += track_string_template.format(eta=mulist[i-j].etaBits, phi=mulist[i-j].phiBits, quality=mulist[i-j].qualityBits)
+            track_string += "\n"
+        if i == len(mulist)-1: #FIXME workaround for last group of tracks  avoid code duplication here!
+            track_string += "{id:<6}".format(id=track_id)
+            for j in [2, 1, 0]:
                 track_string += track_string_template.format(eta=mulist[i-j].etaBits, phi=mulist[i-j].phiBits, quality=mulist[i-j].qualityBits)
             track_string += "\n"
     return mu_string, track_string
@@ -209,14 +214,26 @@ if __name__ == "__main__":
                     mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj=mu)
                     imd_list.append(mu_tmp)
 
-                add_muons = 24-imd_prod.size(0)
-                while add_muons != 0:
-                    mu_tmp = Muon(vhdl_dict, mu_type="OUT", bitword=0)    
-                    imd_list.append(mu_tmp)
-                    add_muons -= 1
+                imd_list_fin = []
+                imd_list_tmp = imd_list[0:4]
+                imd_list_tmp.sort(key=Muon.getRank, reverse=True) 
+                imd_list_fin += imd_list_tmp
+                imd_list_tmp = imd_list[4:8]
+                imd_list_tmp.sort(key=Muon.getRank, reverse=True) 
+                imd_list_fin += imd_list_tmp 
+                imd_list_tmp = imd_list[8:16]
+                imd_list_tmp.sort(key=Muon.getRank, reverse=True) 
+                imd_list_fin += imd_list_tmp 
+                imd_list_tmp = imd_list[16:20]
+                imd_list_tmp.sort(key=Muon.getRank, reverse=True) 
+                imd_list_fin += imd_list_tmp 
+                imd_list_tmp = imd_list[20:]
+                imd_list_tmp.sort(key=Muon.getRank, reverse=True) 
+                imd_list_fin += imd_list_tmp
+
 
                 out_muons_str = get_muon_lines(out_list, muid="OUT", addIso=True)
-                imd_muons_str = get_muon_lines(imd_list, muid="IMD", addIso=False)
+                imd_muons_str = get_muon_lines(imd_list_fin, muid="IMD", addIso=False)
                 out_file.write(imd_muons_str)
                 out_file.write(out_muons_str)
 
