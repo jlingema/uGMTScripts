@@ -23,7 +23,7 @@ def get_header():
 # Testbench file for the uGMT
 # Data format of muons:
 # ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO)
-# where ID = {FWD+/-, OVL+/-, BAR, OUT, IMD}
+# where ID = {FWD+/-, OVL+/-, BAR, OUT, FIMD, BIMD, OIMD}
 # N is the rank for IMD / OUT and the link for inputs.
 # ISO is optional and only present for OUT
 # 
@@ -46,7 +46,7 @@ def get_muon_line(mu, muid, rank, addIso = False):
     isempty = 0
     if mu.ptBits == 0: isempty = 1
     sortrank = min(mu.ptBits+mu.qualityBits, 1023)
-    string = "{id} {rank} {pt} {phi} {eta} {charge} {charge_valid} {quality} {sort} {empty}".format(
+    string = "{id:<6} {rank:>5} {pt:>5} {phi:>5} {eta:>5} {charge:>5} {charge_valid:>5} {quality:>5} {sort:>5} {empty:>5}".format(
                     id=muid,
                     rank=rank,
                     pt=mu.ptBits,
@@ -59,7 +59,7 @@ def get_muon_line(mu, muid, rank, addIso = False):
                     empty=isempty
                 )
     if addIso:
-        string += " {iso}\n".format(iso=mu.Iso)
+        string += " {iso:>5}\n".format(iso=mu.Iso)
     else:
         string += "\n"
     return string
@@ -109,14 +109,14 @@ def convert_input_vector_to_strings(vec, vhdl_dict, mutype, size):
     if mutype.endswith("+"): track_id += "+"
     if mutype.endswith("-"): track_id += "-"
     track_string = ""
-    track_string_template = " {eta} {phi} {quality}"
+    track_string_template = " {eta:>5} {phi:>5} {quality:>5}"
     mu_string = ""
     for i in xrange(len(mulist)):
         if mulist[i] == None:
             mulist[i] = mu_tmp = Muon(vhdl_dict, mu_type="IN", bitword=0)
         mu_string += get_muon_line(mulist[i], mutype, i/3+link_offset)
         if i%3 == 0 and i != 0:
-            track_string += track_id
+            track_string += "{id:<6}".format(id=track_id)
             for j in [3, 2, 1]:
                 track_string += track_string_template.format(eta=mulist[i-j].etaBits, phi=mulist[i-j].phiBits, quality=mulist[i-j].qualityBits)
             track_string += "\n"
