@@ -231,29 +231,9 @@ def main() :
                     mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj=mu)
                     imd_list.append(mu_tmp)
 
-
-                # WORKAROUND: Won't be necessary for final version of emulator
-                # atm need to sort the intermediate muons here
-                imd_list_fin = []
-                imd_list_tmp = imd_list[0:4]
-                imd_list_tmp.sort(key=Muon.getRank, reverse=True) 
-                imd_list_fin += imd_list_tmp
-                imd_list_tmp = imd_list[4:8]
-                imd_list_tmp.sort(key=Muon.getRank, reverse=True) 
-                imd_list_fin += imd_list_tmp 
-                imd_list_tmp = imd_list[8:16]
-                imd_list_tmp.sort(key=Muon.getRank, reverse=True) 
-                imd_list_fin += imd_list_tmp 
-                imd_list_tmp = imd_list[16:20]
-                imd_list_tmp.sort(key=Muon.getRank, reverse=True) 
-                imd_list_fin += imd_list_tmp 
-                imd_list_tmp = imd_list[20:]
-                imd_list_tmp.sort(key=Muon.getRank, reverse=True) 
-                imd_list_fin += imd_list_tmp
-
                 # convert them into strings and write to file
                 out_muons_str = get_muon_lines(out_list, mu_type="OUT", addIso=True)
-                imd_muons_str = get_muon_lines(imd_list_fin, mu_type="IMD", addIso=False)
+                imd_muons_str = get_muon_lines(imd_list, mu_type="IMD", addIso=False)
                 table_head = "#{id:<5} {rank:>5} {pt:>5} {phi:>5} {eta:>5} {charge:>5} {charge_valid:>5} {quality:>5} {sort:>5} {empty:>5}\n".format(
                     id="TYPE", rank="POS", pt="PT", phi="PHI", eta="ETA", charge = "SIGN", charge_valid="VSIG", quality="QUAL", sort="RANK", empty="EMPT")
                 out_file.write(table_head)
