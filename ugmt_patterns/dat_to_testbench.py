@@ -1,12 +1,29 @@
+#ROOT
+from ROOT import gSystem, gROOT
+
+def setupROOT():
+    gSystem.Load("libFWCoreFWLite")
+    gROOT.ProcessLine('AutoLibraryLoader::enable();')
+    gSystem.Load("libFWCoreFWLite")
+    gSystem.Load("libCintex")
+    gROOT.ProcessLine('ROOT::Cintex::Cintex::Enable();')
+
+setupROOT()
+gSystem.Load("libL1TriggerL1TGlobalMuon")
+
+from ROOT import l1t
+
 #CMSSW
 from DataFormats.FWLite import Events, Handle
-
+#from L1Trigger.L1TGlobalMuon import MicroGMTRankPtQualLUT
 # ../tools:
 from tools.vhdl import VHDLConstantsParser
 
 # ./helpers:
 from helpers.muon import Muon 
 from helpers.options import parse_options, discover_files
+
+
 
 def get_header():
     string = "#"*80
@@ -36,7 +53,7 @@ def link_from_phi(phi, mutype):
     cable = int(phi*phiToCable)    
     return cable
 
-def get_muon_line(mu, mu_type, rank, addIso = False):
+def get_muon_line(mu, mu_type, rank, addIso = False, rankLUT = None):
     """ 
     Convert a single ./helpers/muon.Muon object into string
     TAKES:  mu          Muon object
@@ -47,7 +64,11 @@ def get_muon_line(mu, mu_type, rank, addIso = False):
     """
     isempty = 0
     if mu.ptBits == 0: isempty = 1
-    sortrank = min(mu.ptBits+mu.qualityBits, 1023)
+    sortrank = 0
+    if rankLUT:
+        sortrank = rankLUT.loopup(mu.ptBits, mu.qualityBits)
+    else:
+        sortrank = mu.rank
     string = "{id:<6} {rank:>5} {pt:>5} {phi:>5} {eta:>5} {charge:>5} {charge_valid:>5} {quality:>5} {sort:>5} {empty:>5}".format(
                     id=mu_type,
                     rank=rank,
@@ -86,7 +107,7 @@ def get_muon_lines(mu_list, mu_type, addIso):
     
     return string
 
-def convert_input_vector_to_strings(vec, vhdl_dict, mu_type, size):
+def convert_input_vector_to_strings(vec, vhdl_dict, mu_type, size, rankLUT):
     """
     converts the input std::vector<l1t::L1TRegionalMuonCandidate> into 
     two strings with one containing one muon per line and the other encoding
@@ -134,7 +155,7 @@ def convert_input_vector_to_strings(vec, vhdl_dict, mu_type, size):
     for i in xrange(len(mulist)):
         if mulist[i] == None:
             mulist[i] = mu_tmp = Muon(vhdl_dict, mu_type="IN", bitword=0)
-        mu_string += get_muon_line(mulist[i], mu_type, i/3+link_offset)
+        mu_string += get_muon_line(mulist[i], mu_type, i/3+link_offset, rankLUT)
         if (i+1)%3 == 0: # to make sure all three muons are instantiated
             track_string += "{id:<6}".format(id=track_id)
             for j in [2, 1, 0]:
@@ -149,6 +170,9 @@ def main() :
 
     opts, args = parse_options()
     fname_dict = discover_files(opts)
+    
+    rankLUT = l1t.MicroGMTRankPtQualLUT()
+
 
     for pattern, fnames in fname_dict.iteritems():
         print "+"*30, pattern, "+"*30
@@ -185,15 +209,15 @@ def main() :
                 out_file.write(table_head)
 
                 # Get all input muon / track strins and write the muons to file
-                muon_string_fwdp, track_string_fwdp = convert_input_vector_to_strings(emu_fwd_muons, vhdl_dict, "FWD+", 18)
+                muon_string_fwdp, track_string_fwdp = convert_input_vector_to_strings(emu_fwd_muons, vhdl_dict, "FWD+", 18, rankLUT)
                 out_file.write(muon_string_fwdp)
-                muon_string_ovlp, track_string_ovlp = convert_input_vector_to_strings(emu_ovl_muons, vhdl_dict, "OVL+", 18)
+                muon_string_ovlp, track_string_ovlp = convert_input_vector_to_strings(emu_ovl_muons, vhdl_dict, "OVL+", 18, rankLUT)
                 out_file.write(muon_string_ovlp)
-                muon_string_bar, track_string_bar = convert_input_vector_to_strings(emu_bar_muons, vhdl_dict, "BAR", 36)
+                muon_string_bar, track_string_bar = convert_input_vector_to_strings(emu_bar_muons, vhdl_dict, "BAR", 36, rankLUT)
                 out_file.write(muon_string_bar)
-                muon_string_ovln, track_string_ovln = convert_input_vector_to_strings(emu_ovl_muons, vhdl_dict, "OVL-", 18)
+                muon_string_ovln, track_string_ovln = convert_input_vector_to_strings(emu_ovl_muons, vhdl_dict, "OVL-", 18, rankLUT)
                 out_file.write(muon_string_ovln)
-                muon_string_fwdn, track_string_fwdn = convert_input_vector_to_strings(emu_fwd_muons, vhdl_dict, "FWD-", 18)
+                muon_string_fwdn, track_string_fwdn = convert_input_vector_to_strings(emu_fwd_muons, vhdl_dict, "FWD-", 18, rankLUT)
                 out_file.write(muon_string_fwdn)
 
                 table_head = "#{id:<5}".format(id="TYPE")
