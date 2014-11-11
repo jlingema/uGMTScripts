@@ -2,8 +2,15 @@ import os
 from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
 from tools.muon_helpers import print_out_word, print_in_word
-from helpers.options import  parse_options
+from tools.logger import log
+from helpers.options import  parse_options, discover_files
 
+cmssw_env = False
+try: # try to import CMSSW libs
+    from DataFormats.FWLite import Events, Handle
+    cmssw_env = True
+except ImportError:
+    log.error("Could not load CMSSW-Modules. Will not look at emulator data!")
 
 class Relation():
     max_relation = -1
@@ -63,28 +70,15 @@ if __name__ == "__main__":
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 
     options, args = parse_options()
+    file_dict = discover_files(options)
 
-    file_dict = {}
-
-    for roots, dirs, files in os.walk("{d}".format(d=options.directory)):
-        tmp_dict = {}
-        for fname in files:
-            if "tx_" in fname:
-                tmp_dict["tx"] = fname
-            if "rx_" in fname:
-                tmp_dict["rx"] = fname
-            if ".root" in fname:
-                tmp_dict["root"] = fname
-        if tmp_dict != {}: 
-            file_dict[roots] = tmp_dict
-
-    for filename in file_dict:
-        version = Version.from_filename(filename)
-        print "+"*30, filename, "+"*30
+    for pattern, fnames in file_dict.iteritems():
+        version = Version.from_filename(fnames['rx'])
+        print "+"*30, pattern, "+"*30
 
         # Reading and processing the hardware data
-        input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
-        output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict, version)
+        input_parser = InputBufferParser(fnames['rx'], vhdl_dict)
+        output_parser = OutputBufferParser(fnames['tx'], vhdl_dict, version)
 
         in_muons = input_parser.get_input_muons()
         out_muons = output_parser.get_output_muons()

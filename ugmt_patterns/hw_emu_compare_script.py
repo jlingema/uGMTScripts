@@ -14,7 +14,7 @@ from tools.vhdl import VHDLConstantsParser
 # ./helpers:
 from helpers.muon import Muon 
 from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
-from helpers.options import parse_options
+from helpers.options import parse_options, discover_files
 
 def fill_muon_hists(index, hist_list, muons):
     for mu in muons:
@@ -42,18 +42,7 @@ if __name__ == "__main__":
 
     options, args = parse_options()
 
-    file_dict = {}
-
-    for roots, dirs, files in os.walk("{d}".format(d=options.directory)):
-        tmp_dict = {}
-        for fname in files:
-            if "tx_" in fname:
-                tmp_dict["tx"] = fname
-            if "rx_" in fname:
-                tmp_dict["rx"] = fname
-        if tmp_dict != {}:
-            file_dict[roots] = tmp_dict
-            file_dict[roots]["root"] = os.path.join(options.emudirectory, os.path.basename(roots)+".root")
+    file_dict = discover_files(options)
 
     # binning of plots:
     hist_parameters = {
@@ -63,13 +52,13 @@ if __name__ == "__main__":
         "etaBits": ["etaBits", 256, -512, 512] #(eta_high-eta_low)/eta_unit, eta_low, eta_high]
     }
 
-    for filename in file_dict:
-        version = Version.from_filename(filename)
+    for pattern, fnames in file_dict.iteritems():
+        version = Version.from_filename(fnames['tx'])
         # Reading and initilaising the Emulator data
         emu_out_list = []
         emu_imd_list = []
 
-        events = Events(file_dict[filename]["root"])
+        events = Events(fnames["root"])
 
         out_handle = Handle('BXVector<l1t::Muon>')
         bar_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
@@ -111,8 +100,8 @@ if __name__ == "__main__":
                 emu_imd_list.append(mu_tmp)
                 add_muons -= 1
         # Reading and processing the hardware data
-        input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
-        output_parser = OutputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["tx"]), vhdl_dict, version)
+        input_parser = InputBufferParser(fnames["rx"], vhdl_dict)
+        output_parser = OutputBufferParser(fnames["tx"], vhdl_dict, version)
 
         in_muons = input_parser.get_input_muons()
         out_muons = output_parser.get_output_muons()
@@ -127,12 +116,12 @@ if __name__ == "__main__":
         ####
 
         # print "{fn}_in_events :".format(fn=filename), in_events
-        print "{fn}_in_muons :".format(fn=filename), non_zero(in_muons), "/", len(in_muons)
-        print "{fn}_num of final non-zero Output-Muons: ".format(fn=filename), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"
-        print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=filename), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
-        print "{fn}_n_ranks".format(fn=filename), rank_num_of_non_zeros, "/", len(ranks)
+        print "{fn}_in_muons :".format(fn=pattern), non_zero(in_muons), "/", len(in_muons)
+        print "{fn}_num of final non-zero Output-Muons: ".format(fn=pattern), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"
+        print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=pattern), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
+        print "{fn}_n_ranks".format(fn=pattern), rank_num_of_non_zeros, "/", len(ranks)
 
-        hist1 = ROOT.TH2D("{f}_comparison1".format(f=file_dict[filename]["root"]), "", 64, 0, 64, 8, 1, 9)
+        hist1 = ROOT.TH2D("{f}_comparison1".format(f=file_dict[pattern]["root"]), "", 64, 0, 64, 8, 1, 9)
         mucnt = -1
         print len(out_muons), len(emu_out_list)
         for mu, emu_mu in zip(out_muons, emu_out_list):
@@ -173,9 +162,9 @@ if __name__ == "__main__":
             hist1.GetXaxis().SetBinLabel(n+1,"{n}".format(n=n))
         for n in xrange(8):
             hist1.GetYaxis().SetBinLabel(n+1,"Muon {n}".format(n=n+1))
-        canvas.Print("{f}/figures/bitplot1.pdf".format(f=filename))
+        canvas.Print("{f}/figures/bitplot1.pdf".format(f=fnames['base']))
 
-        hist2 = ROOT.TH2D("{f}_comparison2".format(f=file_dict[filename]["root"]), "", 4, 0, 4, 8, 1, 9)
+        hist2 = ROOT.TH2D(pattern+"_comparison2", "", 4, 0, 4, 8, 1, 9)
         mucnt = -1
         for mu, emu_mu in zip(out_muons, emu_out_list):
             mucnt += 1
@@ -200,9 +189,9 @@ if __name__ == "__main__":
         hist2.GetXaxis().SetBinLabel(4,"etaBits")
         for n in xrange(8):
             hist2.GetYaxis().SetBinLabel(n+1,"Muon {n}".format(n=n+1))
-        canvas.Print("{f}/figures/bitplot2.pdf".format(f=filename))
+        canvas.Print("{f}/figures/bitplot2.pdf".format(f=fnames['base']))
 
-        hist_inter_1 = ROOT.TH2D("{f}_comparison_inter_1".format(f=filename), "comparison of intermediates: all bits [{f}]".format(f=filename), 64, 0, 64, 24, 0, min(len(intermediate_muons), len(emu_imd_list)))
+        hist_inter_1 = ROOT.TH2D("{f}_comparison_inter_1".format(f=pattern), "comparison of intermediates: all bits [{f}]".format(f=pattern), 64, 0, 64, 24, 0, min(len(intermediate_muons), len(emu_imd_list)))
         mucnt = -1
 
         # non_zero_ranks = [rank for rank in ranks if rank != 0]
@@ -236,9 +225,9 @@ if __name__ == "__main__":
             hist_inter_1.GetXaxis().SetBinLabel(n+1,"{n}".format(n=n+1))
         for n in xrange(24):
             hist_inter_1.GetYaxis().SetBinLabel(n+1,"Inter-Muon {n}".format(n=n+1))
-        canvas.Print("{f}/figures/intermediate_bitplot1.pdf".format(f=filename))
+        canvas.Print("{f}/figures/intermediate_bitplot1.pdf".format(f=fnames['base']))
 
-        hist_inter_2 = ROOT.TH2D("{f}_inter_comparison2".format(f=filename), "comparison of intermediate: overview [{f}]".format(f=filename), 4, 0, 4, 24, 1, min(len(intermediate_muons), len(emu_imd_list)))
+        hist_inter_2 = ROOT.TH2D("{f}_inter_comparison2".format(f=pattern), "comparison of intermediate: overview [{f}]".format(f=fnames['base']), 4, 0, 4, 24, 1, min(len(intermediate_muons), len(emu_imd_list)))
         mucnt = -1
         for imd_mu, imd_emu_mu in zip(intermediate_muons, emu_imd_list):
             mucnt += 1
@@ -265,4 +254,4 @@ if __name__ == "__main__":
         hist_inter_2.GetXaxis().SetBinLabel(4,"eta")
         for n in xrange(24):
             hist_inter_2.GetYaxis().SetBinLabel(n+1,"Inter-Muon {n}".format(n=n+1))
-        canvas.Print("{f}/figures/intermediate_bitplot2.pdf".format(f=filename))
+        canvas.Print("{f}/figures/intermediate_bitplot2.pdf".format(f=fnames['base']))
