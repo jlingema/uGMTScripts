@@ -167,7 +167,7 @@ def get_muon_words(imd_mu_list, out_mu_list):
         for link in range(12):
             valid = 1
             if frm < 2 and link < 4: valid = 0
-            string += "{valid:>3} {word:>11} ".format(valid=valid, word=out_words[link][frm])
+            string += "{valid:>3} {word:0>8x} ".format(valid=valid, word=out_words[link][frm])
 
         string += "\n"
 
@@ -178,10 +178,12 @@ def convert_input_vector_to_strings(vec, vhdl_dict, mu_type, size, rankLUT):
     converts the input std::vector<l1t::L1TRegionalMuonCandidate> into 
     two strings with one containing one muon per line and the other encoding
     the tracks of three muons per line (atm phi, eta and quality)
-    TAKES:  vec:        the input vector
-            vhdl_dict:  as returned by ../tools/vhdl.VHDLConstantsParser
-            mu_type:     BAR, OVL, FWD
-            size:       36 / 18 depending on BAR or OVL/FWD
+    TAKES:  
+        vec:        the input vector
+        vhdl_dict:  as returned by ../tools/vhdl.VHDLConstantsParser
+        mu_type:    BAR, OVL, FWD
+        size:       36 / 18 depending on BAR or OVL/FWD
+        rankLUT:    the CMSSW loop-up-table to calculate rank
     RETURNS: pair of strings:
         [0] muon strings (see get_muon_line)
         [1] muon track lines "ETA0 PHI0 QUALITY0 ETA1 PHI1 QUALITY1 ETA2 PHI2 QUALITY2"
