@@ -154,14 +154,14 @@ def get_muon_words(imd_mu_list, out_mu_list):
         out_words[link].append(msw)
 
     string += "{id:<7} ".format(id="ID")
-    for link in range(12): string += "{valid:>2} {word:>11} ".format(valid="V"+str(link), word="LINK"+str(link))
+    for link in range(12): string += "{valid:>3} {word:>11} ".format(valid="V"+str(link), word="LINK"+str(link))
     string += "\n"
     for frm in range(n_words_per_link):
         string += "{n:<7} ".format(n="FRM"+str(frm))
         for link in range(12):
             valid = 1
             if frm < 2 and link < 4: valid = 0
-            string += "{valid:>2} {word:>11} ".format(valid=valid, word=out_words[link][frm])
+            string += "{valid:>3} {word:>11} ".format(valid=valid, word=out_words[link][frm])
 
         string += "\n"
 
