@@ -23,8 +23,6 @@ from tools.vhdl import VHDLConstantsParser
 from helpers.muon import Muon 
 from helpers.options import parse_options, discover_files
 
-
-
 def get_header_algo():
     string = "#"*80
     string += """
@@ -114,7 +112,7 @@ def get_muon_lines(mu_list, mu_type, addIso):
             mu_type:    muon type (BAR, FWD, OVL, IMD, OUT) 
                         -- IMD is converted into BIMD/FIMD/OIMD according to position in list 
             addIso      bool whether to add iso info as last info piece
-    RETURNS: string with lines encoding muons (see get_muon_line)
+    RETURNS: string with lines encoded muons (see get_muon_line)
     """
     string = ""
     themuid = mu_type
@@ -128,6 +126,14 @@ def get_muon_lines(mu_list, mu_type, addIso):
     return string
 
 def get_muon_words(imd_mu_list, out_mu_list):
+    """
+    Convert output and intermediate muons into 32bit word strings. 
+    Used for testing the serializer stage
+    TAKES:  imd_mu_list:    list of intermeidate muon objects
+            out_mu_list:    list of outgoing muon objects
+    RETURNS: string with lines of encoded muons
+
+    """
     string = ""
     n_words_per_link = 6 # 6 240 MHz cycles in 40 MHz clock
     #msw_mask = 0xffffffff00000000
@@ -153,7 +159,7 @@ def get_muon_words(imd_mu_list, out_mu_list):
         out_words[link].append(lsw)
         out_words[link].append(msw)
 
-    string += "{id:<7} ".format(id="ID")
+    string += "#{id:<6} ".format(id="ID")
     for link in range(12): string += "{valid:>3} {word:>11} ".format(valid="V"+str(link), word="LINK"+str(link))
     string += "\n"
     for frm in range(n_words_per_link):
