@@ -51,7 +51,7 @@ def get_closest_matches(inmus, outmus, imdmus):
             if in_match_dict[mu_out][0] < relation:
                 in_match_dict[mu_out] = [relation, mu_in]
         imd_match_dict[mu_out] = [0, None]
-        for mu_imd in imdmus:
+        for idx, mu_imd in enumerate(imdmus):
             relation = calculate_relation(mu_imd, mu_out)
             #if relation isn't just random, put it in the dict
             if imd_match_dict[mu_out][0] < relation and relation > 19: 
@@ -88,11 +88,13 @@ if __name__ == "__main__":
 
         in_muons = input_parser.get_input_muons()
         out_muons = output_parser.get_output_muons()
-        intermediate_muons = output_parser.get_intermediate_muons()
+        imd_muons = output_parser.get_intermediate_muons()
+        imd_ranks = output_parser.get_ranks()
 
         in_mu_non_zero = [ in_mu for in_mu in in_muons if in_mu.bitword != 0 ]
         out_mu_non_zero = [ out_mu for out_mu in out_muons if out_mu.bitword != 0 ]
-        imd_mu_non_zero = [imd_mu for imd_mu in intermediate_muons if imd_mu.bitword != 0 ]
+        imd_mu_non_zero = [imd_mu for imd_mu in imd_muons if imd_mu.bitword != 0 ]
+        imd_ranks_non_zero = [imd_rank for imd_rank in imd_ranks if imd_rank != 0]
 
         # get closest matches:
         in_matches, imd_matches = get_closest_matches(in_mu_non_zero, out_mu_non_zero, imd_mu_non_zero)
@@ -143,8 +145,8 @@ if __name__ == "__main__":
                                 print print_in_word(in_mu.bitword), "in BX", in_mu.bx, "( frame:", in_mu.frame, " link:", in_mu.link, ")"
                     print "-"*30 + "non-zero imd muons: " + "-"*30
                     for iimu in xrange(bx*24, (bx+1)*24):
-                        if iimu < len(intermediate_muons):
-                            imd_mu = intermediate_muons[iimu]
+                        if iimu < len(imd_muons):
+                            imd_mu = imd_muons[iimu]
                             if imd_mu.bitword != 0: 
                                 print print_out_word(imd_mu.bitword), "in BX", imd_mu.bx, "( frame:", imd_mu.frame, " link:", imd_mu.link, ")"
                     print "-"*30 + "non-zero fin muons: " + "-"*30
