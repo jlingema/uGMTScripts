@@ -1,0 +1,272 @@
+{
+    "OvlNegSingleMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "BPhiExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbs", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
+        "input_widths": [
+            1, 
+            8, 
+            5
+        ]
+    }, 
+    "BrlSingleMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "IdxSelMemEta": {
+        "function": "",
+        "map" : "etamap", 
+        "inputs": [
+            "eta"
+        ], 
+        "data_out_width": 5, 
+        "docstring": "Has to be manually generated for unknown reason!", 
+        "input_widths": [
+            9
+        ]
+    }, 
+
+    "SortRank": {
+        "function": "pT+qual", 
+        "function_tmp": "(pT>>4)+qual*5", 
+        "inputs": [
+            "qual", 
+            "pT"
+        ], 
+        "data_out_width": 10, 
+        "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
+        "input_widths": [
+            4, 
+            9
+        ]
+    }, 
+    "AbsIsoCheckMem": {
+        "function": "areaSum<3", 
+        "inputs": [
+            "areaSum"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            5
+        ]
+    }, 
+    "FwdPosSingleMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "FOPosMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "RelIsoCheckMem": {
+        "function": "areaSum/(pT if pT > 0 else 0.0001)<1", 
+        "inputs": [
+            "areaSum", 
+            "pT"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            5, 
+            9
+        ]
+    }, 
+    "FEtaExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbsRed", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "?", 
+        "input_widths": [
+            1, 
+            7, 
+            5
+        ]
+    }, 
+    "OEtaExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbsRed", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "?", 
+        "input_widths": [
+            1, 
+            7, 
+            5
+        ]
+    }, 
+    "BEtaExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbsRed", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "?", 
+        "input_widths": [
+            1, 
+            7, 
+            5
+        ]
+    }, 
+    "BONegMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "IdxSelMemPhi": {
+        "function": "",
+        "map" : "phimap",
+        "inputs": [
+            "phi"
+        ], 
+        "data_out_width": 6, 
+        "docstring": "Has to be manually generated for unknown reason!", 
+        "input_widths": [
+            10
+        ]
+    }, 
+    "OPhiExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbs", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
+        "input_widths": [
+            1, 
+            8, 
+            5
+        ]
+    }, 
+    "FwdNegSingleMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "BOPosMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "OvlPosSingleMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }, 
+    "FPhiExtrapolation": {
+        "function": "0", 
+        "inputs": [
+            "charge", 
+            "etaAbs", 
+            "pTred"
+        ], 
+        "data_out_width": 4, 
+        "docstring": "Has to be manually generated as it uses more than one bRAM primitive.", 
+        "input_widths": [
+            1, 
+            8, 
+            5
+        ]
+    }, 
+    "FONegMatchQual": {
+        "function": "0", 
+        "inputs": [
+            "deltaEtaRed", 
+            "deltaPhiRed"
+        ], 
+        "data_out_width": 1, 
+        "docstring": "", 
+        "input_widths": [
+            4, 
+            3
+        ]
+    }
+}
