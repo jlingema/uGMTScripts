@@ -70,6 +70,7 @@ if __name__ == "__main__":
 
     for filename in file_dict:
         version = Version.from_filename(filename)
+        print "+"*30, "version detected:", version, "+"*30
         print "+"*30, filename, "+"*30
         # Reading and processing the hardware data
         input_parser = InputBufferParser("{f}/{fn}".format(f=filename, fn=file_dict[filename]["rx"]), vhdl_dict)
