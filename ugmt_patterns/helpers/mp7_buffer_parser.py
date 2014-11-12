@@ -96,6 +96,7 @@ class BufferParser(object):
         """
         if not self.initialized: self.init()
         frame_content = self.frame_dict[frame][link]
+        if "0v" in frame_content: return -1
         frame_content = frame_content.replace("1v", "")
         num = int(frame_content, 16)
         return num
@@ -119,7 +120,10 @@ class BufferParser(object):
                 if "1v" in self.frame_dict[frame][link_n] and "1v" in self.frame_dict[frame+1][link_n]:
                     a = self.get_num(frame, link_n)
                     b = self.get_num(frame+1, link_n)
-                    mu_dict[frame].append([(b<<32) + a, link_n])
+                    mu_dict[frame].append([(b<<32) + a, link_n, 1])
+                if "0v" in self.frame_dict[frame][link_n] and "0v" in self.frame_dict[frame+1][link_n]:
+                    mu_dict[frame].append([0, 0, 0])
+
             frame += 2 
 
         return mu_dict
@@ -224,6 +228,9 @@ class OutputBufferParser(BufferParser):
         if self.version.patch < 6 and self.version.major == 0 and self.version.minor == 0:
             self.intermediate_offset = -6
             self.rank_offset = -6
+        if self.version.patch == 0 and self.version.minor == 2 and self.version.major == 0:
+            self.intermediate_offset = -4
+            self.rank_offset = -4
 
         self.frame_low = -1
         self.frame_high = -1
@@ -249,6 +256,9 @@ class OutputBufferParser(BufferParser):
                     self.frame_low = last_0v_frame+1
                     escape = True
                     break
+        
+        # if self.version.patch == 0 and self.version.minor == 2 and self.version.major == 0:
+        #     self.frame_low -= 2
 
         if self.frame_low == -1:
             self._log.error("Found no valid, non-zero frames in this file {fn}".format(fn=self.fname))
