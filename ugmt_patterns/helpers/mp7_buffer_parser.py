@@ -263,7 +263,8 @@ class OutputBufferParser(BufferParser):
         if self.frame_low == -1:
             self._log.error("Found no valid, non-zero frames in this file {fn}".format(fn=self.fname))
             return
-
+        if self.version.patch == 0 and self.version.minor == 2 and self.version.major == 0:
+            self.frame_low -= 2 # fix for first muons being empty.
         for link in xrange(self.link_out_low, self.link_out_high+1):
             for frame in xrange(self.frame_low, self.max_frame+1):
                 a = self.frame_dict[frame][link]
