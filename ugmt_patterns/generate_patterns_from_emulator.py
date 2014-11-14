@@ -22,7 +22,7 @@ from DataFormats.FWLite import Events, Handle
 # ../tools:
 from tools.vhdl import VHDLConstantsParser
 
-from helpers.options import parse_options, discover_files
+from helpers.options import parse_options, discover_emu_files
 
 def get_muon_list_out(emu_product, mu_type, vhdl_dict):
     if mu_type == "OUT":    
@@ -42,6 +42,7 @@ def get_muon_list(emu_product, mu_type, vhdl_dict):
     if mu_type == "BARREL": nexpected = 36
 
     mulist = [Muon(vhdl_dict, mu_type="IN", bitword=0)]*nexpected
+    
     link_offset = vhdl_dict[mu_type+"_LOW"]
     for mu in emu_product:
         loc_link = mu.link()-link_offset
@@ -67,7 +68,7 @@ def main():
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 
     opts, args = parse_options()
-    fname_dict = discover_files(opts)
+    fname_dict = discover_emu_files(opts.emudirectory)
     
     rankLUT = l1t.MicroGMTRankPtQualLUT()
 

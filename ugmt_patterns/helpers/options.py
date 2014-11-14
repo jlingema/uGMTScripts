@@ -23,12 +23,12 @@ def discover_files(opts):
                                         'base':'/abspath/to/dir/pattern/'}
     """
     file_dict = {}
-    for roots, dirs, files in walk("{d}".format(d=opts.directory)):
+    for roots, dirs, files in walk(opts.directory):
         tmp_dict = {}
         for fname in files:
-            if "tx_" in fname:
+            if fname.startswith("tx_"):
                 tmp_dict["tx"] = path.join(path.abspath(roots), fname)
-            if "rx_" in fname:
+            if fname.startswith("rx_"):
                 tmp_dict["rx"] = path.join(path.abspath(roots), fname)
         if tmp_dict != {}: 
             pattern_name = path.basename(roots)
@@ -36,4 +36,15 @@ def discover_files(opts):
             file_dict[pattern_name] = tmp_dict
             if path.exists(opts.emudirectory):
                 file_dict[pattern_name]["root"] = path.join(path.abspath(opts.emudirectory), pattern_name+".root")
+    return file_dict
+
+def discover_emu_files(directory):
+    file_dict = {}
+    for roots, dirs, files in walk(directory):
+        for fname in files:
+            if fname.endswith(".root"):
+                pattern_name = fname.replace(".root", "")
+                file_dict[pattern_name] = {}
+                file_dict[pattern_name]['base'] = path.abspath(roots)
+                file_dict[pattern_name]['root'] = path.join(file_dict[pattern_name]['base'], fname)
     return file_dict
