@@ -103,6 +103,11 @@ class Muon():
         return (self.bitword >> 32)
 
     def encode_phi(self, phi):
+        """
+        As the hardware expects a control bit on position 31 and phi
+        goes across the word boundary we need to put a zero in the
+        middle.
+        """
         mask_lsw = bithlp.get_mask(0, 5) #0-5 for phi
         lsw = int(phi)&mask_lsw
         msw = int(phi)>>6
