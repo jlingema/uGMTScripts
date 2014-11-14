@@ -1,6 +1,10 @@
 from tools.logger import log
 
 class BufferWriter(object):
+    """
+    Class (Decorator) that produces mp7-buffer-files. 
+    Giving this class to the ctor of of PatternDumper will let it create these files
+    """
     def __init__(self):
         super(BufferWriter, self).__init__()
         self.string = ""
@@ -11,6 +15,13 @@ class BufferWriter(object):
 """
 
     def writeFrame(self, words):
+        """
+        Write a frame to the internal "buffer" (i.e. string),
+        TAKES: 
+            words: List of 72-X 32 bit words (if X > 0, the remaining links are filled with 0)
+        RETURNS:
+            void
+        """
         self.string += "Frame {n:0>4} :".format(n=self.frameCounter)
         for w in words:
             self.string += " {v}v{w:0>8x}".format(v=1, w=w)
@@ -24,6 +35,10 @@ class BufferWriter(object):
         return self.head + self.string
 
 class TestbenchWriter(object):
+    """
+    Class (Decorator) that produces testbench files (i.e. what Dinyar uses for testing)
+    Giving this class to the ctor of of PatternDumper will let it create these files
+    """
     def __init__(self):
         super(TestbenchWriter, self).__init__()
         self.string = ""
@@ -50,6 +65,11 @@ class TestbenchWriter(object):
     
 
     def writeFrame(self, words):
+        """
+        Adds the frame to the buffer
+        TAKES: 
+            words : list of the 32 bit words of the current frame (filled with 0s to have 72)
+        """
         self.string += "{n:<6} :".format(n="FRM"+str(self.frameCounter))
         for w in words:
             self.string += " {v} {w:0>8x}".format(v=1, w=w)
@@ -60,6 +80,7 @@ class TestbenchWriter(object):
         self.frameCounter += 1
 
     def writeMuonHeadline(self):
+        """ documenting the individual muon quantities """
         self.string += "#{id:<5} {rank:>5} {pt:>5} {phi:>5} {eta:>5} {charge:>5} {charge_valid:>5} {quality:>5} {sort:>5} {empty:>5} {iso:>5}\n".format(
                         id="TYPE",
                         rank="POS",
@@ -74,6 +95,7 @@ class TestbenchWriter(object):
                         iso="(ISO)"
                     )
     def writeTrackHeadline(self):
+        """ documenting the individual track quantities """
         self.string += "# TRACKS\n#TYPE   ETA0  PHI0 QUAL0  ETA1  PHI1 QUAL1  ETA2  PHI2 QUAL2\n"
 
     def writeEventHeader(self, n):
@@ -114,6 +136,12 @@ class TestbenchWriter(object):
         self.string += tmp_string
 
     def writeTracks(self, tracks, track_type):
+        """ 
+        Adds the track information to the buffer. 
+        TAKES: 
+            tracks: list of [eta, phi, qual]*n_tracks
+            track_type: track-id = {FTRK+/-, BTRK, OTRK+/-}
+        """
         for i, track in enumerate(tracks):
             if i%3==0:
                 self.string += "{id:<6}".format(id=track_type)
@@ -133,7 +161,7 @@ class PatternDumper(object):
         self.frame_dict = {}            # dict for easy access of words
         self.vhdl_dict = vhdl_dict      # vhdl-dict as returned by ../../tools/vhdl.VHDLConfigParser
         self._log = log.init_logging(self.__class__.__name__)
-        self._writer = writer_t()
+        self._writer = writer_t()       # which writer should be used for dumping?
     
     def writeEmptyFrames(self, n):
         for i in range(n):
@@ -192,7 +220,12 @@ class PatternDumper(object):
                 if i < 4 or i > 19: themuid = "FIMD"
                 elif i < 8 or i > 15: themuid = "OIMD"
                 else: themuid = "BIMD"
-            self._writer.writeMuon(muon, themuid, i, addIso, rankLUT)
+            try:
+                self._writer.writeMuon(muon, themuid, i, addIso, rankLUT)
+            except AttributeError:
+                self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
+                return
+
 
     def writeTrackGroup(self, muons, track_type):
         tracks = []
@@ -201,7 +234,11 @@ class PatternDumper(object):
         self._writer.writeTracks(tracks, track_type)
 
     def writeMuonBasedInputBX(self, bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums, rankLUT, addTracks = False):
-        self._writer.writeMuonHeadline()
+        try:
+            self._writer.writeMuonHeadline()
+        except AttributeError:
+            self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
+            return
         self.writeMuonGroup(fwdp_muons, "FWD+", False, rankLUT)
         self.writeMuonGroup(ovlp_muons, "OVL+", False, rankLUT)
         self.writeMuonGroup(bar_muons, "BAR", False, rankLUT)
@@ -221,6 +258,10 @@ class PatternDumper(object):
         self._writer.string += line
 
     def writeMuonBasedOutputBX(self, out_muons, imd_muons):
-        self._writer.writeMuonHeadline()
+        try:
+            self._writer.writeMuonHeadline()
+        except AttributeError:
+            self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
+            return
         self.writeMuonGroup(imd_muons, "IMD", False, None)
         self.writeMuonGroup(out_muons, "OUT", True, None)
