@@ -70,7 +70,7 @@ class TestbenchWriter(object):
         TAKES: 
             words : list of the 32 bit words of the current frame (filled with 0s to have 72)
         """
-        self.string += "{n:<6} :".format(n="FRM"+str(self.frameCounter))
+        self.string += "{n:<6} ".format(n="FRM"+str(self.frameCounter))
         for w in words:
             self.string += " {v} {w:0>8x}".format(v=1, w=w)
 
