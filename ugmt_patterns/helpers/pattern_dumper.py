@@ -108,7 +108,7 @@ class TestbenchWriter(object):
                 mu_type     muon type (BAR, FWD+/-, OVL+/-, FIMD, BIMD, OIMD, OUT)
                 rank        relative position of the muon (IMD: 0-23, OUT: 0-7, FWD/OVL: 0-37, BAR: 0-35)
                 addIso      whether to add isolation info (should only be done for OUT)
-        RETYURNS: string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO)"
+        Adds to self.string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO)"
         """
         isempty = 0
         if mu.ptBits == 0: isempty = 1
@@ -153,6 +153,51 @@ class TestbenchWriter(object):
     def get_full_string(self):
         return self.head + self.string
 
+
+class TestvectorWriter(object):
+    """
+    Class (Decorator) that produces testbench files (i.e. what Dinyar uses for testing)
+    Giving this class to the ctor of of PatternDumper will let it create these files
+    """
+    def __init__(self):
+        super(TestvectorWriter, self).__init__()
+        self.string = ""
+        self.frameCounter = 0
+        self.muonCounter = 0
+        self.head = ""
+
+    def writeMuon(self, mu, mu_type, rank, addIso = False, rankLUT = None):
+        """ 
+        Convert a single ./helpers/muon.Muon object into string
+        TAKES:  mu          Muon object
+                mu_type     muon type (BAR, FWD+/-, OVL+/-, FIMD, BIMD, OIMD, OUT)
+                rank        relative position of the muon (IMD: 0-23, OUT: 0-7, FWD/OVL: 0-37, BAR: 0-35)
+                addIso      whether to add isolation info (should only be done for OUT)
+        Adds to string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO)"
+        """
+        self.string += "{muon:0>16x} ".format(muon=mu.bitword)
+        self.muonCounter += 1
+        if self.muonCounter == 36:
+            self.string += "\n"
+            self.muonCounter = 0
+
+    def get_full_string(self):
+        return self.head + self.string
+
+    def writeTracks(self, tracks, track_type):
+        pass
+
+    def writeEventHeader(self, n):
+        pass
+
+    def writeTrackHeadline(self):
+        pass
+
+    def writeMuonHeadline(self):
+        pass
+
+    def writeFrame(self, words):
+        pass
 
 class PatternDumper(object):
     def __init__(self, fname, vhdl_dict, writer_t):
@@ -244,6 +289,7 @@ class PatternDumper(object):
         self.writeMuonGroup(bar_muons, "BAR", False, rankLUT)
         self.writeMuonGroup(ovln_muons, "OVL-", False, rankLUT)
         self.writeMuonGroup(fwdn_muons, "FWD-", False, rankLUT)
+
         self._writer.writeTrackHeadline()
         self.writeTrackGroup(fwdp_muons, "FTRK+")
         self.writeTrackGroup(ovlp_muons, "OTRK+")

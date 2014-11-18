@@ -1,5 +1,5 @@
 from helpers.muon import Muon
-from helpers.pattern_dumper import PatternDumper, TestbenchWriter, BufferWriter
+from helpers.pattern_dumper import PatternDumper, TestbenchWriter, BufferWriter, TestvectorWriter
 
 #ROOT
 from ROOT import gSystem, gROOT
@@ -85,11 +85,13 @@ def main():
 
         basedir_testbench = "data/patterns/testbench/"
         basedir_mp7 = "data/patterns/mp7/"
+        basedir_integration = "data/patterns/integration/"
 
         input_buffer = PatternDumper(basedir_mp7+pattern+".txt", vhdl_dict, BufferWriter)
         output_buffer = PatternDumper(basedir_mp7+pattern+"_out.txt", vhdl_dict, BufferWriter)
         input_testbench = PatternDumper(basedir_testbench+pattern+".txt", vhdl_dict, TestbenchWriter)
         serializer_testbench = PatternDumper(basedir_testbench+"serializer_"+pattern+".txt", vhdl_dict, TestbenchWriter)
+        input_testvec = PatternDumper(basedir_integration+"integration_"+pattern+".txt", vhdl_dict, TestvectorWriter)
 
         for i, event in enumerate(events):
             event_head = "#"*80+"\n"
@@ -97,6 +99,7 @@ def main():
             event_head += "#"*80+"\n"
             input_testbench.addLine(event_head)
             serializer_testbench.addLine(event_head)
+            input_testvec.addLine(event_head)
 
             event.getByLabel("microGMTEmulator", out_handle)
             event.getByLabel("microGMTEmulator", "intermediateMuons", imd_handle)
@@ -127,7 +130,10 @@ def main():
             input_testbench.addLine("# Expected emulator output\n")
             input_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
             input_testbench.dump()
-    
+        
+            input_testvec.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, [], rankLUT, True)
+            input_testvec.dump()
+
             serializer_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
             serializer_testbench.addLine("# Expected emulator output\n")
             serializer_testbench.writeFrameBasedOutputBX(outmuons, imdmuons)
