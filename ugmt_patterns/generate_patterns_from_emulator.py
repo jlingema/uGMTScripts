@@ -99,7 +99,6 @@ def main():
             event_head += "#"*80+"\n"
             input_testbench.addLine(event_head)
             serializer_testbench.addLine(event_head)
-            input_testvec.addLine(event_head)
 
             event.getByLabel("microGMTEmulator", out_handle)
             event.getByLabel("microGMTEmulator", "intermediateMuons", imd_handle)
