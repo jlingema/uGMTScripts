@@ -1,10 +1,5 @@
-
-# pylib:
-import os
 # ROOT:
 import ROOT
-# CMSSW:
-from DataFormats.FWLite import Events, Handle
 
 # ../tools:
 from tools.muon_helpers import  non_zero, isequal, print_out_word
@@ -12,7 +7,6 @@ from tools.bithelper import bithlp
 from tools.vhdl import VHDLConstantsParser
 
 # ./helpers:
-from helpers.muon import Muon 
 from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from helpers.options import parse_options, discover_files
 
@@ -54,52 +48,19 @@ if __name__ == "__main__":
 
     for pattern, fnames in file_dict.iteritems():
         version = Version.from_filename(fnames['tx'])
+        emu_version = Version("99_99_99") # so workarounds are not applied for this
         # Reading and initilaising the Emulator data
         emu_out_list = []
         emu_imd_list = []
 
-        events = Events(fnames["root"])
-
-        out_handle = Handle('BXVector<l1t::Muon>')
-        bar_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
-        fwd_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
-        ovl_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
-        imd_handle = Handle('BXVector<l1t::Muon>')
-
-        for i, event in enumerate(events):
-            event.getByLabel("microGMTEmulator", out_handle)
-            event.getByLabel("uGMTInputProducer", "BarrelTFMuons", bar_handle)
-            event.getByLabel("uGMTInputProducer", "ForwardTFMuons", fwd_handle)
-            event.getByLabel("uGMTInputProducer", "OverlapTFMuons", ovl_handle)
-            event.getByLabel("microGMTEmulator", "intermediateMuons", imd_handle)
-
-            emu_out_muons = out_handle.product()
-            emu_bar_muons = bar_handle.product()
-            emu_ovl_muons = ovl_handle.product()
-            emu_fwd_muons = fwd_handle.product()
-            imd_prod = imd_handle.product()
-            for j in xrange(emu_out_muons.size(0)):
-                mu = emu_out_muons.at(0, j)
-                mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj=mu)
-                emu_out_list.append(mu_tmp)
-
-            add_muons = 8-emu_out_muons.size(0)
-            while add_muons != 0:
-                mu_tmp = Muon(vhdl_dict, mu_type="OUT", bitword=0)    
-                emu_out_list.append(mu_tmp)
-                add_muons -= 1
-
-            for j in xrange(imd_prod.size(0)):
-                mu = imd_prod.at(0, j)
-                mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj=mu)
-                emu_imd_list.append(mu_tmp)
-
-            add_muons = 24-imd_prod.size(0)
-            while add_muons != 0:
-                mu_tmp = Muon(vhdl_dict, mu_type="OUT", bitword=0)    
-                emu_imd_list.append(mu_tmp)
-                add_muons -= 1
         # Reading and processing the hardware data
+        print "--- Emulator parsing:"
+        emu_output_parser = OutputBufferParser(fnames["emu_tx"], vhdl_dict, emu_version)
+        emu_out_list = emu_output_parser.get_output_muons()
+        emu_imd_list = emu_output_parser.get_intermediate_muons()
+
+        # Reading and processing the hardware data
+        print "--- HW parsing:"
         input_parser = InputBufferParser(fnames["rx"], vhdl_dict)
         output_parser = OutputBufferParser(fnames["tx"], vhdl_dict, version)
 
@@ -115,15 +76,14 @@ if __name__ == "__main__":
                 rank_num_of_non_zeros = rank_num_of_non_zeros+1
         ####
 
-        # print "{fn}_in_events :".format(fn=filename), in_events
         print "{fn}_in_muons :".format(fn=pattern), non_zero(in_muons), "/", len(in_muons)
         print "{fn}_num of final non-zero Output-Muons: ".format(fn=pattern), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"
         print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=pattern), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
         print "{fn}_n_ranks".format(fn=pattern), rank_num_of_non_zeros, "/", len(ranks)
 
-        hist1 = ROOT.TH2D("{f}_comparison1".format(f=file_dict[pattern]["root"]), "", 64, 0, 64, 8, 1, 9)
+        hist1 = ROOT.TH2D("{f}_comparison1".format(f=pattern), "", 64, 0, 64, 8, 1, 9)
         mucnt = -1
-        print len(out_muons), len(emu_out_list)
+        
         for mu, emu_mu in zip(out_muons, emu_out_list):
             mucnt += 1
             if mu.bitword == emu_mu.bitword: 

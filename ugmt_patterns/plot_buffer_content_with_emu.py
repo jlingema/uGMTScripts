@@ -1,14 +1,18 @@
+# ROOT
 import ROOT
-import math
 from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1, TLatex
+#py-lib:
+import math
+# ./helpers:
 from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
-from tools.vhdl import VHDLConstantsParser
-from DataFormats.FWLite import Events, Handle
 from helpers.muon import Muon
-from tools.TDRStyle import TDRStyle
-from tools.muon_helpers import non_zero, print_out_word, print_in_word
 from helpers.options import parse_options, discover_files
 from helpers.buffer_plotting import create_and_fill_rank_hist, plot_modifier, create_and_fill_muon_hists, set_legend_style, set_text_style
+#../tools:
+from tools.vhdl import VHDLConstantsParser
+from tools.TDRStyle import TDRStyle
+from tools.muon_helpers import non_zero, print_out_word, print_in_word
+
 
 def append_non_zero(non_zero_mus, all_mus):
     for mu in all_mus:
@@ -57,50 +61,20 @@ if __name__ == "__main__":
     	version = Version.from_filename(fnames['base'])
         print "+"*30, pattern, "+"*30
 
-
+        emu_version = Version("99_99_99") # so workarounds are not applied for this
+        # Reading and initilaising the Emulator data
         emu_out_list = []
         emu_imd_list = []
 
-        events = Events(fnames["root"])
-        print "using .root:", fnames["root"]
-        out_handle = Handle('BXVector<l1t::Muon>')
-        bar_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
-        fwd_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
-        ovl_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
-        imd_handle = Handle('BXVector<l1t::Muon>')
+        # Reading and processing the hardware data
+        print "--- Emulator parsing:"
+        emu_output_parser = OutputBufferParser(fnames["emu_tx"], vhdl_dict, emu_version)
+        
+        emu_out_list = emu_output_parser.get_output_muons()
+        emu_imd_list = emu_output_parser.get_intermediate_muons()
+        
 
-        out_mu_emu_non_zero = []
-        in_mu_emu_non_zero = []
-        for i, event in enumerate(events):
-            event.getByLabel("microGMTEmulator", out_handle)
-            event.getByLabel("uGMTInputProducer", "BarrelTFMuons", bar_handle)
-            event.getByLabel("uGMTInputProducer", "ForwardTFMuons", fwd_handle)
-            event.getByLabel("uGMTInputProducer", "OverlapTFMuons", ovl_handle)
-            event.getByLabel("microGMTEmulator", "intermediateMuons", imd_handle)
-
-            emu_out_muons = out_handle.product()
-            emu_bar_muons = bar_handle.product()
-            emu_ovl_muons = ovl_handle.product()
-            emu_fwd_muons = fwd_handle.product()
-            imd_prod = imd_handle.product()
-
-            append_non_zero(in_mu_emu_non_zero, emu_bar_muons)
-            append_non_zero(in_mu_emu_non_zero, emu_ovl_muons)
-            append_non_zero(in_mu_emu_non_zero, emu_fwd_muons)
-
-            for j in xrange(emu_out_muons.size(0)):
-                mu = emu_out_muons.at(0, j)
-                mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj=mu)
-                emu_out_list.append(mu_tmp)
-                if mu_tmp.bitword != 0:
-                    out_mu_emu_non_zero.append(mu_tmp)
-
-            for j in xrange(imd_prod.size(0)):
-                mu = imd_prod.at(0, j)
-                mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj=mu)
-                emu_imd_list.append(mu_tmp)
-
-        print "total number of events in emulator: ", i
+        print "--- HW parsing:"
         # Reading and processing the hardware data
         input_parser = InputBufferParser(fnames["rx"], vhdl_dict)
         output_parser = OutputBufferParser(fnames["tx"], vhdl_dict, version)
@@ -113,15 +87,6 @@ if __name__ == "__main__":
         out_mu_non_zero = [ out_mu for out_mu in out_muons if out_mu.bitword != 0 ]
         imd_mu_non_zero = [imd_mu for imd_mu in intermediate_muons if imd_mu.bitword != 0 ]
 
-        
-        if len(in_mu_non_zero) == len(out_mu_emu_non_zero) and len(in_mu_non_zero) == len(out_mu_non_zero) and len(in_mu_non_zero) == len(in_mu_emu_non_zero):
-            for inmu, outmu, emumu, emuin, imdmu in zip(in_mu_non_zero, out_mu_non_zero, out_mu_emu_non_zero, in_mu_emu_non_zero, imd_mu_non_zero):
-                print "="*100
-                print "hw   in", print_in_word(inmu.bitword)
-                print "emu  in", print_in_word(emuin.bitword)
-                print "hw  out", print_out_word(outmu.bitword)
-                print "hw  imd", print_out_word(imdmu.bitword)
-                print "emu out", print_out_word(emumu.bitword)
 
 
         ranks = output_parser.get_ranks()
@@ -130,7 +95,7 @@ if __name__ == "__main__":
         for i in xrange(len(ranks)):
             if ranks[i]!=0:
                 rank_num_of_non_zeros = rank_num_of_non_zeros+1
-        ####
+        ###
 
         print "{fn}_in_muons :".format(fn=pattern), non_zero(in_muons), "/", len(in_muons)
         print "{fn}_num of final non-zero Output-Muons: ".format(fn=pattern), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"

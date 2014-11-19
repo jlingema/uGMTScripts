@@ -7,7 +7,7 @@ def parse_options():
     """
     parser = OptionParser()
     parser.add_option("-f", "--directory", dest="directory")
-    parser.add_option("-e", "--emudirectory", dest="emudirectory", default="data/buffers/emulator") 
+    parser.add_option("-e", "--emudirectory", dest="emudirectory", default="data/patterns/mp7") 
     parser.add_option('-v', '--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False, action='store_true')
     parser.add_option("-u", '--veryverbose', dest="detaildump", help="Even more output (%defahult)", default=False, action="store_true")
     opts, args = parser.parse_args()
@@ -35,7 +35,7 @@ def discover_files(opts):
             tmp_dict['base'] = path.abspath(roots)
             file_dict[pattern_name] = tmp_dict
             if path.exists(opts.emudirectory):
-                file_dict[pattern_name]["root"] = path.join(path.abspath(opts.emudirectory), pattern_name+".root")
+                file_dict[pattern_name]["emu_tx"] = path.join(path.abspath(opts.emudirectory), pattern_name+"_out.txt")
     return file_dict
 
 def discover_emu_files(directory):
