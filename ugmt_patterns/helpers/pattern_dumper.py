@@ -34,6 +34,10 @@ class BufferWriter(object):
     def get_full_string(self):
         return self.head + self.string
 
+    def fill_up(self, n):
+        while self.frameCounter < n:
+            self.writeFrame([])
+
 class TestbenchWriter(object):
     """
     Class (Decorator) that produces testbench files (i.e. what Dinyar uses for testing)
@@ -101,6 +105,10 @@ class TestbenchWriter(object):
     def writeEventHeader(self, n):
         self.string += "# Event {n}".format(n=n)
 
+    def fill_up(self, n):
+        while self.frameCounter < n:
+            self.writeFrame([])
+
     def writeMuon(self, mu, mu_type, rank, addIso = False, rankLUT = None):
         """ 
         Convert a single ./helpers/muon.Muon object into string
@@ -164,7 +172,10 @@ class TestvectorWriter(object):
         self.string = ""
         self.frameCounter = 0
         self.muonCounter = 0
-        self.head = ""
+        self.bxCounter = 0
+        self.head = "|BX|"
+        for i in range(108):
+            self.head += " |{muon:-^14}|".format(muon="Muon({n})".format(n=i))
 
     def writeMuon(self, mu, mu_type, rank, addIso = False, rankLUT = None):
         """ 
@@ -175,10 +186,13 @@ class TestvectorWriter(object):
                 addIso      whether to add isolation info (should only be done for OUT)
         Adds to string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO)"
         """
-        self.string += "{muon:0>16x} ".format(muon=mu.bitword)
+        if self.muonCounter == 0:
+            self.string += "\n{bx:0>4}".format(bx=self.bxCounter)
+
+        self.string += " {muon:0>16x}".format(muon=mu.bitword)
         self.muonCounter += 1
-        if self.muonCounter == 36:
-            self.string += "\n"
+        if self.muonCounter == 108:
+            self.bxCounter += 1
             self.muonCounter = 0
 
     def get_full_string(self):
@@ -199,6 +213,9 @@ class TestvectorWriter(object):
     def writeFrame(self, words):
         pass
 
+    def fill_up(self, n):
+        pass
+
 class PatternDumper(object):
     def __init__(self, fname, vhdl_dict, writer_t):
         super(PatternDumper, self).__init__()
@@ -214,7 +231,7 @@ class PatternDumper(object):
     
     def dump(self, fill = False):
         if fill:
-            self.writeEmptyFrames(1024-self.frameCounter)
+            self._writer.fill_up(1024)
 
         with open(self.fname, "w") as fobj:
             fobj.write(self._writer.get_full_string())

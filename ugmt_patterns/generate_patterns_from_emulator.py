@@ -120,23 +120,24 @@ def main():
             fwdn_muons = get_muon_list(emu_fwd_muons, "FWD_NEG", vhdl_dict)
 
             input_buffer.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, [])
-            input_buffer.dump()
 
             output_buffer.writeFrameBasedOutputBX(outmuons, imdmuons)
-            output_buffer.dump()
 
             input_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, [], rankLUT, True)
             input_testbench.addLine("# Expected emulator output\n")
             input_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
-            input_testbench.dump()
         
             input_testvec.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, [], rankLUT, True)
-            input_testvec.dump()
 
             serializer_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
             serializer_testbench.addLine("# Expected emulator output\n")
             serializer_testbench.writeFrameBasedOutputBX(outmuons, imdmuons)
-            serializer_testbench.dump()
+
+        output_buffer.dump(True)
+        input_testbench.dump()
+        input_testvec.dump()
+        serializer_testbench.dump()
+        input_buffer.dump()
 
 
 if __name__ == "__main__":
