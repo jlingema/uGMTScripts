@@ -14,7 +14,7 @@ class BufferWriter(object):
       Link :     00         01         02         03         04         05         06         07         08         09         10         11         12         13         14         15         16         17         18         19         20         21         22         23         24         25         26         27         28         29         30         31         32         33         34         35         36         37         38         39         40         41         42         43         44         45         46         47         48         49         50         51         52         53         54         55         56         57         58         59         60         61         62         63         64         65         66         67         68         69         70         71    
 """
 
-    def writeFrame(self, words):
+    def writeFrame(self, words, valid = 1, validoverflow = 0):
         """
         Write a frame to the internal "buffer" (i.e. string),
         TAKES: 
@@ -24,10 +24,10 @@ class BufferWriter(object):
         """
         self.string += "Frame {n:0>4} :".format(n=self.frameCounter)
         for w in words:
-            self.string += " {v}v{w:0>8x}".format(v=1, w=w)
+            self.string += " {v}v{w:0>8x}".format(v=valid, w=w)
 
         for i in range(72-len(words)):
-            self.string += " {v}v{w:0>8x}".format(v=0, w=0)
+            self.string += " {v}v{w:0>8x}".format(v=validoverflow, w=0)
         self.string += "\n"
         self.frameCounter += 1
 
@@ -68,7 +68,7 @@ class TestbenchWriter(object):
 """
     
 
-    def writeFrame(self, words):
+    def writeFrame(self, words, valid = 1, validoverflow = 0):
         """
         Adds the frame to the buffer
         TAKES: 
@@ -76,10 +76,10 @@ class TestbenchWriter(object):
         """
         self.string += "{n:<6} ".format(n="FRM"+str(self.frameCounter))
         for w in words:
-            self.string += " {v} {w:0>8x}".format(v=1, w=w)
+            self.string += " {v} {w:0>8x}".format(v=valid, w=w)
 
         for i in range(72-len(words)):
-            self.string += " {v} {w:0>8x}".format(v=0, w=0)
+            self.string += " {v} {w:0>8x}".format(v=validoverflow, w=0)
         self.string += "\n"
         self.frameCounter += 1
 
@@ -210,7 +210,7 @@ class TestvectorWriter(object):
     def writeMuonHeadline(self):
         pass
 
-    def writeFrame(self, words):
+    def writeFrame(self, words, valid, validoverflow):
         pass
 
     def fill_up(self, n):
