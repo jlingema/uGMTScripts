@@ -72,7 +72,6 @@ def main():
     
     rankLUT = l1t.MicroGMTRankPtQualLUT()
 
-
     for pattern, fnames in fname_dict.iteritems():
         print "+"*30, pattern, "+"*30
         events = Events(fnames['root'])
@@ -92,6 +91,10 @@ def main():
         input_testbench = PatternDumper(basedir_testbench+pattern+".txt", vhdl_dict, TestbenchWriter)
         serializer_testbench = PatternDumper(basedir_testbench+"serializer_"+pattern+".txt", vhdl_dict, TestbenchWriter)
         input_testvec = PatternDumper(basedir_integration+"integration_"+pattern+".txt", vhdl_dict, TestvectorWriter)
+        
+        if opts.delay > 0:
+            input_buffer.writeEmptyFrames(opts.delay)
+
 
         for i, event in enumerate(events):
             event_head = "#"*80+"\n"
