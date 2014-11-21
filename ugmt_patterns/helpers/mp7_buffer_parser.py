@@ -307,11 +307,22 @@ class OutputBufferParser(BufferParser):
         muon_objs = []
 
         frame = self.frame_low
+        haveWarned = False
         while frame < self.frame_high:
             bx = (frame + 1 - self.frame_low) / 6
-            for i in xrange(4): #4 links
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx)) 
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+4][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx))
+
+            for i in xrange(4): #4 links                
+                if (len(muon_dict[frame+2]) > i): 
+                    muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
+                elif not haveWarned:
+                    self._log.warning("Cannot find all 4 output muons: something wrong with the valid bit pattern?")
+                    haveWarned = True
+                if (len(muon_dict[frame+4]) > i): 
+                    muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
+                elif not haveWarned:
+                    self._log.warning("Cannot find all 4 output muons: something wrong with the valid bit pattern?")
+                    haveWarned = True
+
             frame += 6 # next event
             
         return muon_objs
