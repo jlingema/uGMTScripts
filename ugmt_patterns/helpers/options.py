@@ -7,7 +7,8 @@ def parse_options():
     """
     parser = OptionParser()
     parser.add_option("-f", "--directory", dest="directory")
-    parser.add_option("-e", "--emudirectory", dest="emudirectory", default="data/patterns/mp7") 
+    parser.add_option("-e", "--emudirectory", dest="emudirectory", default="data/patterns/mp7")
+    parser.add_option("-d", "--nodebug", dest="nodebug", help='Whether debug output is in the file (intermediate muons, ranks and calo energies) (%default)', default=False, action='store_true')
     parser.add_option('-v', '--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False, action='store_true')
     parser.add_option("-u", '--veryverbose', dest="detaildump", help="Even more output (%defahult)", default=False, action="store_true")
     opts, args = parser.parse_args()
