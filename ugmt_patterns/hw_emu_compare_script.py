@@ -66,24 +66,27 @@ if __name__ == "__main__":
 
         in_muons = input_parser.get_input_muons()
         out_muons = output_parser.get_output_muons()
-        intermediate_muons = output_parser.get_intermediate_muons()
-        ranks = output_parser.get_ranks()
 
-        #### here the number of nonzero ranks is counted
-        rank_num_of_non_zeros = 0
-        for i in xrange(len(ranks)):
-            if ranks[i]!=0:
-                rank_num_of_non_zeros = rank_num_of_non_zeros+1
-        ####
+        if not options.nodebug:
+            intermediate_muons = output_parser.get_intermediate_muons()
+            ranks = output_parser.get_ranks()
+
+            rank_num_of_non_zeros = 0
+            for i in xrange(len(ranks)):
+                if ranks[i]!=0:
+                    rank_num_of_non_zeros = rank_num_of_non_zeros+1
 
         print "{fn}_in_muons :".format(fn=pattern), non_zero(in_muons), "/", len(in_muons)
         print "{fn}_num of final non-zero Output-Muons: ".format(fn=pattern), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"
-        print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=pattern), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
-        print "{fn}_n_ranks".format(fn=pattern), rank_num_of_non_zeros, "/", len(ranks)
+        if not options.nodebug:
+            print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=pattern), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
+            print "{fn}_n_ranks".format(fn=pattern), rank_num_of_non_zeros, "/", len(ranks)
 
         hist1 = ROOT.TH2D("{f}_comparison1".format(f=pattern), "", 64, 0, 64, 8, 1, 9)
         mucnt = -1
         
+        if len(out_muons) != len(emu_out_list):
+            print "UUuuups... not the same number of output muons!"
         for mu, emu_mu in zip(out_muons, emu_out_list):
             mucnt += 1
             if mu.bitword == emu_mu.bitword: 
@@ -151,67 +154,68 @@ if __name__ == "__main__":
             hist2.GetYaxis().SetBinLabel(n+1,"Muon {n}".format(n=n+1))
         canvas.Print("{f}/figures/bitplot2.pdf".format(f=fnames['base']))
 
-        hist_inter_1 = ROOT.TH2D("{f}_comparison_inter_1".format(f=pattern), "comparison of intermediates: all bits [{f}]".format(f=pattern), 64, 0, 64, 24, 0, min(len(intermediate_muons), len(emu_imd_list)))
-        mucnt = -1
+        if not options.nodebug:
+            hist_inter_1 = ROOT.TH2D("{f}_comparison_inter_1".format(f=pattern), "comparison of intermediates: all bits [{f}]".format(f=pattern), 64, 0, 64, 24, 0, min(len(intermediate_muons), len(emu_imd_list)))
+            mucnt = -1
 
-        # non_zero_ranks = [rank for rank in ranks if rank != 0]
-        # non_zero_emu = [emu for emu in emu_imd_list if emu.bitword != 0]
-        # for mu, rank in zip(non_zero_emu, non_zero_ranks):
-        #     if mu.rank != rank: print mu.rank, rank
+            # non_zero_ranks = [rank for rank in ranks if rank != 0]
+            # non_zero_emu = [emu for emu in emu_imd_list if emu.bitword != 0]
+            # for mu, rank in zip(non_zero_emu, non_zero_ranks):
+            #     if mu.rank != rank: print mu.rank, rank
 
-        for emu_mu, hw_mu, hw_rank in zip(emu_imd_list, intermediate_muons, ranks):
-            mucnt += 1
-            if emu_mu.bitword == hw_mu.bitword: 
-                continue
-            if options.verbose:
-                print "mismatch in BX", hw_mu.bx, "rank hw:", hw_rank, "rank emu:", emu_mu.rank
-                print print_out_word(hw_mu.bitword)
-                print print_out_word(emu_mu.bitword)
-                print "-"*80
-            for x in xrange(64):
-                hw = bithlp.single_bit(hw_mu.bitword, x)
-                emu = bithlp.single_bit(emu_mu.bitword, x)
-                if hw != emu:
-                    hist_inter_1.Fill(x, mucnt%24+1)
-
-
-        hist_inter_1.Draw("TEXT COLZ")
-        hist_inter_1.SetMaximum(1)
-        hist_inter_1.SetMinimum(-1)
-        hist_inter_1.SetContour(5)
-        hist_inter_1.SetStats(0)
-        hist_inter_1.GetXaxis().SetTitle("Bits")
-        for n in xrange(64):
-            hist_inter_1.GetXaxis().SetBinLabel(n+1,"{n}".format(n=n+1))
-        for n in xrange(24):
-            hist_inter_1.GetYaxis().SetBinLabel(n+1,"Inter-Muon {n}".format(n=n+1))
-        canvas.Print("{f}/figures/intermediate_bitplot1.pdf".format(f=fnames['base']))
-
-        hist_inter_2 = ROOT.TH2D("{f}_inter_comparison2".format(f=pattern), "comparison of intermediate: overview [{f}]".format(f=fnames['base']), 4, 0, 4, 24, 1, min(len(intermediate_muons), len(emu_imd_list)))
-        mucnt = -1
-        for imd_mu, imd_emu_mu in zip(intermediate_muons, emu_imd_list):
-            mucnt += 1
-            if imd_mu.bitword == imd_emu_mu: 
-                continue
-            if imd_mu.phiBits != imd_emu_mu.phiBits:
-                hist_inter_2.Fill(0, mucnt%24+1)
-            if imd_mu.ptBits != imd_emu_mu.ptBits:
-                hist_inter_2.Fill(1, mucnt%24+1)
-            if imd_mu.qualityBits != imd_emu_mu.qualityBits:
-                hist_inter_2.Fill(2, mucnt%24+1)
-            if imd_mu.etaBits != imd_emu_mu.etaBits:
-                hist_inter_2.Fill(3, mucnt%24+1)
+            for emu_mu, hw_mu, hw_rank in zip(emu_imd_list, intermediate_muons, ranks):
+                mucnt += 1
+                if emu_mu.bitword == hw_mu.bitword: 
+                    continue
+                if options.verbose:
+                    print "mismatch in BX", hw_mu.bx, "rank hw:", hw_rank, "rank emu:", emu_mu.rank
+                    print print_out_word(hw_mu.bitword)
+                    print print_out_word(emu_mu.bitword)
+                    print "-"*80
+                for x in xrange(64):
+                    hw = bithlp.single_bit(hw_mu.bitword, x)
+                    emu = bithlp.single_bit(emu_mu.bitword, x)
+                    if hw != emu:
+                        hist_inter_1.Fill(x, mucnt%24+1)
 
 
-        hist_inter_2.Draw("TEXT COLZ")
-        hist_inter_2.SetMaximum(1)
-        hist_inter_2.SetMinimum(-1)
-        hist_inter_2.SetContour(5)
-        hist_inter_2.SetStats(0)
-        hist_inter_2.GetXaxis().SetBinLabel(1,"phi")
-        hist_inter_2.GetXaxis().SetBinLabel(2,"pt")
-        hist_inter_2.GetXaxis().SetBinLabel(3,"quality")
-        hist_inter_2.GetXaxis().SetBinLabel(4,"eta")
-        for n in xrange(24):
-            hist_inter_2.GetYaxis().SetBinLabel(n+1,"Inter-Muon {n}".format(n=n+1))
-        canvas.Print("{f}/figures/intermediate_bitplot2.pdf".format(f=fnames['base']))
+            hist_inter_1.Draw("TEXT COLZ")
+            hist_inter_1.SetMaximum(1)
+            hist_inter_1.SetMinimum(-1)
+            hist_inter_1.SetContour(5)
+            hist_inter_1.SetStats(0)
+            hist_inter_1.GetXaxis().SetTitle("Bits")
+            for n in xrange(64):
+                hist_inter_1.GetXaxis().SetBinLabel(n+1,"{n}".format(n=n+1))
+            for n in xrange(24):
+                hist_inter_1.GetYaxis().SetBinLabel(n+1,"Inter-Muon {n}".format(n=n+1))
+            canvas.Print("{f}/figures/intermediate_bitplot1.pdf".format(f=fnames['base']))
+
+            hist_inter_2 = ROOT.TH2D("{f}_inter_comparison2".format(f=pattern), "comparison of intermediate: overview [{f}]".format(f=fnames['base']), 4, 0, 4, 24, 1, min(len(intermediate_muons), len(emu_imd_list)))
+            mucnt = -1
+            for imd_mu, imd_emu_mu in zip(intermediate_muons, emu_imd_list):
+                mucnt += 1
+                if imd_mu.bitword == imd_emu_mu: 
+                    continue
+                if imd_mu.phiBits != imd_emu_mu.phiBits:
+                    hist_inter_2.Fill(0, mucnt%24+1)
+                if imd_mu.ptBits != imd_emu_mu.ptBits:
+                    hist_inter_2.Fill(1, mucnt%24+1)
+                if imd_mu.qualityBits != imd_emu_mu.qualityBits:
+                    hist_inter_2.Fill(2, mucnt%24+1)
+                if imd_mu.etaBits != imd_emu_mu.etaBits:
+                    hist_inter_2.Fill(3, mucnt%24+1)
+
+
+            hist_inter_2.Draw("TEXT COLZ")
+            hist_inter_2.SetMaximum(1)
+            hist_inter_2.SetMinimum(-1)
+            hist_inter_2.SetContour(5)
+            hist_inter_2.SetStats(0)
+            hist_inter_2.GetXaxis().SetBinLabel(1,"phi")
+            hist_inter_2.GetXaxis().SetBinLabel(2,"pt")
+            hist_inter_2.GetXaxis().SetBinLabel(3,"quality")
+            hist_inter_2.GetXaxis().SetBinLabel(4,"eta")
+            for n in xrange(24):
+                hist_inter_2.GetYaxis().SetBinLabel(n+1,"Inter-Muon {n}".format(n=n+1))
+            canvas.Print("{f}/figures/intermediate_bitplot2.pdf".format(f=fnames['base']))
