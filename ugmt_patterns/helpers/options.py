@@ -11,7 +11,7 @@ def parse_options():
     parser.add_option("--nodebug", dest="nodebug", help='Whether debug output is in the file (intermediate muons, ranks and calo energies) (%default)', default=False, action='store_true')
     parser.add_option('--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False, action='store_true')
     parser.add_option('--veryverbose', dest="detaildump", help="Even more output (%defahult)", default=False, action="store_true")
-    parser.add_option("--delay", dest="delay", help="Specify how many empty frames should be written to mp7-pattern", default=0, type='int')
+    parser.add_option("--delay", dest="delay", help="Specify how many empty frames should be written to mp7-pattern", default=4, type='int')
     opts, args = parser.parse_args()
     if opts.detaildump: opts.verbose = True
     return opts, args
