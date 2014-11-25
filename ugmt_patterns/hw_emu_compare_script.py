@@ -45,6 +45,7 @@ if __name__ == "__main__":
         "phiBits": ["phiBits", 256, 0, 1024], #(phi_high-phi_low)/phi_unit, phi_low, phi_high],
         "etaBits": ["etaBits", 256, -512, 512] #(eta_high-eta_low)/eta_unit, eta_low, eta_high]
     }
+    phys_patterns = ["ZMM", "WM", "TTbar", "MinBias", "SingleMuPt100"]
 
     for pattern, fnames in file_dict.iteritems():
         version = Version.from_filename(fnames['tx'])
@@ -67,6 +68,10 @@ if __name__ == "__main__":
         in_muons = input_parser.get_input_muons()
         out_muons = output_parser.get_output_muons()
 
+        if pattern in phys_patterns:
+            if len(out_muons) != len(emu_out_list)-(6*8): print "UUUuuups: that seems fishy!"
+            del emu_out_list[len(out_muons):]
+        
         if not options.nodebug:
             intermediate_muons = output_parser.get_intermediate_muons()
             ranks = output_parser.get_ranks()
@@ -75,7 +80,8 @@ if __name__ == "__main__":
             for i in xrange(len(ranks)):
                 if ranks[i]!=0:
                     rank_num_of_non_zeros = rank_num_of_non_zeros+1
-
+            if pattern in phys_patterns:
+                del emu_imd_list[len(intermediate_muons):]
         print "{fn}_in_muons :".format(fn=pattern), non_zero(in_muons), "/", len(in_muons)
         print "{fn}_num of final non-zero Output-Muons: ".format(fn=pattern), non_zero(out_muons), "/", len(out_muons)#,"), corresponds to ", len(out_muons)/8," Events"
         if not options.nodebug:

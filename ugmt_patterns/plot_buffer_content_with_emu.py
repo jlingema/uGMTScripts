@@ -57,6 +57,8 @@ if __name__ == "__main__":
         "etaBits": ["etaBits", 128, -256, 256] #(eta_high-eta_low)/eta_unit, eta_low, eta_high]
     }
 
+    phys_patterns = ["ZMM", "WM", "TTbar", "MinBias", "SingleMuPt100"]
+
     for pattern, fnames in file_dict.iteritems():
     	version = Version.from_filename(fnames['base'])
         print "+"*30, pattern, "+"*30
@@ -73,6 +75,7 @@ if __name__ == "__main__":
         emu_out_list = emu_output_parser.get_output_muons()
         emu_imd_list = emu_output_parser.get_intermediate_muons()
 
+
         print "--- HW parsing:"
         # Reading and processing the hardware data
         input_parser = InputBufferParser(fnames["rx"], vhdl_dict)
@@ -80,6 +83,11 @@ if __name__ == "__main__":
 
         in_muons = input_parser.get_input_muons()
         out_muons = output_parser.get_output_muons()
+
+        if pattern in phys_patterns:
+            if len(out_muons) != len(emu_out_list)-(6*8): print "UUUuuups: that seems fishy!"
+            del emu_out_list[len(out_muons):]
+
 
         in_mu_non_zero = [ in_mu for in_mu in in_muons if in_mu.bitword != 0 ]
         out_mu_non_zero = [ out_mu for out_mu in out_muons if out_mu.bitword != 0 ]
@@ -94,6 +102,9 @@ if __name__ == "__main__":
                 if ranks[i]!=0:
                     rank_num_of_non_zeros = rank_num_of_non_zeros+1
 
+            if pattern in phys_patterns:
+                del emu_imd_list[len(intermediate_muons):]
+
             hist_rnk = create_and_fill_rank_hist(ranks, pattern)
             plot_modifier(hist_rnk, "rank", "N", ROOT.kBlack)
             hist_rnk.Draw()
@@ -105,10 +116,6 @@ if __name__ == "__main__":
         if not options.nodebug:
             print "{fn}_num of intermediate non-zero Output-Muons: ".format(fn=pattern), non_zero(intermediate_muons), "/" , len(intermediate_muons)#, "), corresponds to ", len(intermediate_muons)/24," Events" 
             print "{fn}_n_ranks".format(fn=pattern), rank_num_of_non_zeros, "/", len(ranks)
-
-
-
-        
 
         hists_input = create_and_fill_muon_hists(hist_parameters, in_muons, pattern+"in")
         hists_output = create_and_fill_muon_hists(hist_parameters, out_muons, pattern+"out")
