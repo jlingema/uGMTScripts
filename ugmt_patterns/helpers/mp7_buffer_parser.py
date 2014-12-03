@@ -181,14 +181,14 @@ class InputBufferParser(BufferParser):
 
         self._log.info("Found valid frames for input mus: {minf}-{maxf} (=> {bx} BX)".format(minf=self.frame_low, maxf=self.frame_high, bx = (self.frame_high-self.frame_low+1)/6))
 
-    def get_input_muons(self):
+    def get_input_muons(self, skip = 0):
         """
         Get all input muons in the file
         RETURNS: List of muon objects within the valid frame range (contains also zero muons)
         """
         if not self.initialized: self.init() 
         if not self.frame_low >= 0: return []
-        frame = self.frame_low
+        frame = self.frame_low+skip
         muon_dict = self.get_muon_dict(self.link_low, self.link_high, self.frame_low, self.frame_high)
         muon_objs = []
         # for frame, muons in muon_dict.iteritems():
@@ -196,9 +196,19 @@ class InputBufferParser(BufferParser):
         while frame < (self.frame_high):
             bx = (frame+1) / 6
             for i in xrange(36): #8 links
-                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx)) 
-                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
-                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
+                if (len(muon_dict[frame]) > i): 
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx))
+                else:
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", 0, link=-1, frame=frame, bx=bx))
+
+                if (len(muon_dict[frame+2]) > i): 
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx))
+                else:
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", 0, link=-1, frame=frame+2, bx=bx))
+                if (len(muon_dict[frame+4]) > i): 
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
+                else:
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", 0, link=-1, frame=frame+4, bx=bx))
             frame += 6
         return muon_objs
 
@@ -274,7 +284,7 @@ class OutputBufferParser(BufferParser):
                 if a[:2] == "0v" and self.frame_high == -1:
                     self.frame_high = frame-1
                 # continue search if valid goes up again
-                if self.frame_high != -1 and (a[:2] == "1v" and a != "1v00000000"): 
+                if self.frame_high != -1 and (a[:2] == "1v"): 
                     self.frame_high = -1
 
         if self.frame_high == -1:
@@ -294,7 +304,7 @@ class OutputBufferParser(BufferParser):
         if self.rank_offset != 0:
             self._log.info("Offset is set for ranks         : {offset}".format(offset=self.rank_offset))
 
-    def get_output_muons(self):
+    def get_output_muons(self, skip = 0):
         """
         Get all output muons
         RETURNS: list of muon objects found in links 0-3 (contains also zero muons) 
@@ -306,22 +316,26 @@ class OutputBufferParser(BufferParser):
         muon_dict = self.get_muon_dict(self.link_out_low, self.link_out_high, self.frame_low, self.frame_high)
         muon_objs = []
 
-        frame = self.frame_low
+        frame = self.frame_low+skip
+        print frame
         haveWarned = False
         while frame < self.frame_high:
             bx = (frame + 1 - self.frame_low) / 6
-
             for i in xrange(4): #4 links                
                 if (len(muon_dict[frame+2]) > i): 
                     muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
-                elif not haveWarned:
-                    self._log.warning("Cannot find all 4 output muons: something wrong with the valid bit pattern?")
-                    haveWarned = True
+                else:
+                    muon_objs.append(Muon(self.vhdl_dict, "OUT", bitword=0))
+                    if not haveWarned:
+                        self._log.warning("Cannot find all 4 output muons: something wrong with the valid bit pattern?")
+                        haveWarned = True
                 if (len(muon_dict[frame+4]) > i): 
                     muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
-                elif not haveWarned:
-                    self._log.warning("Cannot find all 4 output muons: something wrong with the valid bit pattern?")
-                    haveWarned = True
+                else:
+                    muon_objs.append(Muon(self.vhdl_dict, "OUT", bitword=0))
+                    if not haveWarned:
+                        self._log.warning("Cannot find all 4 output muons: something wrong with the valid bit pattern?")
+                        haveWarned = True
 
             frame += 6 # next event
             
