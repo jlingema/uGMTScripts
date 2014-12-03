@@ -2,7 +2,7 @@
 import ROOT
 from ROOT import TCanvas, gStyle, gROOT, TLegend, TH1, TLatex
 #py-lib:
-import math
+import math, os
 # ./helpers:
 from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from helpers.muon import Muon
@@ -12,7 +12,9 @@ from helpers.buffer_plotting import create_and_fill_rank_hist, plot_modifier, cr
 from tools.vhdl import VHDLConstantsParser
 from tools.TDRStyle import TDRStyle
 from tools.muon_helpers import non_zero, print_out_word, print_in_word
+from tools.logger import log
 
+from gt_dump_analyser import get_gt_muons
 
 def append_non_zero(non_zero_mus, all_mus):
     for mu in all_mus:
@@ -22,6 +24,7 @@ def append_non_zero(non_zero_mus, all_mus):
 
 
 if __name__ == "__main__":
+    _log = log.init_logging("main")
     TDRStyle.initialize()
     TH1.AddDirectory(False)
     pi = math.pi
@@ -61,7 +64,7 @@ if __name__ == "__main__":
 
     for pattern, fnames in file_dict.iteritems():
     	version = Version.from_filename(fnames['base'])
-        print "+"*30, pattern, "+"*30
+        _log.info("{patt:+^90}".format(patt=pattern))
 
         emu_version = Version("99_99_99") # so workarounds are not applied for this
         # Reading and initilaising the Emulator data
@@ -69,25 +72,44 @@ if __name__ == "__main__":
         emu_imd_list = []
 
         # Reading and processing the hardware data
-        print "--- Emulator parsing:"
+        _log.info("{info:>90}".format(info="EMU PARSING"))
         emu_output_parser = OutputBufferParser(fnames["emu_tx"], vhdl_dict, emu_version)
+        emu_input_parser = InputBufferParser(fnames["emu_rx"], vhdl_dict)
         
         emu_out_list = emu_output_parser.get_output_muons()
         emu_imd_list = emu_output_parser.get_intermediate_muons()
+        emu_in_list = emu_input_parser.get_input_muons()
 
 
-        print "--- HW parsing:"
+        _log.info("{info:>90}".format(info="HW PARSING"))
         # Reading and processing the hardware data
         input_parser = InputBufferParser(fnames["rx"], vhdl_dict)
         output_parser = OutputBufferParser(fnames["tx"], vhdl_dict, version)
 
         in_muons = input_parser.get_input_muons()
-        out_muons = output_parser.get_output_muons()
+        skip = 0
+        if pattern in phys_patterns:
+            del in_muons[(len(in_muons)-(12*108)):]
+            _log.warning("Skipping the first 90 frames")
+            skip = 60
+        out_muons = output_parser.get_output_muons(skip)
 
         if pattern in phys_patterns:
-            if len(out_muons) != len(emu_out_list)-(6*8): print "UUUuuups: that seems fishy!"
+            _log.info("Dropping the last {n} muons from the emulator".format(n=len(emu_out_list)-len(out_muons)))
+            if len(out_muons) != len(emu_out_list)-(10*8): _log.warning("That seems fishy: Difference in out-muons greater than expected: {n}".format(n=len(emu_out_list)-len(out_muons)))
             del emu_out_list[len(out_muons):]
 
+        gt_muons = []
+        if options.gtdumps != "":
+            _log.info("{info:>90}".format(info="GT PARSING"))
+            nbx = 158
+            if pattern == "FakeMuons":
+                nbx = 91
+            gt_fname = os.path.join(options.gtdumps, "spy1-test-out_{patt}.dat".format(patt=pattern))
+            if os.path.isfile(gt_fname):
+                gt_muons = get_gt_muons(gt_fname, options.gtoffset, nbx, vhdl_dict)
+            else:
+                _log.debug("Could not find GT pattern")
 
         in_mu_non_zero = [ in_mu for in_mu in in_muons if in_mu.bitword != 0 ]
         out_mu_non_zero = [ out_mu for out_mu in out_muons if out_mu.bitword != 0 ]
@@ -119,37 +141,49 @@ if __name__ == "__main__":
 
         hists_input = create_and_fill_muon_hists(hist_parameters, in_muons, pattern+"in")
         hists_output = create_and_fill_muon_hists(hist_parameters, out_muons, pattern+"out")
+        if gt_muons:
+            hists_gt = create_and_fill_muon_hists(hist_parameters, gt_muons, pattern+"gt")
 
         if not options.nodebug:
             hists_imd = create_and_fill_muon_hists(hist_parameters, intermediate_muons, pattern+"imd")
             hists_emu_imd = create_and_fill_muon_hists(hist_parameters, emu_imd_list, pattern+"emuimd")
         
         hists_emu_output = create_and_fill_muon_hists(hist_parameters, emu_out_list, pattern+"emuout")
+        hists_emu_input = create_and_fill_muon_hists(hist_parameters, emu_in_list, pattern+"emuin")
 
         for var in hist_parameters:
             hw_leg = TLegend(0.4, 0.7, 0.7, 0.85)
             set_legend_style(hw_leg)
             a = hists_input[var].GetBinContent(hists_input[var].GetMaximumBin())
             b = hists_output[var].GetBinContent(hists_output[var].GetMaximumBin())
-            c = max(a,b)
+            maximum = max(a,b)
 
             plot_modifier(hists_input[var], hist_parameters[var][0], "N", ROOT.kAzure-4)
-            plot_modifier(hists_output[var], hist_parameters[var][0], "N", ROOT.kBlack, 20)
-            
-            plot_modifier(hists_emu_output[var], hist_parameters[var][0], "N", ROOT.kBlue, 22)
+            plot_modifier(hists_output[var], hist_parameters[var][0], "N", ROOT.kBlue, 20)
 
-            hists_input[var].GetYaxis().SetRangeUser(0, 1.1*c)
-            hists_input[var].GetYaxis().SetTitle("N")
+            hw_leg.AddEntry(hists_input[var], "RX content (N={tot})".format(tot=hists_input[var].Integral()), "f")
+            hw_leg.AddEntry(hists_output[var], "TX: final (N={tot})".format(tot=hists_output[var].Integral()), "P")
+            hw_leg.AddEntry(hists_emu_output[var], "EMU: final (N={tot})".format(tot=hists_emu_output[var].Integral()), "P")
+
+            
+            plot_modifier(hists_emu_output[var], hist_parameters[var][0], "N", ROOT.kBlack, fillstyle=0)
+            plot_modifier(hists_emu_input[var], hist_parameters[var][0], "N", ROOT.kBlack, fillstyle=0)
+
+            hists_input[var].GetYaxis().SetRangeUser(0, 1.3*maximum)
             
             txt = TLatex(0.48, 0.87, "N input events: {n}".format(n=input_parser.get_n_valid()/6))
             set_text_style(txt)
             
-            hw_leg.AddEntry(hists_input[var], "RX content (N={tot})".format(tot=hists_input[var].Integral()), "f")
-            hw_leg.AddEntry(hists_output[var], "TX: final (N={tot})".format(tot=hists_output[var].Integral()), "P")
-            hw_leg.AddEntry(hists_emu_output[var], "EMU: final (N={tot})".format(tot=hists_emu_output[var].Integral()), "P")
             hists_input[var].Draw()
             hists_output[var].Draw("textPsame")
             hists_emu_output[var].Draw("textPsame")
+            hists_emu_input[var].Draw("histsame")
+            
+            if gt_muons:
+                plot_modifier(hists_gt[var], hist_parameters[var][0], "N", ROOT.kRed+1, 23)
+                hw_leg.AddEntry(hists_gt[var], "SPY: GT input (N={tot})".format(tot=hists_gt[var].Integral()), "P")
+                hists_gt[var].Draw("Psame")
+
             hw_leg.Draw()
             txt.Draw()
 

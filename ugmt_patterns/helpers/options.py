@@ -7,11 +7,13 @@ def parse_options():
     """
     parser = OptionParser()
     parser.add_option("--directory", dest="directory")
-    parser.add_option("--emudirectory", dest="emudirectory", default="data/buffers/emulator")
+    parser.add_option("--emudirectory", dest="emudirectory", default="data/patterns/mp7")
     parser.add_option("--nodebug", dest="nodebug", help='Whether debug output is in the file (intermediate muons, ranks and calo energies) (%default)', default=False, action='store_true')
     parser.add_option('--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False, action='store_true')
     parser.add_option('--veryverbose', dest="detaildump", help="Even more output (%defahult)", default=False, action="store_true")
     parser.add_option("--delay", dest="delay", help="Specify how many empty frames should be written to mp7-pattern", default=4, type='int')
+    parser.add_option("--gtdumps", dest="gtdumps", help="Specify a folder containing files that represent the GT-spy buffer dumps", default="", type='string')
+    parser.add_option("--gtoffset", dest="gtoffset", help="Specify the offset for the GT-spy buffer (leading comma)", default=31, type='int')
     opts, args = parser.parse_args()
     if opts.detaildump: opts.verbose = True
     return opts, args
@@ -38,6 +40,7 @@ def discover_files(opts):
             file_dict[pattern_name] = tmp_dict
             if path.exists(opts.emudirectory):
                 file_dict[pattern_name]["emu_tx"] = path.join(path.abspath(opts.emudirectory), pattern_name+"_out.txt")
+                file_dict[pattern_name]["emu_rx"] = path.join(path.abspath(opts.emudirectory), pattern_name+".txt")
     return file_dict
 
 def discover_emu_files(directory):
