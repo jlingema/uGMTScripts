@@ -177,8 +177,9 @@ class InputBufferParser(BufferParser):
                 if self.frame_high != -1 and a[:2] == "1v":
                     self.frame_high = -1
 
-        if self.frame_high == -1:
+        if self.frame_high == -1 or self.frame_high == 0:
             self.frame_high = self.max_frame
+            self.frame_high -= (self.frame_high-self.frame_low)%6
 
         self._log.info("Found valid frames for input mus: {minf}-{maxf} (=> {bx} BX)".format(minf=self.frame_low, maxf=self.frame_high, bx = (self.frame_high-self.frame_low+1)/6))
 
