@@ -139,6 +139,7 @@ class InputBufferParser(BufferParser):
             vhdl_dict   as returned by ../../tools/vhdl.VHDLConfigParser 
         """
         super(InputBufferParser, self).__init__(fname, vhdl_dict)
+        self.max_frame = 1023
     
     def init(self):
         """
