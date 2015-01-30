@@ -36,12 +36,13 @@ def set_text_style(txt):
     txt.SetTextFont(42)
     txt.SetTextSize(0.04)
 
-def plot_modifier(hist, xlabel, ylabel, color, marker_style=None):
+def plot_modifier(hist, xlabel, ylabel, color, marker_style=None, fillstyle=1001):
     hist.GetXaxis().SetTitle(xlabel)
     hist.GetYaxis().SetTitle(ylabel)
     if not marker_style == None:
         hist.SetMarkerStyle(marker_style)
         hist.SetMarkerColor(color)
     hist.SetLineColor(color)
+    hist.SetFillStyle(fillstyle)
     if color != ROOT.kBlack:
         hist.SetFillColor(color)

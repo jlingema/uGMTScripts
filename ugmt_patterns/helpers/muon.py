@@ -49,7 +49,7 @@ class Muon():
             else:
                 self.Iso = 0
                 # for input have to mask the 31st bit as it is control bit
-                self.phiBits = self.get_phi(phi_low, phi_high)
+                self.phiBits = self.decode_phi(phi_low, phi_high)
             self.rank = 0
 
         elif bitword == None and obj != None: # for emulator
@@ -61,6 +61,7 @@ class Muon():
                 self.Iso = 0
                 self.rank = 0
                 self.Sysign = obj.hwSign() + (obj.hwSignValid() << 1)
+                
 
             self.etaBits = obj.hwEta()
             unsigned_eta = bithlp.twos_complement_to_unsigned(obj.hwEta(), 9)
@@ -68,16 +69,18 @@ class Muon():
             self.ptBits = obj.hwPt()
             self.phiBits = obj.hwPhi()
 
-
             # calculate the bitword to make comparison with HW easy
-            self.bitword = (self.phiBits << phi_low) + \
-                            (self.ptBits << pt_low) + \
+            self.bitword =  (self.ptBits << pt_low) + \
                             (self.qualityBits << qual_low) + \
                             (self.Sysign << sysign_low) + \
                             (unsigned_eta << eta_low) 
 
             if mu_type == "OUT" and self.Iso > 0:
                 self.bitword += (self.Iso << iso_low)
+            if mu_type == "OUT":
+                self.bitword += (self.phiBits << phi_low)
+            else:
+                self.bitword += self.encode_phi(self.phiBits) << phi_low
 
         self.frame = frame
         self.link = link
@@ -88,8 +91,30 @@ class Muon():
         returns the assiciated bunch-crossing
         """
         return self.bx
-        
-    def get_phi(self, xlow, xup):
+
+    def getRank(self):
+        return self.rank
+    
+    def getLSW(self):
+        mask = 0xffffffff
+        return (self.bitword&mask)
+
+    def getMSW(self):
+        return (self.bitword >> 32)
+
+    def encode_phi(self, phi):
+        """
+        As the hardware expects a control bit on position 31 and phi
+        goes across the word boundary we need to put a zero in the
+        middle.
+        """
+        mask_lsw = bithlp.get_mask(0, 5) #0-5 for phi
+        lsw = int(phi)&mask_lsw
+        msw = int(phi)>>6
+        encoded_phi = lsw + (msw << 7)
+        return encoded_phi
+
+    def decode_phi(self, xlow, xup):
         """
         for the HW represntation: the phi variable goes across 32bit word boundary
         at the boundary a control bit is reserved 

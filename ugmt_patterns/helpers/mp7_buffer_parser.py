@@ -96,6 +96,7 @@ class BufferParser(object):
         """
         if not self.initialized: self.init()
         frame_content = self.frame_dict[frame][link]
+        if "0v" in frame_content: return -1
         frame_content = frame_content.replace("1v", "")
         num = int(frame_content, 16)
         return num
@@ -119,7 +120,10 @@ class BufferParser(object):
                 if "1v" in self.frame_dict[frame][link_n] and "1v" in self.frame_dict[frame+1][link_n]:
                     a = self.get_num(frame, link_n)
                     b = self.get_num(frame+1, link_n)
-                    mu_dict[frame].append([(b<<32) + a, link_n])
+                    mu_dict[frame].append([(b<<32) + a, link_n, 1])
+                # if "0v" in self.frame_dict[frame][link_n] and "0v" in self.frame_dict[frame+1][link_n]:
+                #     mu_dict[frame].append([0, 0, 0])
+
             frame += 2 
 
         return mu_dict
@@ -177,14 +181,14 @@ class InputBufferParser(BufferParser):
 
         self._log.info("Found valid frames for input mus: {minf}-{maxf} (=> {bx} BX)".format(minf=self.frame_low, maxf=self.frame_high, bx = (self.frame_high-self.frame_low+1)/6))
 
-    def get_input_muons(self):
+    def get_input_muons(self, skip = 0):
         """
         Get all input muons in the file
         RETURNS: List of muon objects within the valid frame range (contains also zero muons)
         """
         if not self.initialized: self.init() 
         if not self.frame_low >= 0: return []
-        frame = self.frame_low
+        frame = self.frame_low+skip
         muon_dict = self.get_muon_dict(self.link_low, self.link_high, self.frame_low, self.frame_high)
         muon_objs = []
         # for frame, muons in muon_dict.iteritems():
@@ -192,9 +196,19 @@ class InputBufferParser(BufferParser):
         while frame < (self.frame_high):
             bx = (frame+1) / 6
             for i in xrange(36): #8 links
-                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx)) 
-                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
-                muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
+                if (len(muon_dict[frame]) > i): 
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx))
+                else:
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", 0, link=-1, frame=frame, bx=bx))
+
+                if (len(muon_dict[frame+2]) > i): 
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx))
+                else:
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", 0, link=-1, frame=frame+2, bx=bx))
+                if (len(muon_dict[frame+4]) > i): 
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
+                else:
+                    muon_objs.append(Muon(self.vhdl_dict, "IN", 0, link=-1, frame=frame+4, bx=bx))
             frame += 6
         return muon_objs
 
@@ -224,6 +238,12 @@ class OutputBufferParser(BufferParser):
         if self.version.patch < 6 and self.version.major == 0 and self.version.minor == 0:
             self.intermediate_offset = -6
             self.rank_offset = -6
+        if self.version.patch == 0 and self.version.minor == 2 and self.version.major == 0:
+            self.intermediate_offset = -4
+            self.rank_offset = -4
+        if self.version.patch == 1 and self.version.minor == 2 and self.version.major == 0:
+            self.intermediate_offset = -8
+            self.rank_offset = -8
 
         self.frame_low = -1
         self.frame_high = -1
@@ -236,8 +256,9 @@ class OutputBufferParser(BufferParser):
 
         self.link_rank_low = 12
         self.link_rank_high = 13
-
-        last_0v_frame = 0
+        
+        # so it is 0 if the first frame already has muons
+        last_0v_frame = -1 
         escape = False
         for link in xrange(self.link_out_low, self.link_out_high+1):
             if escape: break
@@ -245,21 +266,25 @@ class OutputBufferParser(BufferParser):
                 a = self.frame_dict[frame][link]
                 if a[:2] == "0v":
                     last_0v_frame = frame
-                if a[:2] == "1v" and a != "1v00000000":
+                if a[:2] == "1v" and (a != "1v00000000" or self.version.minor > 1):
                     self.frame_low = last_0v_frame+1
                     escape = True
                     break
-
+        
         if self.frame_low == -1:
             self._log.error("Found no valid, non-zero frames in this file {fn}".format(fn=self.fname))
             return
+
+        if self.version.patch == 1 and self.version.minor == 2 and self.version.major == 0:
+            self.frame_low -= 2 # fix for first muons being empty.
 
         for link in xrange(self.link_out_low, self.link_out_high+1):
             for frame in xrange(self.frame_low, self.max_frame+1):
                 a = self.frame_dict[frame][link]
                 if a[:2] == "0v" and self.frame_high == -1:
-                    self.frame_high = frame+1 #last two frames are zero
-                if self.frame_high != -1 and (a[:2] == "1v" and a != "1v00000000"):
+                    self.frame_high = frame-1
+                # continue search if valid goes up again
+                if self.frame_high != -1 and (a[:2] == "1v"): 
                     self.frame_high = -1
 
         if self.frame_high == -1:
@@ -279,7 +304,7 @@ class OutputBufferParser(BufferParser):
         if self.rank_offset != 0:
             self._log.info("Offset is set for ranks         : {offset}".format(offset=self.rank_offset))
 
-    def get_output_muons(self):
+    def get_output_muons(self, skip = 0):
         """
         Get all output muons
         RETURNS: list of muon objects found in links 0-3 (contains also zero muons) 
@@ -287,16 +312,31 @@ class OutputBufferParser(BufferParser):
         """
         if not self.initialized: self.init() 
         # check if initialization failed
-        if not self.frame_low > 0: return []
+        if not self.frame_low >= 0: return []
         muon_dict = self.get_muon_dict(self.link_out_low, self.link_out_high, self.frame_low, self.frame_high)
         muon_objs = []
 
-        frame = self.frame_low
+        frame = self.frame_low+skip
+        print frame
+        haveWarned = False
         while frame < self.frame_high:
             bx = (frame + 1 - self.frame_low) / 6
-            for i in xrange(4): #4 links
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx)) 
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx))
+            for i in xrange(4): #4 links                
+                if (len(muon_dict[frame+2]) > i): 
+                    muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
+                else:
+                    muon_objs.append(Muon(self.vhdl_dict, "OUT", bitword=0))
+                    if not haveWarned:
+                        self._log.warning("Cannot find all 4 output muons: something wrong with the valid bit pattern?")
+                        haveWarned = True
+                if (len(muon_dict[frame+4]) > i): 
+                    muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
+                else:
+                    muon_objs.append(Muon(self.vhdl_dict, "OUT", bitword=0))
+                    if not haveWarned:
+                        self._log.warning("Cannot find all 4 output muons: something wrong with the valid bit pattern?")
+                        haveWarned = True
+
             frame += 6 # next event
             
         return muon_objs
@@ -319,9 +359,11 @@ class OutputBufferParser(BufferParser):
             bx = (frame + 1 - self.frame_low + self.intermediate_offset) / 6
             # 8 links NOTE: when getting dict the link-offsets are already defined...
             for i in xrange(8): 
+                # print muon_dict[frame+4]
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx)) 
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
+
             frame += 6
         return muon_objs
 
