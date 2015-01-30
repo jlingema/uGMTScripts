@@ -1,4 +1,4 @@
-from ROOT import gROOT, gStyle, TStyle
+from ROOT import gROOT, gStyle, TStyle, kWhite
 
 import sys, os
 sys.path.append(os.path.abspath("../Tools/"))
@@ -15,7 +15,7 @@ class TDRStyle():
 
         # For the canvas:
         gStyle.SetCanvasBorderMode(0)
-        gStyle.SetCanvasColor(TStyle.kWhite)
+        gStyle.SetCanvasColor(kWhite)
         gStyle.SetCanvasDefH(600) #Height of canvas
         gStyle.SetCanvasDefW(600) #Width of canvas
         gStyle.SetCanvasDefX(0)   #POsition on screen
@@ -24,7 +24,7 @@ class TDRStyle():
         # For the Pad:
         gStyle.SetPadBorderMode(0)
         # gStyle.SetPadBorderSize(Width_t size = 1)
-        gStyle.SetPadColor(TStyle.kWhite)
+        gStyle.SetPadColor(kWhite)
         gStyle.SetPadGridX(False)
         gStyle.SetPadGridY(False)
         gStyle.SetGridColor(0)
@@ -34,7 +34,7 @@ class TDRStyle():
         # For the frame:
         gStyle.SetFrameBorderMode(0)
         gStyle.SetFrameBorderSize(1)
-        gStyle.SetFrameFillColor(TStyle.kWhite)
+        gStyle.SetFrameFillColor(kWhite)
         gStyle.SetFrameFillStyle(1000)
         gStyle.SetFrameLineColor(1)
         gStyle.SetFrameLineStyle(1)
@@ -71,7 +71,7 @@ class TDRStyle():
         # For the statistics box:
         gStyle.SetOptFile(0)
         gStyle.SetOptStat(0) # To display the mean and RMS:   SetOptStat("mr")
-        gStyle.SetStatColor(TStyle.kWhite)
+        gStyle.SetStatColor(kWhite)
         gStyle.SetStatFont(42)
         gStyle.SetStatFontSize(0.025)
         gStyle.SetStatTextColor(1)
@@ -176,7 +176,7 @@ class TDRStyle():
     def initialize2(self):
     # For the canvas:
         gStyle.SetCanvasBorderMode(0)
-        gStyle.SetCanvasColor(TStyle.kWhite)
+        gStyle.SetCanvasColor(kWhite)
         gStyle.SetCanvasDefH(600) #Height of canvas
         gStyle.SetCanvasDefW(600) #Width of canvas
         gStyle.SetCanvasDefX(0)         #POsition on screen
@@ -185,7 +185,7 @@ class TDRStyle():
     # For the Pad:
         gStyle.SetPadBorderMode(0)
         # gStyle.SetPadBorderSize(Width_t size = 1)
-        gStyle.SetPadColor(TStyle.kWhite)
+        gStyle.SetPadColor(kWhite)
         gStyle.SetPadGridX(False)
         gStyle.SetPadGridY(False)
         gStyle.SetGridColor(0)
@@ -232,7 +232,7 @@ class TDRStyle():
     # For the statistics box:
         gStyle.SetOptFile(0)
         gStyle.SetOptStat(0) # To display the mean and RMS:         SetOptStat("mr")
-        gStyle.SetStatColor(TStyle.kWhite)
+        gStyle.SetStatColor(kWhite)
         gStyle.SetStatFont(42)
         gStyle.SetStatFontSize(0.025)
         gStyle.SetStatTextColor(1)
