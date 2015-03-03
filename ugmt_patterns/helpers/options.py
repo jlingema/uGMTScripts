@@ -9,9 +9,9 @@ def parse_options(description = ""):
     if description != "":
         desc = description
         
-    parser = argparse.ArgumentParser(description=desc)
+    parser = argparse.ArgumentParser(description=desc,formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--directory", dest="directory", type=str, help="Directory containing buffer dumps.")
-    parser.add_argument("--emudirectory", dest="emudirectory", type=str, default="data/patterns/mp7", help="Directory containing emulator output root-files.")
+    parser.add_argument("--emudirectory", dest="emudirectory", type=str, default="data/buffers/emulator", help="Directory containing emulator output root-files.")
     parser.add_argument("--nodebug", dest="nodebug", help='Whether debug output is in the file (intermediate muons, ranks and calo energies)', default=False, action='store_true')
     parser.add_argument('--verbose', dest='verbose', help='Additional output about muons per event', default=False, action='store_true')
     parser.add_argument('--veryverbose', dest="detaildump", help="Even more output", default=False, action="store_true")
