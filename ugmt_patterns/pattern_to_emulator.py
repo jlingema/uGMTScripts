@@ -41,7 +41,7 @@ def main():
         in_muons = input_parser.get_input_muons()
 
         input_testbench = PatternDumper(basedir_testbench+pattern+".txt", vhdl_dict, TestbenchWriter)
-        offset = vhdl_dict["NUM_CALO_CHANS"]
+        offset = 36
         fwdp_range = range(offset+vhdl_dict["FWD_POS_LOW"], offset+vhdl_dict["FWD_POS_HIGH"])
         fwdn_range = range(offset+vhdl_dict["FWD_NEG_LOW"], offset+vhdl_dict["FWD_NEG_HIGH"])
         bar_range = range(offset+vhdl_dict["BARREL_LOW"], offset+vhdl_dict["BARREL_HIGH"])
