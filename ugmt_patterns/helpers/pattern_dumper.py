@@ -292,8 +292,11 @@ class PatternDumper(object):
                 if i < 4 or i > 19: themuid = "FIMD"
                 elif i < 8 or i > 15: themuid = "OIMD"
                 else: themuid = "BIMD"
+            link = i
+            if muon.local_link != -1:
+                link = muon.local_link
             try:
-                self._writer.writeMuon(muon, themuid, i, addIso, rankLUT)
+                self._writer.writeMuon(muon, themuid, link, addIso, rankLUT)
             except AttributeError:
                 self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
                 return
