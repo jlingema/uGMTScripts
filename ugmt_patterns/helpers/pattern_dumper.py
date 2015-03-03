@@ -47,6 +47,7 @@ class TestbenchWriter(object):
         super(TestbenchWriter, self).__init__()
         self.string = ""
         self.frameCounter = 0
+        self.bxCounter = 0
         self.head = """################################################################################
 # Pattern for testbench of the uGMT algo block
 # Data format of muons:
@@ -103,7 +104,10 @@ class TestbenchWriter(object):
         self.string += "# TRACKS\n#TYPE   ETA0  PHI0 QUAL0  ETA1  PHI1 QUAL1  ETA2  PHI2 QUAL2\n"
 
     def writeEventHeader(self, n):
-        self.string += "# Event {n}".format(n=n)
+        self.string += "# Event {n}\n".format(n=n)
+
+    def writeBXCounter(self, n):
+        self.string += "EVT {n}\n".format(n=n)
 
     def fill_up(self, n):
         while self.frameCounter < n:
@@ -204,6 +208,9 @@ class TestvectorWriter(object):
     def writeEventHeader(self, n):
         pass
 
+    def writeBXCounter(self, n):
+        pass
+
     def writeTrackHeadline(self):
         pass
 
@@ -224,7 +231,8 @@ class PatternDumper(object):
         self.vhdl_dict = vhdl_dict      # vhdl-dict as returned by ../../tools/vhdl.VHDLConfigParser
         self._log = log.init_logging(self.__class__.__name__)
         self._writer = writer_t()       # which writer should be used for dumping?
-    
+        self._bxCounter = 0
+
     def writeEmptyFrames(self, n):
         for i in range(n):
             self._writer.writeFrame([])
@@ -274,6 +282,8 @@ class PatternDumper(object):
 
         for x, frame in frames.iteritems():
             self._writer.writeFrame(frame)
+        self._bxCounter += 1
+
 
     def writeMuonGroup(self, muons, mutype, addIso, rankLUT):
         themuid = mutype
@@ -295,27 +305,32 @@ class PatternDumper(object):
             tracks.append([muon.etaBits, muon.phiBits, muon.qualityBits])
         self._writer.writeTracks(tracks, track_type)
 
-    def writeMuonBasedInputBX(self, bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums, rankLUT, addTracks = False):
+    def writeMuonBasedInputBX(self, bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums, rankLUT, addTracks = False, addBXCounter = False):
         try:
             self._writer.writeMuonHeadline()
         except AttributeError:
             self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
             return
+        if addBXCounter:
+            self._writer.writeBXCounter(self._bxCounter)
+
         self.writeMuonGroup(fwdp_muons, "FWD+", False, rankLUT)
         self.writeMuonGroup(ovlp_muons, "OVL+", False, rankLUT)
         self.writeMuonGroup(bar_muons, "BAR", False, rankLUT)
         self.writeMuonGroup(ovln_muons, "OVL-", False, rankLUT)
         self.writeMuonGroup(fwdn_muons, "FWD-", False, rankLUT)
 
-        self._writer.writeTrackHeadline()
-        self.writeTrackGroup(fwdp_muons, "FTRK+")
-        self.writeTrackGroup(ovlp_muons, "OTRK+")
-        self.writeTrackGroup(bar_muons, "BTRK")
-        self.writeTrackGroup(ovln_muons, "OTRK-")
-        self.writeTrackGroup(fwdn_muons, "FTRK-")
+        if addTracks:
+            self._writer.writeTrackHeadline()
+            self.writeTrackGroup(fwdp_muons, "FTRK+")
+            self.writeTrackGroup(ovlp_muons, "OTRK+")
+            self.writeTrackGroup(bar_muons, "BTRK")
+            self.writeTrackGroup(ovln_muons, "OTRK-")
+            self.writeTrackGroup(fwdn_muons, "FTRK-")
 
         if calosums:
             self._log.warning("CaloSums are currently not written")
+        self._bxCounter += 1
 
     def addLine(self, line):
         self._writer.string += line
