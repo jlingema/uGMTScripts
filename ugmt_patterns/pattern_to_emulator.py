@@ -27,7 +27,7 @@ def main():
 
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 
-    basedir_testbench = "data/patterns/testbench/"
+    basedir_testbench = "data/patterns/emu/"
     rankLUT = l1t.MicroGMTRankPtQualLUT()
 
     options, args = parse_options()
