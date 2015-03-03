@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 
-    options, args = parse_options()
+    options = parse_options()
     file_dict = discover_files(options)
     ##### if the physical properties should be calculated, then the functions phi, eta and pt just have to be discommented. Doing this, the following parameters are their input.
     ##### They dont have any other use

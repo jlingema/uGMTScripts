@@ -1,22 +1,28 @@
-from optparse import OptionParser
+import argparse
 from os import walk, path
 
-def parse_options():
+def parse_options(description = ""):
     """
-    Adds often used options to the OptionParser...
+    Adds often used options to the ArgumentParser...
     """
-    parser = OptionParser()
-    parser.add_option("--directory", dest="directory")
-    parser.add_option("--emudirectory", dest="emudirectory", default="data/patterns/mp7")
-    parser.add_option("--nodebug", dest="nodebug", help='Whether debug output is in the file (intermediate muons, ranks and calo energies) (%default)', default=False, action='store_true')
-    parser.add_option('--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False, action='store_true')
-    parser.add_option('--veryverbose', dest="detaildump", help="Even more output (%defahult)", default=False, action="store_true")
-    parser.add_option("--delay", dest="delay", help="Specify how many empty frames should be written to mp7-pattern", default=4, type='int')
-    parser.add_option("--gtdumps", dest="gtdumps", help="Specify a folder containing files that represent the GT-spy buffer dumps", default="", type='string')
-    parser.add_option("--gtoffset", dest="gtoffset", help="Specify the offset for the GT-spy buffer (leading comma)", default=31, type='int')
-    opts, args = parser.parse_args()
+    desc = "Interfaces for test-pattern analysis."
+    if description != "":
+        desc = description
+        
+    parser = argparse.ArgumentParser(description=desc)
+    parser.add_argument("--directory", dest="directory", type=str, help="Directory containing buffer dumps.")
+    parser.add_argument("--emudirectory", dest="emudirectory", type=str, default="data/patterns/mp7", help="Directory containing emulator output root-files.")
+    parser.add_argument("--nodebug", dest="nodebug", help='Whether debug output is in the file (intermediate muons, ranks and calo energies) (%default)', default=False, action='store_true')
+    parser.add_argument('--verbose', dest='verbose', help='Additional output about muons per event (%default)', default=False, action='store_true')
+    parser.add_argument('--veryverbose', dest="detaildump", help="Even more output (%defahult)", default=False, action="store_true")
+    parser.add_argument("--delay", dest="delay", help="Specify how many empty frames should be written to mp7-pattern", default=4, type=int)
+    parser.add_argument("--gtdumps", dest="gtdumps", help="Specify a folder containing files that represent the GT-spy buffer dumps", default="", type=str)
+    parser.add_argument("--gtoffset", dest="gtoffset", help="Specify the offset for the GT-spy buffer (leading comma)", default=31, type=int)
+    
+    opts = parser.parse_args()
+    
     if opts.detaildump: opts.verbose = True
-    return opts, args
+    return opts
 
 def discover_files(opts):
     """

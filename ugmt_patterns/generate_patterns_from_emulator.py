@@ -37,7 +37,7 @@ def get_muon_list_out(emu_product, mu_type, vhdl_dict):
     return mulist
 
 
-def get_muon_list(emu_product, mu_type, vhdl_dict):
+def get_muon_list(emu_product, mu_type, vhdl_dict, check = False):
     nexpected = 18
     if mu_type == "BARREL": nexpected = 36
 
@@ -60,6 +60,13 @@ def get_muon_list(emu_product, mu_type, vhdl_dict):
         elif mulist[loc_link*3+2].ptBits == 0:
             mulist[loc_link*3+2] = mu_tmp
 
+        if check:
+            if mu_tmp.ptBits < 0 or mu_tmp.ptBits > 511: print "+++ err > pt out of bounds"
+            if mu_tmp.etaBits < -224 or mu_tmp.etaBits > 223: print "+++ err > eta out of bounds"
+            if mu_tmp.phiBits < 0 or mu_tmp.phiBits > 575: print "+++ err > phi out of bounds"
+            if mu_tmp.qualityBits < 0 or mu_tmp.qualityBits > 15: print "+++ err > quality out of bounds"
+            
+
     return mulist
     
 
@@ -67,7 +74,7 @@ def get_muon_list(emu_product, mu_type, vhdl_dict):
 def main():
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 
-    opts, args = parse_options()
+    opts = parse_options()
     fname_dict = discover_emu_files(opts.emudirectory)
     
     rankLUT = l1t.MicroGMTRankPtQualLUT()

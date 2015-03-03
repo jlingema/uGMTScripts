@@ -30,7 +30,7 @@ def main():
     basedir_testbench = "data/patterns/emu/"
     rankLUT = l1t.MicroGMTRankPtQualLUT()
 
-    options, args = parse_options()
+    options = parse_options()
     file_dict = discover_files(options)
     for pattern, fnames in file_dict.iteritems():
         _log.info("{patt:+^90}".format(patt=pattern))
