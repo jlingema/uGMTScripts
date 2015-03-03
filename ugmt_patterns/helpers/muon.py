@@ -84,6 +84,14 @@ class Muon():
 
         self.frame = frame
         self.link = link
+        self.local_link = -1
+        if self.link != -1:
+            self.local_link = self.link - 36
+            if self.local_link < vhdl_dict["FWD_POS_HIGH"]: pass
+            elif self.local_link < vhdl_dict["OVL_POS_HIGH"]: self.local_link -= vhdl_dict["OVL_POS_LOW"]
+            elif self.local_link < vhdl_dict["BARREL_HIGH"]: self.local_link -= vhdl_dict["BARREL_LOW"]
+            elif self.local_link < vhdl_dict["OVL_NEG_HIGH"]: self.local_link -= vhdl_dict["OVL_NEG_LOW"]
+            else: self.local_link -= vhdl_dict["FWD_NEG_LOW"]
         self.bx = bx
 
     def getBx(self):
