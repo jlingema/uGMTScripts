@@ -161,7 +161,7 @@ class InputBufferParser(BufferParser):
         for link in xrange(self.link_low, self.link_high+1):
             for frame in xrange(0, self.max_frame+1):
                 a = self.frame_dict[frame][link]
-                if a[:2] == "1v":
+                if a[:2] == "1v" and (self.frame_low == -1 or self.frame_low > frame):
                     self.frame_low = frame
                     break
         
