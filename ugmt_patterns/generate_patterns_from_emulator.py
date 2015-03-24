@@ -69,6 +69,15 @@ def get_muon_list(emu_product, mu_type, vhdl_dict, check = False):
 
     return mulist
     
+def get_calo_list(raw_sums):
+    calo_sums = [0]*36*28
+    for csum in raw_sums:
+        idx = csum.hwPhi() + csum.hwEta()*36
+        calo_sums[idx] = csum.etBits()
+    return calo_sums
+    # for iphi in range(36):
+    #     for ieta in range(28):
+            # idx = ieta*36+iphi
 
 
 def main():
@@ -88,6 +97,8 @@ def main():
         bar_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
         fwd_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
         ovl_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
+
+        calo_handle = Handle('std::vector<l1t::L1TGMTInputCaloSum>')
 
         basedir_testbench = "data/patterns/testbench/"
         basedir_mp7 = "data/patterns/mp7/"
@@ -116,6 +127,11 @@ def main():
             event.getByLabel("uGMTInputProducer", "ForwardTFMuons", fwd_handle)
             event.getByLabel("uGMTInputProducer", "OverlapTFMuons", ovl_handle)
 
+            event.getByLabel("uGMTInputProducer", "TriggerTowerSums", calo_handle)
+
+            calo_sums_raw = calo_handle.product()
+            calo_sums = get_calo_list(calo_sums_raw)
+
             emu_out_muons = out_handle.product()
             outmuons = get_muon_list_out(emu_out_muons, "OUT", vhdl_dict)
             imd_prod = imd_handle.product()
@@ -133,7 +149,7 @@ def main():
 
             output_buffer.writeFrameBasedOutputBX(outmuons, imdmuons)
 
-            input_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, [], rankLUT, True)
+            input_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calo_sums, [], rankLUT, True)
             input_testbench.addLine("# Expected emulator output\n")
             input_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
         

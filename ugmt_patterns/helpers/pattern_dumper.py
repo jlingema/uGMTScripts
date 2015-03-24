@@ -161,6 +161,17 @@ class TestbenchWriter(object):
             if (i+1)%3 == 0:
                 self.string += "\n"
 
+    def writeCaloChannel(self, channel, sums):
+        """ 
+        Adds the calo information to the buffer. 
+        TAKES: 
+            channel: current channel
+            sums: calo sums for current channel (list with length 36)
+        """
+        self.string += "CALO{id:<2}".format(id=channel)
+        for csum in sums:
+            self.string += "{calo:>3}".format(calo=csum)
+        self.string += "\n"
 
     def get_full_string(self):
         return self.head + self.string
@@ -301,6 +312,11 @@ class PatternDumper(object):
                 self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
                 return
 
+    def writeCaloGroup(self, calosums):
+        for iline in range(28):
+            idx_low = iline*36
+            idx_high = idx_low+35
+            self._writer.writeCaloChannel(iline, calosums[idx_low:idx_high])
 
     def writeTrackGroup(self, muons, track_type):
         tracks = []
@@ -309,14 +325,18 @@ class PatternDumper(object):
         self._writer.writeTracks(tracks, track_type)
 
     def writeMuonBasedInputBX(self, bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums, rankLUT, addTracks = False, addBXCounter = False):
+        if addBXCounter:
+            self._writer.writeBXCounter(self._bxCounter)
+
+
+        if calosums:
+            self.addLine("# Calo sums:\n")
+            self.writeCaloGroup(calosums)
         try:
             self._writer.writeMuonHeadline()
         except AttributeError:
             self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
             return
-        if addBXCounter:
-            self._writer.writeBXCounter(self._bxCounter)
-
         self.writeMuonGroup(fwdp_muons, "FWD+", False, rankLUT)
         self.writeMuonGroup(ovlp_muons, "OVL+", False, rankLUT)
         self.writeMuonGroup(bar_muons, "BAR", False, rankLUT)
@@ -331,8 +351,6 @@ class PatternDumper(object):
             self.writeTrackGroup(ovln_muons, "OTRK-")
             self.writeTrackGroup(fwdn_muons, "FTRK-")
 
-        if calosums:
-            self._log.warning("CaloSums are currently not written")
         self._bxCounter += 1
 
     def addLine(self, line):
