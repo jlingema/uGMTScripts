@@ -315,7 +315,7 @@ class PatternDumper(object):
     def writeCaloGroup(self, calosums):
         for iline in range(28):
             idx_low = iline*36
-            idx_high = idx_low+35
+            idx_high = idx_low+36
             self._writer.writeCaloChannel(iline, calosums[idx_low:idx_high])
 
     def writeTrackGroup(self, muons, track_type):
