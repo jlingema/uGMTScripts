@@ -45,6 +45,6 @@ With the `dryrun` option no actual access to the hardware is needed. It will onl
 To write new contents to a set of LUTs the following can be done. Also partial matches will be written to (**consider to do a dryrun first**). 
 ```
 cd uGMTScripts/lut_test/read_write_tools
-python write_multiple_luts.py lut_name --content generate://zero (--dryrun)
+python write_luts.py lut_name --content generate://zero (--dryrun)
 ```
 With the `dryrun` option no actual access to the hardware is needed. It will only show the LUTs that will be changed and the content that would be written if dryrun was omitted.
