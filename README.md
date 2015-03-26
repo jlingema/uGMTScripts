@@ -16,8 +16,9 @@ Checkout the repository and source the setup shell-script:
 ```
 git clone https://github.com/jlingema/uGMTScripts.git
 cd uGMTScripts
-source setup.sh
+python setup.py (--update)
 ```
+If the option `update` is supplied the script fetches the newest version of `ugmt_constants.vhd` from the firmware repository.
 
 ## How to get comparisons of uGMT emulator and hardware responses
 Currently the best description is available here:
