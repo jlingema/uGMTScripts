@@ -24,7 +24,8 @@ def main():
     print 'Adding uGMTScripts to $PYTHONPATH'
     script_path = os.path.dirname(os.path.abspath(__file__))
     print '-- PYTHONPATH +=', script_path
-    os.environ['PYTHONPATH'] += ':'+script_path
+    if not script_path in os.environ['PYTHONPATH']:
+        os.environ['PYTHONPATH'] += ':'+script_path
 
 if __name__ == "__main__":
     main()
