@@ -9,6 +9,7 @@ def parse_options():
     desc = "Inspection and write tool for LUTs via ipbus"
         
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('board', type=str, help='board to connect to')
     parser.add_argument('nodes', type=str, nargs='+', help='node that will be written to (skip the preceeding payload)')
     parser.add_argument('--content', type=int,  default=0, help='value to write')
     parser.add_argument('--dryrun', dest='dryrun', default=False,  action='store_true', help='dryrun, will only list matching nodes and contents')
@@ -21,9 +22,10 @@ def parse_options():
 
 
 uhal.setLogLevelTo(uhal.LogLevel.ERROR)
+opts = parse_options()
 
 cm = uhal.ConnectionManager("file://${MP7_TESTS}/etc/mp7/connections-test.xml")
-board = cm.getDevice( "ugmt_b14" )
+board = cm.getDevice( opts.board )
 v = board.getNode('ctrl.id').read()
 
 try:
@@ -33,7 +35,6 @@ except:
     print 'MP7 access failed (name:',board.id(),'uri:',board.uri(),')'
     sys.exit(-1)
 
-opts = parse_options()
 
 if not opts.dryrun:
     print 'MP7 access successful:'
