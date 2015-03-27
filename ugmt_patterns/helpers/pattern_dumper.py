@@ -125,10 +125,11 @@ class TestbenchWriter(object):
         isempty = 0
         if mu.ptBits == 0: isempty = 1
         sortrank = 0
-        if rankLUT:
+        if rankLUT != None:
             sortrank = rankLUT.lookup(mu.ptBits, mu.qualityBits)
         else:
             sortrank = mu.rank
+
         tmp_string = "{id:<6} {rank:>5} {pt:>5} {phi:>5} {eta:>5} {charge:>5} {charge_valid:>5} {quality:>5} {sort:>5} {empty:>5}".format(
                         id=mu_type,
                         rank=rank,
@@ -306,11 +307,9 @@ class PatternDumper(object):
             link = i
             if muon.local_link != -1:
                 link = muon.local_link
-            try:
-                self._writer.writeMuon(muon, themuid, link, addIso, rankLUT)
-            except AttributeError:
-                self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
-                return
+            
+            self._writer.writeMuon(muon, themuid, link, addIso, rankLUT)
+            
 
     def writeCaloGroup(self, calosums):
         for iline in range(28):

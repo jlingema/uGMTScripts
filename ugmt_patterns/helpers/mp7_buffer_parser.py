@@ -22,11 +22,11 @@ class Version(object):
         extracts the version-string from folder name
         TAKES: foldername that can be of any structure but must contain the version-string ugmt_vXX_XX_XX (first is taken)
         """
-        version_re = re.compile("ugmt_v[0-9]+_[0-9]+_[0-9]+")
+        version_re = re.compile("_v[0-9]+_[0-9]+_[0-9]+")
         version_match = version_re.search(foldername)
         if version_match:
             # get rid of starting constant
-            version = Version(version_match.group(0).replace("ugmt_v", ""))
+            version = Version(version_match.group(0).replace("_v", ""))
         return version
 
     def __repr__(self):
