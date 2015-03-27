@@ -21,11 +21,12 @@ def main():
         print 'Fetching newest version of ugmt_constants.vhd'
         get_ugmt_constants()
 
-    print 'Adding uGMTScripts to $PYTHONPATH'
     script_path = os.path.dirname(os.path.abspath(__file__))
-    print '-- PYTHONPATH +=', script_path
+    
     if not script_path in os.environ['PYTHONPATH']:
-        os.environ['PYTHONPATH'] += ':'+script_path
+        print "Please execute setup.sh"
+        with open('setup.sh', 'w') as fobj:
+            fobj.write('export PYTHONPATH=$PYTHONPATH:'+script_path)
 
 if __name__ == "__main__":
     main()
