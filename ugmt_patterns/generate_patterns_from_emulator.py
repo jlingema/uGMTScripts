@@ -92,6 +92,12 @@ def main():
         print "+"*30, pattern, "+"*30
         events = Events(fnames['root'])
 
+        tower_indices = None
+        if 'idebug' in fnames.keys():
+            debug_fname = fnames['idebug']
+            with open(debug_fname, 'r') as fobj:
+                tower_indices = [ [ int(idx.strip()) for idx in l.split() ] for l in fobj ]
+
         out_handle = Handle('BXVector<l1t::Muon>')
         imd_handle = Handle('BXVector<l1t::Muon>')
         bar_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
@@ -145,13 +151,18 @@ def main():
             fwdp_muons = get_muon_list(emu_fwd_muons, "FWD_POS", vhdl_dict)
             fwdn_muons = get_muon_list(emu_fwd_muons, "FWD_NEG", vhdl_dict)
 
+            if tower_indices == None:
+                the_indices = [-1]*8
+            else:
+                the_indices = tower_indices[i]
+
             input_buffer.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, [])
 
             output_buffer.writeFrameBasedOutputBX(outmuons, imdmuons)
 
             input_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=calo_sums, rankLUT=rankLUT, addTracks=True)
             input_testbench.addLine("# Expected emulator output\n")
-            input_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
+            input_testbench.writeMuonBasedOutputBX(outmuons, imdmuons, the_indices)
         
             input_testvec.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=[], rankLUT=rankLUT, addTracks=True)
 

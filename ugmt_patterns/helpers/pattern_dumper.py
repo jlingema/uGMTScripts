@@ -86,7 +86,7 @@ class TestbenchWriter(object):
 
     def writeMuonHeadline(self):
         """ documenting the individual muon quantities """
-        self.string += "#{id:<5} {rank:>5} {pt:>5} {phi:>5} {eta:>5} {charge:>5} {charge_valid:>5} {quality:>5} {sort:>5} {empty:>5} {iso:>5}\n".format(
+        self.string += "#{id:<5} {rank:>5} {pt:>5} {phi:>5} {eta:>5} {charge:>5} {charge_valid:>5} {quality:>5} {sort:>5} {empty:>5} {iso:>5} {twr:>5}\n".format(
                         id="TYPE",
                         rank="POS",
                         pt="PT",
@@ -97,7 +97,8 @@ class TestbenchWriter(object):
                         quality="QUAL",
                         sort="RANK",
                         empty="EMPT",
-                        iso="(ISO)"
+                        iso="(ISO)",
+                        twr = "(TWR)"
                     )
     def writeTrackHeadline(self):
         """ documenting the individual track quantities """
@@ -113,14 +114,15 @@ class TestbenchWriter(object):
         while self.frameCounter < n:
             self.writeFrame([])
 
-    def writeMuon(self, mu, mu_type, rank, addIso = False, rankLUT = None):
+    def writeMuon(self, mu, mu_type, rank, addIso = False, rankLUT = None, twr = -1):
         """ 
         Convert a single ./helpers/muon.Muon object into string
         TAKES:  mu          Muon object
                 mu_type     muon type (BAR, FWD+/-, OVL+/-, FIMD, BIMD, OIMD, OUT)
                 rank        relative position of the muon (IMD: 0-23, OUT: 0-7, FWD/OVL: 0-37, BAR: 0-35)
                 addIso      whether to add isolation info (should only be done for OUT)
-        Adds to self.string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO)"
+                twr         an integer indicating which tower-index was used for iso
+        Adds to self.string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO) (TWR)"
         """
         isempty = 0
         if mu.ptBits == 0: isempty = 1
@@ -143,9 +145,12 @@ class TestbenchWriter(object):
                         empty=isempty
                     )
         if addIso:
-            tmp_string += " {iso:>5}\n".format(iso=mu.Iso)
-        else:
-            tmp_string += "\n"
+            tmp_string += " {iso:>5}".format(iso=mu.Iso)
+
+        if twr != -1:
+            tmp_string += " {twr:>5}".format(twr=twr)
+        
+        tmp_string += "\n"
         self.string += tmp_string
 
     def writeTracks(self, tracks, track_type):
@@ -193,14 +198,15 @@ class TestvectorWriter(object):
         for i in range(108):
             self.head += " |{muon:-^14}|".format(muon="Muon({n})".format(n=i))
 
-    def writeMuon(self, mu, mu_type, rank, addIso = False, rankLUT = None):
+    def writeMuon(self, mu, mu_type, rank, addIso = False, rankLUT = None, twr=-1):
         """ 
         Convert a single ./helpers/muon.Muon object into string
         TAKES:  mu          Muon object
                 mu_type     muon type (BAR, FWD+/-, OVL+/-, FIMD, BIMD, OIMD, OUT)
                 rank        relative position of the muon (IMD: 0-23, OUT: 0-7, FWD/OVL: 0-37, BAR: 0-35)
                 addIso      whether to add isolation info (should only be done for OUT)
-        Adds to string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO)"
+                twr         an integer indicating which tower-index was used for iso
+        Adds to string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO) (TWR)"
         """
         if self.muonCounter == 0:
             self.string += "\n{bx:0>4}".format(bx=self.bxCounter)
@@ -297,7 +303,7 @@ class PatternDumper(object):
         self._bxCounter += 1
 
 
-    def writeMuonGroup(self, muons, mutype, addIso, rankLUT):
+    def writeMuonGroup(self, muons, mutype, addIso, rankLUT, twrs = None):
         themuid = mutype
         for i, muon in enumerate(muons):
             if mutype == "IMD":
@@ -307,8 +313,9 @@ class PatternDumper(object):
             link = i
             if muon.local_link != -1:
                 link = muon.local_link
-            
-            self._writer.writeMuon(muon, themuid, link, addIso, rankLUT)
+            twr = -1
+            if twrs: twr = twrs[i]
+            self._writer.writeMuon(muon, themuid, link, addIso, rankLUT, twr)
             
 
     def writeCaloGroup(self, calosums):
@@ -355,11 +362,11 @@ class PatternDumper(object):
     def addLine(self, line):
         self._writer.string += line
 
-    def writeMuonBasedOutputBX(self, out_muons, imd_muons):
+    def writeMuonBasedOutputBX(self, out_muons, imd_muons, tower_indices=None):
         try:
             self._writer.writeMuonHeadline()
         except AttributeError:
             self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
             return
         self.writeMuonGroup(imd_muons, "IMD", False, None)
-        self.writeMuonGroup(out_muons, "OUT", True, None)
+        self.writeMuonGroup(out_muons, "OUT", True, None, tower_indices)
