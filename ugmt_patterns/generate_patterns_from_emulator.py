@@ -151,18 +151,17 @@ def main():
             fwdp_muons = get_muon_list(emu_fwd_muons, "FWD_POS", vhdl_dict)
             fwdn_muons = get_muon_list(emu_fwd_muons, "FWD_NEG", vhdl_dict)
 
-            if tower_indices == None:
-                the_indices = [-1]*8
-            else:
-                the_indices = tower_indices[i]
-
             input_buffer.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, [])
 
             output_buffer.writeFrameBasedOutputBX(outmuons, imdmuons)
 
             input_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=calo_sums, rankLUT=rankLUT, addTracks=True)
             input_testbench.addLine("# Expected emulator output\n")
-            input_testbench.writeMuonBasedOutputBX(outmuons, imdmuons, the_indices)
+            input_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
+            if tower_indices != None:
+                input_testbench.addLine("# Tower indices:\n")
+                lowidx = i*8
+                input_testbench.writeTowerIndices(tower_indices[lowidx:lowidx+8])
         
             input_testvec.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=[], rankLUT=rankLUT, addTracks=True)
 
