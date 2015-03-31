@@ -353,9 +353,9 @@ class PatternDumper(object):
         self._bxCounter += 1
 
     def writeTowerIndices(self, twrs):
-        self._writer.string += "{typ:<6} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx="MU", phi="PHI", eta="ETA")
+        self._writer.string += "# {typ:<8} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx="MU", phi="PHI", eta="ETA")
         for i, twr in enumerate(twrs):
-            self._writer.string += "{typ:<6} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx=i, phi=twr[0], eta=twr[1])
+            self._writer.string += "{typ:<8} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx=i, phi=twr[0], eta=twr[1])
 
     def addLine(self, line):
         self._writer.string += line
