@@ -48,7 +48,7 @@ CALO24 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 2
 CALO25 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22
 CALO26 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22
 CALO27 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0   255   114   132     1     1     8   263     0
 FWD+       1   255   142   232     0     1     8   263     0
 FWD+       2   255    71   192     0     1     8   263     0
@@ -196,7 +196,7 @@ FTRK-   -237   534     8  -187   606     8  -122   613     8
 FTRK-   -162   798     8  -217   713     8  -227   791     8
 FTRK-   -182   984     8  -132   855     8  -217   905     8
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0   255   114   132     1     1     8   263     0
 FIMD       1   255   142   232     0     1     8   263     0
 FIMD       2   255    71   192     0     1     8   263     0
@@ -261,7 +261,7 @@ CALO24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  
 CALO25  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO26  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO27  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0     0     0     0     0     0     0     0     1
 FWD+       1     0     0     0     0     0     0     0     1
 FWD+       2     0     0     0     0     0     0     0     1
@@ -409,7 +409,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
@@ -474,7 +474,7 @@ CALO24 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 2
 CALO25 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21
 CALO26 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21
 CALO27 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21 21
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0   254   114   132     1     1     8   262     0
 FWD+       1   254   142   232     0     1     8   262     0
 FWD+       2   254    71   192     0     1     8   262     0
@@ -622,7 +622,7 @@ FTRK-   -237   534     8  -187   606     8  -122   613     8
 FTRK-   -162   798     8  -217   713     8  -227   791     8
 FTRK-   -182   984     8  -132   855     8  -217   905     8
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0   254   114   132     1     1     8   262     0
 FIMD       1   254   142   232     0     1     8   262     0
 FIMD       2   254    71   192     0     1     8   262     0
@@ -687,7 +687,7 @@ CALO24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  
 CALO25  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO26  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO27  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0     0     0     0     0     0     0     0     1
 FWD+       1     0     0     0     0     0     0     0     1
 FWD+       2     0     0     0     0     0     0     0     1
@@ -835,7 +835,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
@@ -900,7 +900,7 @@ CALO24 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 2
 CALO25 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20
 CALO26 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20
 CALO27 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0   253   114   132     1     1     8   261     0
 FWD+       1   253   142   232     0     1     8   261     0
 FWD+       2   253    71   192     0     1     8   261     0
@@ -1048,7 +1048,7 @@ FTRK-   -237   534     8  -187   606     8  -122   613     8
 FTRK-   -162   798     8  -217   713     8  -227   791     8
 FTRK-   -182   984     8  -132   855     8  -217   905     8
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0   253   114   132     1     1     8   261     0
 FIMD       1   253   142   232     0     1     8   261     0
 FIMD       2   253    71   192     0     1     8   261     0
@@ -1113,7 +1113,7 @@ CALO24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  
 CALO25  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO26  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO27  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0     0     0     0     0     0     0     0     1
 FWD+       1     0     0     0     0     0     0     0     1
 FWD+       2     0     0     0     0     0     0     0     1
@@ -1261,7 +1261,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
@@ -1326,7 +1326,7 @@ CALO24 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 1
 CALO25 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19
 CALO26 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19
 CALO27 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0   252   114   132     1     1     8   260     0
 FWD+       1   252   142   232     0     1     8   260     0
 FWD+       2   252    71   192     0     1     8   260     0
@@ -1474,7 +1474,7 @@ FTRK-   -237   534     8  -187   606     8  -122   613     8
 FTRK-   -162   798     8  -217   713     8  -227   791     8
 FTRK-   -182   984     8  -132   855     8  -217   905     8
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0   252   114   132     1     1     8   260     0
 FIMD       1   252   142   232     0     1     8   260     0
 FIMD       2   252    71   192     0     1     8   260     0
@@ -1539,7 +1539,7 @@ CALO24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  
 CALO25  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO26  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO27  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0     0     0     0     0     0     0     0     1
 FWD+       1     0     0     0     0     0     0     0     1
 FWD+       2     0     0     0     0     0     0     0     1
@@ -1687,7 +1687,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
@@ -1752,7 +1752,7 @@ CALO24 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 1
 CALO25 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18
 CALO26 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18
 CALO27 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18 18
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0   251   114   132     1     1     8   259     0
 FWD+       1   251   142   232     0     1     8   259     0
 FWD+       2   251    71   192     0     1     8   259     0
@@ -1900,7 +1900,7 @@ FTRK-   -237   534     8  -187   606     8  -122   613     8
 FTRK-   -162   798     8  -217   713     8  -227   791     8
 FTRK-   -182   984     8  -132   855     8  -217   905     8
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0   251   114   132     1     1     8   259     0
 FIMD       1   251   142   232     0     1     8   259     0
 FIMD       2   251    71   192     0     1     8   259     0
@@ -1965,7 +1965,7 @@ CALO24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  
 CALO25  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO26  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO27  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0     0     0     0     0     0     0     0     1
 FWD+       1     0     0     0     0     0     0     0     1
 FWD+       2     0     0     0     0     0     0     0     1
@@ -2113,7 +2113,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
@@ -2178,7 +2178,7 @@ CALO24 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 1
 CALO25 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17
 CALO26 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17
 CALO27 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17 17
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0   250   114   132     1     1     8   258     0
 FWD+       1   250   142   232     0     1     8   258     0
 FWD+       2   250    71   192     0     1     8   258     0
@@ -2326,7 +2326,7 @@ FTRK-   -237   534     8  -187   606     8  -122   613     8
 FTRK-   -162   798     8  -217   713     8  -227   791     8
 FTRK-   -182   984     8  -132   855     8  -217   905     8
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0   250   114   132     1     1     8   258     0
 FIMD       1   250   142   232     0     1     8   258     0
 FIMD       2   250    71   192     0     1     8   258     0
@@ -2391,7 +2391,7 @@ CALO24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  
 CALO25  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO26  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO27  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0     0     0     0     0     0     0     0     1
 FWD+       1     0     0     0     0     0     0     0     1
 FWD+       2     0     0     0     0     0     0     0     1
@@ -2539,7 +2539,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
@@ -2604,7 +2604,7 @@ CALO24 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 1
 CALO25 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16
 CALO26 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16
 CALO27 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0   249   114   132     1     1     8   257     0
 FWD+       1   249   142   232     0     1     8   257     0
 FWD+       2   249    71   192     0     1     8   257     0
@@ -2752,7 +2752,7 @@ FTRK-   -237   534     8  -187   606     8  -122   613     8
 FTRK-   -162   798     8  -217   713     8  -227   791     8
 FTRK-   -182   984     8  -132   855     8  -217   905     8
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0   249   114   132     1     1     8   257     0
 FIMD       1   249   142   232     0     1     8   257     0
 FIMD       2   249    71   192     0     1     8   257     0
@@ -2817,7 +2817,7 @@ CALO24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  
 CALO25  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO26  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO27  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0     0     0     0     0     0     0     0     1
 FWD+       1     0     0     0     0     0     0     0     1
 FWD+       2     0     0     0     0     0     0     0     1
@@ -2965,7 +2965,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
@@ -3030,7 +3030,7 @@ CALO24 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 1
 CALO25 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15
 CALO26 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15
 CALO27 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15 15
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0   248   114   132     1     1     8   256     0
 FWD+       1   248   142   232     0     1     8   256     0
 FWD+       2   248    71   192     0     1     8   256     0
@@ -3178,7 +3178,7 @@ FTRK-   -237   534     8  -187   606     8  -122   613     8
 FTRK-   -162   798     8  -217   713     8  -227   791     8
 FTRK-   -182   984     8  -132   855     8  -217   905     8
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0   248   114   132     1     1     8   256     0
 FIMD       1   248   142   232     0     1     8   256     0
 FIMD       2   248    71   192     0     1     8   256     0
@@ -3243,7 +3243,7 @@ CALO24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  
 CALO25  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO26  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO27  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0     0     0     0     0     0     0     0     1
 FWD+       1     0     0     0     0     0     0     0     1
 FWD+       2     0     0     0     0     0     0     0     1
@@ -3391,7 +3391,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
@@ -3456,7 +3456,7 @@ CALO24 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 1
 CALO25 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14
 CALO26 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14
 CALO27 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14 14
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0   247   114   132     1     1     8   255     0
 FWD+       1   247   142   232     0     1     8   255     0
 FWD+       2   247    71   192     0     1     8   255     0
@@ -3604,7 +3604,7 @@ FTRK-   -237   534     8  -187   606     8  -122   613     8
 FTRK-   -162   798     8  -217   713     8  -227   791     8
 FTRK-   -182   984     8  -132   855     8  -217   905     8
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0   247   114   132     1     1     8   255     0
 FIMD       1   247   142   232     0     1     8   255     0
 FIMD       2   247    71   192     0     1     8   255     0
@@ -3669,7 +3669,7 @@ CALO24  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  
 CALO25  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO26  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
 CALO27  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0     0     0     0     0     0     0     0     1
 FWD+       1     0     0     0     0     0     0     0     1
 FWD+       2     0     0     0     0     0     0     0     1
@@ -3817,7 +3817,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
@@ -3882,7 +3882,7 @@ CALO24 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 1
 CALO25 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13
 CALO26 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13
 CALO27 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FWD+       0   246   114   132     1     1     8   254     0
 FWD+       1   246   142   232     0     1     8   254     0
 FWD+       2   246    71   192     0     1     8   254     0
@@ -4030,7 +4030,7 @@ FTRK-   -237   534     8  -187   606     8  -122   613     8
 FTRK-   -162   798     8  -217   713     8  -227   791     8
 FTRK-   -182   984     8  -132   855     8  -217   905     8
 # Expected emulator output
-#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
+#TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO) (TWR)
 FIMD       0   246   114   132     1     1     8   254     0
 FIMD       1   246   142   232     0     1     8   254     0
 FIMD       2   246    71   192     0     1     8   254     0
