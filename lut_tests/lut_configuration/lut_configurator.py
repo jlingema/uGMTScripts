@@ -184,7 +184,7 @@ class LUTConfigurator(object):
                 inputs[i] = inputs[i] >> bit_boundaries[i][0] # shift by lower bound
             # take maximum data if overflow
             res = min(eval(my_function_string), data_max)
-            print function_string, rev_input_names ,inputs, res
+            
             data.append(res)
         return data
 
