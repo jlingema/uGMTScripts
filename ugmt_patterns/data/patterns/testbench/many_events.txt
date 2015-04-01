@@ -231,11 +231,11 @@ OUT        6   240   443  -206     1     1     3   243     0     3
 OUT        7   240   399  -197     0     1     1   241     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     11    26
-TWRIDX   1     18    27
-TWRIDX   2     29    26
-TWRIDX   3     32    26
-TWRIDX   4     10    15
+TWRIDX   0     10    15
+TWRIDX   1     11    26
+TWRIDX   2     18    27
+TWRIDX   3     29    26
+TWRIDX   4     32    26
 TWRIDX   5      0     1
 TWRIDX   6     28     1
 TWRIDX   7     25     1
@@ -454,14 +454,14 @@ OUT        6   240   175   210     1     1     3   243     0     3
 OUT        7   240   467   192     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    26
-TWRIDX   1     11    26
-TWRIDX   2     29    26
-TWRIDX   3     23    20
+TWRIDX   0     23    20
+TWRIDX   1     12    16
+TWRIDX   2     21    14
+TWRIDX   3     23    13
 TWRIDX   4     12    19
-TWRIDX   5     12    16
-TWRIDX   6     21    14
-TWRIDX   7     23    13
+TWRIDX   5      0    26
+TWRIDX   6     11    26
+TWRIDX   7     29    26
 ################################################################################
 # Event: 2
 ################################################################################
@@ -677,14 +677,14 @@ OUT        6   240   451   206     1     1     3   243     0     3
 OUT        7   240   523   192     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     22    27
-TWRIDX   1     28    26
-TWRIDX   2     33    26
-TWRIDX   3      9    11
-TWRIDX   4     20    16
-TWRIDX   5     21     8
-TWRIDX   6     22     7
-TWRIDX   7     28     7
+TWRIDX   0      9    11
+TWRIDX   1     20    16
+TWRIDX   2     21     8
+TWRIDX   3     22     7
+TWRIDX   4     28     7
+TWRIDX   5     22    27
+TWRIDX   6     28    26
+TWRIDX   7     33    26
 ################################################################################
 # Event: 3
 ################################################################################
@@ -900,13 +900,13 @@ OUT        6   240   247   192     1     1     3   243     0     2
 OUT        7   240    63  -201     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      9    26
-TWRIDX   1      6    27
-TWRIDX   2     10    26
-TWRIDX   3     15    26
-TWRIDX   4     26    18
-TWRIDX   5     28    17
-TWRIDX   6      4    15
+TWRIDX   0     26    18
+TWRIDX   1     28    17
+TWRIDX   2      4    15
+TWRIDX   3      9    26
+TWRIDX   4      6    27
+TWRIDX   5     10    26
+TWRIDX   6     15    26
 TWRIDX   7      3     1
 ################################################################################
 # Event: 4
@@ -1123,14 +1123,14 @@ OUT        6   240   103   206     0     1     3   243     0     3
 OUT        7   240   271   183     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      6    26
-TWRIDX   1     17    25
-TWRIDX   2      2    19
-TWRIDX   3     20    19
-TWRIDX   4     20    11
-TWRIDX   5      0    12
-TWRIDX   6     14    13
-TWRIDX   7     26     8
+TWRIDX   0      2    19
+TWRIDX   1     20    19
+TWRIDX   2     20    11
+TWRIDX   3     26     8
+TWRIDX   4      0    12
+TWRIDX   5     14    13
+TWRIDX   6      6    26
+TWRIDX   7     17    25
 ################################################################################
 # Event: 5
 ################################################################################
@@ -1346,14 +1346,14 @@ OUT        6   240   455   210     0     1     3   243     0     3
 OUT        7   240   519   192     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      9    26
-TWRIDX   1     16    26
-TWRIDX   2     28    26
-TWRIDX   3     32    26
-TWRIDX   4     24    11
-TWRIDX   5     36    12
-TWRIDX   6     34    15
-TWRIDX   7     20    15
+TWRIDX   0     24    11
+TWRIDX   1     36    12
+TWRIDX   2     34    15
+TWRIDX   3     20    15
+TWRIDX   4      9    26
+TWRIDX   5     16    26
+TWRIDX   6     28    26
+TWRIDX   7     32    26
 ################################################################################
 # Event: 6
 ################################################################################
@@ -1569,14 +1569,14 @@ OUT        6   240   131   192     0     1     3   243     0     3
 OUT        7   240   271   201     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      4    27
-TWRIDX   1      1    26
-TWRIDX   2      8    26
-TWRIDX   3     17    26
-TWRIDX   4     23    13
-TWRIDX   5     11    17
-TWRIDX   6     18     8
-TWRIDX   7     26     8
+TWRIDX   0     23    13
+TWRIDX   1     18     8
+TWRIDX   2     26     8
+TWRIDX   3     11    17
+TWRIDX   4      4    27
+TWRIDX   5      1    26
+TWRIDX   6      8    26
+TWRIDX   7     17    26
 ################################################################################
 # Event: 7
 ################################################################################
@@ -1793,13 +1793,13 @@ OUT        7   280   451   -31     1     1     1   281     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0      0    19
-TWRIDX   1      7    18
-TWRIDX   2      2    11
-TWRIDX   3     24    12
-TWRIDX   4      5    15
-TWRIDX   5     13    15
-TWRIDX   6     28    12
-TWRIDX   7     19     8
+TWRIDX   1      2    11
+TWRIDX   2     19     8
+TWRIDX   3      7    18
+TWRIDX   4     24    12
+TWRIDX   5      5    15
+TWRIDX   6     13    15
+TWRIDX   7     28    12
 ################################################################################
 # Event: 8
 ################################################################################
@@ -2015,14 +2015,14 @@ OUT        6   240   235   197     0     1     3   243     0     3
 OUT        7   240   259   210     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    26
-TWRIDX   1     14    26
-TWRIDX   2     16    26
+TWRIDX   0      2    16
+TWRIDX   1     24    17
+TWRIDX   2     17     8
 TWRIDX   3     25    19
-TWRIDX   4      2    16
-TWRIDX   5     24    17
-TWRIDX   6      2    10
-TWRIDX   7     17     8
+TWRIDX   4      2    10
+TWRIDX   5      3    26
+TWRIDX   6     14    26
+TWRIDX   7     16    26
 ################################################################################
 # Event: 9
 ################################################################################
@@ -2238,14 +2238,14 @@ OUT        6   240   147   160     1     1     2   242     0     3
 OUT        7   240   223   106     0     1     1   241     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    27
-TWRIDX   1     18    26
-TWRIDX   2      9    24
-TWRIDX   3     14    20
-TWRIDX   4     20    17
-TWRIDX   5      4     0
-TWRIDX   6     20     1
-TWRIDX   7     29     0
+TWRIDX   0     20    17
+TWRIDX   1      0    27
+TWRIDX   2     18    26
+TWRIDX   3      4     0
+TWRIDX   4     20     1
+TWRIDX   5     29     0
+TWRIDX   6      9    24
+TWRIDX   7     14    20
 ################################################################################
 # Event: 10
 ################################################################################
@@ -2461,12 +2461,12 @@ OUT        6   240   103  -206     1     1     3   243     0     3
 OUT        7   240   259  -110     1     1     1   241     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      9    27
-TWRIDX   1     14    27
-TWRIDX   2     20    27
-TWRIDX   3     28    26
-TWRIDX   4     32    19
-TWRIDX   5     12    14
+TWRIDX   0     12    14
+TWRIDX   1     32    19
+TWRIDX   2      9    27
+TWRIDX   3     14    27
+TWRIDX   4     20    27
+TWRIDX   5     28    26
 TWRIDX   6      6     1
 TWRIDX   7     16     7
 ################################################################################
@@ -2684,14 +2684,14 @@ OUT        6   240   343   206     1     1     3   243     0     3
 OUT        7   240   443     0     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      1    26
-TWRIDX   1      8    26
-TWRIDX   2     18    26
-TWRIDX   3     21    26
-TWRIDX   4     12    16
-TWRIDX   5     28    14
-TWRIDX   6     27     8
-TWRIDX   7     33     8
+TWRIDX   0     12    16
+TWRIDX   1     27     8
+TWRIDX   2     33     8
+TWRIDX   3      1    26
+TWRIDX   4      8    26
+TWRIDX   5     18    26
+TWRIDX   6     21    26
+TWRIDX   7     28    14
 ################################################################################
 # Event: 12
 ################################################################################
@@ -2907,14 +2907,14 @@ OUT        6   240   267   210     1     1     3   243     0     3
 OUT        7   240   231   206     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     16    26
-TWRIDX   1     14    26
+TWRIDX   0     21    11
+TWRIDX   1     10     8
 TWRIDX   2     32    19
-TWRIDX   3     21    11
-TWRIDX   4     35    14
+TWRIDX   3     35    14
+TWRIDX   4     32     8
 TWRIDX   5      8    15
-TWRIDX   6     10     8
-TWRIDX   7     32     8
+TWRIDX   6     16    26
+TWRIDX   7     14    26
 ################################################################################
 # Event: 13
 ################################################################################
@@ -3130,14 +3130,14 @@ OUT        6   240    95   192     1     1     3   243     0     3
 OUT        7   240   203   183     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      1    27
-TWRIDX   1     11    26
-TWRIDX   2      6    26
-TWRIDX   3     12    25
-TWRIDX   4     25    19
-TWRIDX   5     15    14
-TWRIDX   6     28    11
-TWRIDX   7      6    15
+TWRIDX   0     25    19
+TWRIDX   1     15    14
+TWRIDX   2     28    11
+TWRIDX   3      6    15
+TWRIDX   4      1    27
+TWRIDX   5     11    26
+TWRIDX   6      6    26
+TWRIDX   7     12    25
 ################################################################################
 # Event: 14
 ################################################################################
@@ -3353,14 +3353,14 @@ OUT        6   280   499     0     1     1     1   281     0     3
 OUT        7   240   107   197     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      6    26
-TWRIDX   1     34    19
-TWRIDX   2      8    15
-TWRIDX   3     17    15
-TWRIDX   4     16    12
-TWRIDX   5     31    14
-TWRIDX   6     29     8
-TWRIDX   7     35     9
+TWRIDX   0     34    19
+TWRIDX   1     29     8
+TWRIDX   2     35     9
+TWRIDX   3      8    15
+TWRIDX   4     17    15
+TWRIDX   5     16    12
+TWRIDX   6     31    14
+TWRIDX   7      6    26
 ################################################################################
 # Event: 15
 ################################################################################
@@ -3576,13 +3576,13 @@ OUT        6   240   391   192     1     1     3   243     0     3
 OUT        7   240   315  -210     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    26
-TWRIDX   1      7    26
-TWRIDX   2     14    26
-TWRIDX   3     24    26
-TWRIDX   4      5    19
-TWRIDX   5     18     9
-TWRIDX   6     15     8
+TWRIDX   0     18     9
+TWRIDX   1     15     8
+TWRIDX   2      5    19
+TWRIDX   3      0    26
+TWRIDX   4      7    26
+TWRIDX   5     14    26
+TWRIDX   6     24    26
 TWRIDX   7     19     1
 ################################################################################
 # Event: 16
@@ -3799,13 +3799,13 @@ OUT        6   240   459   206     0     1     3   243     0     3
 OUT        7   240   435  -106     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      9    26
-TWRIDX   1     20    26
-TWRIDX   2     24    26
-TWRIDX   3     29    26
-TWRIDX   4     33    19
-TWRIDX   5     34    13
-TWRIDX   6     35     8
+TWRIDX   0     33    19
+TWRIDX   1     34    13
+TWRIDX   2     35     8
+TWRIDX   3      9    26
+TWRIDX   4     20    26
+TWRIDX   5     24    26
+TWRIDX   6     29    26
 TWRIDX   7     27     7
 ################################################################################
 # Event: 17
@@ -4023,13 +4023,13 @@ OUT        7   280   435    55     1     1     2   282     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0     16    19
-TWRIDX   1     19    19
-TWRIDX   2     25    19
-TWRIDX   3      6    11
-TWRIDX   4     19    16
-TWRIDX   5     13    16
-TWRIDX   6     27    17
-TWRIDX   7     21     8
+TWRIDX   1      6    11
+TWRIDX   2     19    16
+TWRIDX   3     21     8
+TWRIDX   4     19    19
+TWRIDX   5     25    19
+TWRIDX   6     13    16
+TWRIDX   7     27    17
 ################################################################################
 # Event: 18
 ################################################################################
@@ -4245,14 +4245,14 @@ OUT        6   280   415   -90     1     1     2   282     0     3
 OUT        7   240   131   201     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      8    26
-TWRIDX   1     13    19
-TWRIDX   2      6    16
-TWRIDX   3      6    14
-TWRIDX   4     14    11
-TWRIDX   5      9     8
-TWRIDX   6     21     8
-TWRIDX   7     26     8
+TWRIDX   0      6    16
+TWRIDX   1      6    14
+TWRIDX   2     14    11
+TWRIDX   3      9     8
+TWRIDX   4     21     8
+TWRIDX   5     13    19
+TWRIDX   6     26     8
+TWRIDX   7      8    26
 ################################################################################
 # Event: 19
 ################################################################################
@@ -4468,12 +4468,12 @@ OUT        6   240    59  -201     0     1     3   243     0     3
 OUT        7   240   167  -201     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      7    26
-TWRIDX   1     11    26
-TWRIDX   2     20    26
-TWRIDX   3     27    26
-TWRIDX   4      9    19
-TWRIDX   5     32    10
+TWRIDX   0      9    19
+TWRIDX   1     32    10
+TWRIDX   2      7    26
+TWRIDX   3     11    26
+TWRIDX   4     20    26
+TWRIDX   5     27    26
 TWRIDX   6      3     1
 TWRIDX   7     10     1
 ################################################################################
@@ -4691,14 +4691,14 @@ OUT        6   240   235   192     1     1     3   243     0     3
 OUT        7   240   351   215     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    27
-TWRIDX   1      0    26
-TWRIDX   2     14    26
-TWRIDX   3     22    27
-TWRIDX   4     15    16
-TWRIDX   5     31    11
-TWRIDX   6     34    17
-TWRIDX   7     31    18
+TWRIDX   0     15    16
+TWRIDX   1     31    11
+TWRIDX   2     34    17
+TWRIDX   3     31    18
+TWRIDX   4      3    27
+TWRIDX   5      0    26
+TWRIDX   6     14    26
+TWRIDX   7     22    27
 ################################################################################
 # Event: 21
 ################################################################################
@@ -4914,12 +4914,12 @@ OUT        6   240    11  -210     1     1     3   243     0     3
 OUT        7   240   203  -192     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     10    26
-TWRIDX   1     16    26
-TWRIDX   2     13    26
-TWRIDX   3     19    26
-TWRIDX   4      6    19
-TWRIDX   5     21    20
+TWRIDX   0      6    19
+TWRIDX   1     21    20
+TWRIDX   2     10    26
+TWRIDX   3     16    26
+TWRIDX   4     13    26
+TWRIDX   5     19    26
 TWRIDX   6      0     1
 TWRIDX   7     12     2
 ################################################################################
@@ -5138,12 +5138,12 @@ OUT        7   240   135  -192     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0     18    25
-TWRIDX   1      7    26
-TWRIDX   2     11    26
-TWRIDX   3      9    26
-TWRIDX   4     18    19
-TWRIDX   5      5    16
-TWRIDX   6     18    16
+TWRIDX   1     18    19
+TWRIDX   2      5    16
+TWRIDX   3     18    16
+TWRIDX   4      7    26
+TWRIDX   5     11    26
+TWRIDX   6      9    26
 TWRIDX   7      8     2
 ################################################################################
 # Event: 23
@@ -5361,13 +5361,13 @@ OUT        7   240   143   201     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0     12    20
-TWRIDX   1      4    26
-TWRIDX   2      9    26
-TWRIDX   3     11    19
-TWRIDX   4     14    14
-TWRIDX   5      1    13
-TWRIDX   6     26    16
-TWRIDX   7     31    10
+TWRIDX   1     14    14
+TWRIDX   2     11    19
+TWRIDX   3      1    13
+TWRIDX   4     26    16
+TWRIDX   5     31    10
+TWRIDX   6      4    26
+TWRIDX   7      9    26
 ################################################################################
 # Event: 24
 ################################################################################
@@ -5583,11 +5583,11 @@ OUT        6   240   379  -206     0     1     3   243     0     3
 OUT        7   240   523  -210     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     14    26
-TWRIDX   1     16    26
-TWRIDX   2     22    26
-TWRIDX   3      6    13
-TWRIDX   4     26     8
+TWRIDX   0      6    13
+TWRIDX   1     26     8
+TWRIDX   2     14    26
+TWRIDX   3     16    26
+TWRIDX   4     22    26
 TWRIDX   5     12     1
 TWRIDX   6     23     1
 TWRIDX   7     33     1
@@ -5806,12 +5806,12 @@ OUT        6   240    43  -210     1     1     3   243     0     3
 OUT        7   240   183  -215     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      7    26
-TWRIDX   1     23    26
-TWRIDX   2     31    26
-TWRIDX   3     10    14
-TWRIDX   4     35    12
-TWRIDX   5     29     8
+TWRIDX   0     10    14
+TWRIDX   1     29     8
+TWRIDX   2      7    26
+TWRIDX   3     23    26
+TWRIDX   4     31    26
+TWRIDX   5     35    12
 TWRIDX   6      2     1
 TWRIDX   7     11     0
 ################################################################################
@@ -6029,14 +6029,14 @@ OUT        6   240   195   110     1     1     3   243     0     3
 OUT        7   240   323   192     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      9    26
-TWRIDX   1     12    20
-TWRIDX   2     20    26
-TWRIDX   3     20    19
-TWRIDX   4     25    16
-TWRIDX   5     11    16
-TWRIDX   6     32    12
-TWRIDX   7      6     8
+TWRIDX   0     25    16
+TWRIDX   1      6     8
+TWRIDX   2     20    19
+TWRIDX   3     11    16
+TWRIDX   4     32    12
+TWRIDX   5      9    26
+TWRIDX   6     12    20
+TWRIDX   7     20    26
 ################################################################################
 # Event: 27
 ################################################################################
@@ -6252,14 +6252,14 @@ OUT        6   240   567  -206     1     1     3   243     0     3
 OUT        7   180   391   -45     1     1     3   183     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    26
-TWRIDX   1      8    26
-TWRIDX   2     10    27
-TWRIDX   3     16    26
-TWRIDX   4     12    12
-TWRIDX   5     24    11
-TWRIDX   6      0     1
-TWRIDX   7     35     1
+TWRIDX   0     12    12
+TWRIDX   1      0    26
+TWRIDX   2      8    26
+TWRIDX   3     10    27
+TWRIDX   4     16    26
+TWRIDX   5      0     1
+TWRIDX   6     35     1
+TWRIDX   7     24    11
 ################################################################################
 # Event: 28
 ################################################################################
@@ -6475,12 +6475,12 @@ OUT        6   240    83  -215     1     1     3   243     0     3
 OUT        7   240   123  -192     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      2    26
-TWRIDX   1      0    26
-TWRIDX   2     12    25
-TWRIDX   3     14    26
-TWRIDX   4     15    20
-TWRIDX   5     14    12
+TWRIDX   0     15    20
+TWRIDX   1     14    12
+TWRIDX   2      2    26
+TWRIDX   3      0    26
+TWRIDX   4     12    25
+TWRIDX   5     14    26
 TWRIDX   6      5     0
 TWRIDX   7      7     2
 ################################################################################
@@ -6698,12 +6698,12 @@ OUT        6   240    35  -215     0     1     3   243     0     3
 OUT        7   240   119  -192     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    26
-TWRIDX   1      5    26
-TWRIDX   2     11    26
-TWRIDX   3     15    26
-TWRIDX   4     18    15
-TWRIDX   5      8     8
+TWRIDX   0     18    15
+TWRIDX   1      8     8
+TWRIDX   2      3    26
+TWRIDX   3      5    26
+TWRIDX   4     11    26
+TWRIDX   5     15    26
 TWRIDX   6      2     0
 TWRIDX   7      7     2
 ################################################################################
@@ -6922,10 +6922,10 @@ OUT        7   240   375  -215     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0      0    24
-TWRIDX   1      0    26
-TWRIDX   2      8    26
-TWRIDX   3     11    26
-TWRIDX   4      2    10
+TWRIDX   1      2    10
+TWRIDX   2      0    26
+TWRIDX   3      8    26
+TWRIDX   4     11    26
 TWRIDX   5      6     1
 TWRIDX   6     16     0
 TWRIDX   7     23     0
@@ -7144,14 +7144,14 @@ OUT        6   240    67   192     0     1     3   243     0     3
 OUT        7   240    83   206     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      4    26
-TWRIDX   1      5    26
-TWRIDX   2     31    20
-TWRIDX   3     27    10
+TWRIDX   0     31    20
+TWRIDX   1     27    10
+TWRIDX   2     16     8
+TWRIDX   3     31     8
 TWRIDX   4     23    11
 TWRIDX   5     25    15
-TWRIDX   6     16     8
-TWRIDX   7     31     8
+TWRIDX   6      4    26
+TWRIDX   7      5    26
 ################################################################################
 # Event: 32
 ################################################################################
@@ -7367,12 +7367,12 @@ OUT        6   240   151  -201     1     1     3   243     0     3
 OUT        7   240   203  -206     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    26
-TWRIDX   1      1    26
-TWRIDX   2     19    26
-TWRIDX   3     28    26
-TWRIDX   4      2    18
-TWRIDX   5     20    16
+TWRIDX   0     20    16
+TWRIDX   1      2    18
+TWRIDX   2      3    26
+TWRIDX   3      1    26
+TWRIDX   4     19    26
+TWRIDX   5     28    26
 TWRIDX   6      9     1
 TWRIDX   7     12     1
 ################################################################################
@@ -7590,14 +7590,14 @@ OUT        6   240   431   206     0     1     3   243     0     3
 OUT        7   240   547   206     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      8    26
-TWRIDX   1     28    26
-TWRIDX   2     27    26
-TWRIDX   3     34    26
-TWRIDX   4     21    19
-TWRIDX   5     19    12
-TWRIDX   6     10     8
-TWRIDX   7      1     8
+TWRIDX   0     19    12
+TWRIDX   1     10     8
+TWRIDX   2     21    19
+TWRIDX   3      1     8
+TWRIDX   4      8    26
+TWRIDX   5     28    26
+TWRIDX   6     27    26
+TWRIDX   7     34    26
 ################################################################################
 # Event: 34
 ################################################################################
@@ -7814,11 +7814,11 @@ OUT        7   240   203  -197     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0      9    20
-TWRIDX   1     10    27
-TWRIDX   2     23    26
-TWRIDX   3     28    26
-TWRIDX   4     27     8
-TWRIDX   5     20     2
+TWRIDX   1     27     8
+TWRIDX   2     20     2
+TWRIDX   3     10    27
+TWRIDX   4     23    26
+TWRIDX   5     28    26
 TWRIDX   6      2     1
 TWRIDX   7     12     1
 ################################################################################
@@ -8036,13 +8036,13 @@ OUT        6   240   315   201     1     1     3   243     0     3
 OUT        7   240    39  -197     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      1    26
-TWRIDX   1      5    27
-TWRIDX   2      7    26
-TWRIDX   3     19    26
-TWRIDX   4     18    19
-TWRIDX   5      6    14
-TWRIDX   6      9    11
+TWRIDX   0     18    19
+TWRIDX   1      6    14
+TWRIDX   2      9    11
+TWRIDX   3      1    26
+TWRIDX   4      5    27
+TWRIDX   5      7    26
+TWRIDX   6     19    26
 TWRIDX   7      2     1
 ################################################################################
 # Event: 36
@@ -8259,14 +8259,14 @@ OUT        6   240   255   206     1     1     3   243     0     3
 OUT        7   240   323   210     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     16    26
-TWRIDX   1     20    26
-TWRIDX   2      6    20
-TWRIDX   3     23    18
+TWRIDX   0      6    20
+TWRIDX   1     23    18
+TWRIDX   2     22    16
+TWRIDX   3      0     3
 TWRIDX   4     31    19
-TWRIDX   5     22    16
-TWRIDX   6      7    10
-TWRIDX   7      0     3
+TWRIDX   5      7    10
+TWRIDX   6     16    26
+TWRIDX   7     20    26
 ################################################################################
 # Event: 37
 ################################################################################
@@ -8485,11 +8485,11 @@ OUT        7   140   303   -45     1     1     3   143     0     3
 TWRIDX   0     16    27
 TWRIDX   1     23    26
 TWRIDX   2     20    26
-TWRIDX   3     19    11
-TWRIDX   4      0     1
-TWRIDX   5      3     0
-TWRIDX   6      9     1
-TWRIDX   7     16     1
+TWRIDX   3      0     1
+TWRIDX   4      3     0
+TWRIDX   5      9     1
+TWRIDX   6     16     1
+TWRIDX   7     19    11
 ################################################################################
 # Event: 38
 ################################################################################
@@ -8705,10 +8705,10 @@ OUT        6   240   459  -201     0     1     3   243     0     3
 OUT        7   240   399  -210     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      7    27
-TWRIDX   1     17    27
-TWRIDX   2     21    26
-TWRIDX   3     24     8
+TWRIDX   0     24     8
+TWRIDX   1      7    27
+TWRIDX   2     17    27
+TWRIDX   3     21    26
 TWRIDX   4      0     2
 TWRIDX   5     20     1
 TWRIDX   6     29     1
@@ -8928,14 +8928,14 @@ OUT        6   240   335   215     1     1     3   243     0     3
 OUT        7   240   419   215     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      5    26
-TWRIDX   1      6    27
-TWRIDX   2     21    27
-TWRIDX   3     26    27
-TWRIDX   4     18    16
-TWRIDX   5     21    14
-TWRIDX   6     20    15
-TWRIDX   7      4     8
+TWRIDX   0     18    16
+TWRIDX   1     21    14
+TWRIDX   2      4     8
+TWRIDX   3     20    15
+TWRIDX   4      5    26
+TWRIDX   5      6    27
+TWRIDX   6     21    27
+TWRIDX   7     26    27
 ################################################################################
 # Event: 40
 ################################################################################
@@ -9151,12 +9151,12 @@ OUT        6   240   103   -96     0     1     3   243     0     3
 OUT        7   240    11  -197     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    26
-TWRIDX   1      5    27
-TWRIDX   2      3    26
-TWRIDX   3      7    26
-TWRIDX   4      7    19
-TWRIDX   5     18     8
+TWRIDX   0     18     8
+TWRIDX   1      0    26
+TWRIDX   2      5    27
+TWRIDX   3      3    26
+TWRIDX   4      7    26
+TWRIDX   5      7    19
 TWRIDX   6      6     8
 TWRIDX   7      0     1
 ################################################################################
@@ -9375,11 +9375,11 @@ OUT        7   240   135  -210     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0      7    20
-TWRIDX   1      1    26
-TWRIDX   2      0    26
-TWRIDX   3      8    26
-TWRIDX   4     22    14
-TWRIDX   5     35    16
+TWRIDX   1     22    14
+TWRIDX   2     35    16
+TWRIDX   3      1    26
+TWRIDX   4      0    26
+TWRIDX   5      8    26
 TWRIDX   6      0     2
 TWRIDX   7      8     1
 ################################################################################
@@ -9597,14 +9597,14 @@ OUT        6   240   351   206     1     1     3   243     0     3
 OUT        7   240   427   197     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      8    26
-TWRIDX   1     16    26
-TWRIDX   2     22    26
-TWRIDX   3     26    26
-TWRIDX   4     12    19
-TWRIDX   5     13    11
-TWRIDX   6     15    11
-TWRIDX   7     35    14
+TWRIDX   0     12    19
+TWRIDX   1     13    11
+TWRIDX   2     15    11
+TWRIDX   3     35    14
+TWRIDX   4      8    26
+TWRIDX   5     16    26
+TWRIDX   6     22    26
+TWRIDX   7     26    26
 ################################################################################
 # Event: 43
 ################################################################################
@@ -9821,12 +9821,12 @@ OUT        7   240    95  -215     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0      8    20
-TWRIDX   1      1    26
-TWRIDX   2     14    26
-TWRIDX   3     12    26
-TWRIDX   4     30    11
-TWRIDX   5     33    14
-TWRIDX   6     10     8
+TWRIDX   1     30    11
+TWRIDX   2     33    14
+TWRIDX   3     10     8
+TWRIDX   4      1    26
+TWRIDX   5     14    26
+TWRIDX   6     12    26
 TWRIDX   7      6     0
 ################################################################################
 # Event: 44
@@ -10043,11 +10043,11 @@ OUT        6   240    23  -197     1     1     3   243     0     3
 OUT        7   240   123  -210     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    26
-TWRIDX   1     10    27
-TWRIDX   2     14    26
-TWRIDX   3     27    26
-TWRIDX   4     18    15
+TWRIDX   0     18    15
+TWRIDX   1      3    26
+TWRIDX   2     10    27
+TWRIDX   3     14    26
+TWRIDX   4     27    26
 TWRIDX   5      8    17
 TWRIDX   6      1     1
 TWRIDX   7      7     1
@@ -10267,12 +10267,12 @@ OUT        7   240    83  -192     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0      0    25
-TWRIDX   1     10    26
-TWRIDX   2      7    26
-TWRIDX   3     20    26
-TWRIDX   4     23    18
-TWRIDX   5      4    14
-TWRIDX   6     21     8
+TWRIDX   1      4    14
+TWRIDX   2     21     8
+TWRIDX   3     23    18
+TWRIDX   4     10    26
+TWRIDX   5      7    26
+TWRIDX   6     20    26
 TWRIDX   7      5     2
 ################################################################################
 # Event: 46
@@ -10489,13 +10489,13 @@ OUT        6   240   515   197     0     1     3   243     0     3
 OUT        7   240    51  -215     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      1    26
-TWRIDX   1     12    26
-TWRIDX   2     35    26
-TWRIDX   3     32    26
-TWRIDX   4     11    16
-TWRIDX   5     26    17
-TWRIDX   6     16     8
+TWRIDX   0     11    16
+TWRIDX   1     26    17
+TWRIDX   2     16     8
+TWRIDX   3      1    26
+TWRIDX   4     12    26
+TWRIDX   5     35    26
+TWRIDX   6     32    26
 TWRIDX   7      3     0
 ################################################################################
 # Event: 47
@@ -10712,13 +10712,13 @@ OUT        6   240   459   206     1     1     3   243     0     3
 OUT        7   240     0  -201     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      8    27
-TWRIDX   1     19    26
-TWRIDX   2     25    26
-TWRIDX   3     29    26
-TWRIDX   4      6    20
-TWRIDX   5      2     9
-TWRIDX   6      1     3
+TWRIDX   0      6    20
+TWRIDX   1      2     9
+TWRIDX   2      1     3
+TWRIDX   3      8    27
+TWRIDX   4     19    26
+TWRIDX   5     25    26
+TWRIDX   6     29    26
 TWRIDX   7      0     1
 ################################################################################
 # Event: 48
@@ -10935,14 +10935,14 @@ OUT        6   240   411   210     0     1     3   243     0     3
 OUT        7   240   455   215     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    27
-TWRIDX   1     25    26
-TWRIDX   2     28    27
+TWRIDX   0      0    12
+TWRIDX   1      0    14
+TWRIDX   2     16    16
 TWRIDX   3      8    18
-TWRIDX   4      0    12
-TWRIDX   5      0    14
-TWRIDX   6     16    16
-TWRIDX   7     10    15
+TWRIDX   4     10    15
+TWRIDX   5      3    27
+TWRIDX   6     25    26
+TWRIDX   7     28    27
 ################################################################################
 # Event: 49
 ################################################################################
@@ -11158,13 +11158,13 @@ OUT        6   240   251   192     0     1     3   243     0     3
 OUT        7   240    11  -192     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    26
-TWRIDX   1      0    26
-TWRIDX   2     17    27
-TWRIDX   3     15    26
-TWRIDX   4     10    19
-TWRIDX   5     25    10
-TWRIDX   6     20     3
+TWRIDX   0     20     3
+TWRIDX   1     10    19
+TWRIDX   2     25    10
+TWRIDX   3      3    26
+TWRIDX   4      0    26
+TWRIDX   5     17    27
+TWRIDX   6     15    26
 TWRIDX   7      0     2
 ################################################################################
 # Event: 50
@@ -11381,14 +11381,14 @@ OUT        6   240   191   210     0     1     3   243     0     3
 OUT        7   240   267   197     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    26
-TWRIDX   1      3    26
-TWRIDX   2     12    26
-TWRIDX   3     16    26
-TWRIDX   4     15    19
-TWRIDX   5     28    19
-TWRIDX   6     21    11
-TWRIDX   7      6     2
+TWRIDX   0     21    11
+TWRIDX   1      6     2
+TWRIDX   2     15    19
+TWRIDX   3     28    19
+TWRIDX   4      0    26
+TWRIDX   5      3    26
+TWRIDX   6     12    26
+TWRIDX   7     16    26
 ################################################################################
 # Event: 51
 ################################################################################
@@ -11604,13 +11604,13 @@ OUT        6   240   243   210     1     1     3   243     0     3
 OUT        7   240    35  -210     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      5    27
-TWRIDX   1     11    26
-TWRIDX   2      6    26
-TWRIDX   3     15    26
-TWRIDX   4      7    16
-TWRIDX   5     27    13
-TWRIDX   6      2     2
+TWRIDX   0      7    16
+TWRIDX   1     27    13
+TWRIDX   2      2     2
+TWRIDX   3      5    27
+TWRIDX   4     11    26
+TWRIDX   5      6    26
+TWRIDX   6     15    26
 TWRIDX   7      2     1
 ################################################################################
 # Event: 52
@@ -11827,14 +11827,14 @@ OUT        6   240    91   215     1     1     3   243     0     3
 OUT        7   240    35   210     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    26
-TWRIDX   1      5    27
-TWRIDX   2      2    26
-TWRIDX   3      0    10
-TWRIDX   4     10    12
-TWRIDX   5     13    14
-TWRIDX   6     16    15
-TWRIDX   7     12     8
+TWRIDX   0      0    10
+TWRIDX   1     10    12
+TWRIDX   2     12     8
+TWRIDX   3     13    14
+TWRIDX   4     16    15
+TWRIDX   5      0    26
+TWRIDX   6      5    27
+TWRIDX   7      2    26
 ################################################################################
 # Event: 53
 ################################################################################
@@ -12051,12 +12051,12 @@ OUT        7   240    11  -197     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0      6    25
-TWRIDX   1      4    26
-TWRIDX   2      2    27
-TWRIDX   3     14    26
-TWRIDX   4     28    18
-TWRIDX   5     27    17
-TWRIDX   6     35    10
+TWRIDX   1     27    17
+TWRIDX   2     28    18
+TWRIDX   3     35    10
+TWRIDX   4      4    26
+TWRIDX   5      2    27
+TWRIDX   6     14    26
 TWRIDX   7      0     1
 ################################################################################
 # Event: 54
@@ -12273,12 +12273,12 @@ OUT        6   240    51  -210     1     1     3   243     0     3
 OUT        7   240    31  -197     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      9    26
-TWRIDX   1      7    26
-TWRIDX   2     13    26
-TWRIDX   3     20    26
-TWRIDX   4     32    19
-TWRIDX   5     35    16
+TWRIDX   0     35    16
+TWRIDX   1     32    19
+TWRIDX   2      9    26
+TWRIDX   3      7    26
+TWRIDX   4     13    26
+TWRIDX   5     20    26
 TWRIDX   6      3     1
 TWRIDX   7      1     1
 ################################################################################
@@ -12496,11 +12496,11 @@ OUT        6   240    51  -201     0     1     3   243     0     3
 OUT        7   240   103  -201     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      4    26
-TWRIDX   1      6    26
-TWRIDX   2     14    26
-TWRIDX   3     12    26
-TWRIDX   4      0    11
+TWRIDX   0      0    11
+TWRIDX   1      4    26
+TWRIDX   2      6    26
+TWRIDX   3     14    26
+TWRIDX   4     12    26
 TWRIDX   5     24     8
 TWRIDX   6      3     1
 TWRIDX   7      6     1
@@ -12719,14 +12719,14 @@ OUT        6   240     0   215     1     1     3   243     0     3
 OUT        7   240   279   206     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    27
-TWRIDX   1     17    26
-TWRIDX   2     21    19
+TWRIDX   0     21    19
+TWRIDX   1     10    11
+TWRIDX   2     27    14
 TWRIDX   3     23    19
-TWRIDX   4     10    11
-TWRIDX   5     27    14
-TWRIDX   6      2    15
-TWRIDX   7      2    12
+TWRIDX   4      2    15
+TWRIDX   5      2    12
+TWRIDX   6      0    27
+TWRIDX   7     17    26
 ################################################################################
 # Event: 57
 ################################################################################
@@ -12942,11 +12942,11 @@ OUT        6   240   163  -215     0     1     3   243     0     3
 OUT        7   240   191  -192     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    26
-TWRIDX   1      4    26
-TWRIDX   2      1    26
-TWRIDX   3     19    26
-TWRIDX   4      6    16
+TWRIDX   0      6    16
+TWRIDX   1      3    26
+TWRIDX   2      4    26
+TWRIDX   3      1    26
+TWRIDX   4     19    26
 TWRIDX   5     11     0
 TWRIDX   6     10     0
 TWRIDX   7     12     2
@@ -13165,13 +13165,13 @@ OUT        6   240   551   192     1     1     3   243     0     3
 OUT        7   240   135  -206     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      6    26
-TWRIDX   1     12    26
-TWRIDX   2     19    26
-TWRIDX   3     34    26
-TWRIDX   4      8    17
-TWRIDX   5     21    11
-TWRIDX   6      9     2
+TWRIDX   0      8    17
+TWRIDX   1     21    11
+TWRIDX   2      9     2
+TWRIDX   3      6    26
+TWRIDX   4     12    26
+TWRIDX   5     19    26
+TWRIDX   6     34    26
 TWRIDX   7      8     1
 ################################################################################
 # Event: 59
@@ -13388,12 +13388,12 @@ OUT        6   240    95    69     0     1     3   243     0     3
 OUT        7   240   175  -192     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     12    26
-TWRIDX   1     19    26
-TWRIDX   2     26    26
-TWRIDX   3      5    19
-TWRIDX   4      9    11
-TWRIDX   5     30    18
+TWRIDX   0      5    19
+TWRIDX   1      9    11
+TWRIDX   2     30    18
+TWRIDX   3     12    26
+TWRIDX   4     19    26
+TWRIDX   5     26    26
 TWRIDX   6      6    18
 TWRIDX   7     11     2
 ################################################################################
@@ -13611,12 +13611,12 @@ OUT        6   240    11  -206     1     1     3   243     0     3
 OUT        7   240    55  -215     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     11    27
-TWRIDX   1     10    26
-TWRIDX   2     21    26
-TWRIDX   3     24    26
-TWRIDX   4     29    14
-TWRIDX   5     13     8
+TWRIDX   0     13     8
+TWRIDX   1     29    14
+TWRIDX   2     11    27
+TWRIDX   3     10    26
+TWRIDX   4     21    26
+TWRIDX   5     24    26
 TWRIDX   6      0     1
 TWRIDX   7      3     0
 ################################################################################
@@ -13834,11 +13834,11 @@ OUT        6   240    71  -192     1     1     3   243     0     3
 OUT        7   240   143  -215     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    26
-TWRIDX   1     15    27
-TWRIDX   2     21    26
-TWRIDX   3     27    26
-TWRIDX   4     23    19
+TWRIDX   0     23    19
+TWRIDX   1      3    26
+TWRIDX   2     15    27
+TWRIDX   3     21    26
+TWRIDX   4     27    26
 TWRIDX   5     28     8
 TWRIDX   6      4     2
 TWRIDX   7      9     0
@@ -14057,14 +14057,14 @@ OUT        6   240   291   206     1     1     3   243     0     2
 OUT        7   240   323   210     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     10    27
-TWRIDX   1     11    26
-TWRIDX   2     18    26
-TWRIDX   3     20    26
-TWRIDX   4     15    20
-TWRIDX   5     33    20
-TWRIDX   6      8     8
-TWRIDX   7     15     9
+TWRIDX   0     15    20
+TWRIDX   1     33    20
+TWRIDX   2      8     8
+TWRIDX   3     15     9
+TWRIDX   4     10    27
+TWRIDX   5     11    26
+TWRIDX   6     18    26
+TWRIDX   7     20    26
 ################################################################################
 # Event: 63
 ################################################################################
@@ -14280,13 +14280,13 @@ OUT        6   240   263   201     0     1     3   243     0     3
 OUT        7   240    63  -192     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      5    26
-TWRIDX   1     10    27
-TWRIDX   2     12    26
-TWRIDX   3     16    26
-TWRIDX   4     14     8
-TWRIDX   5     31     8
-TWRIDX   6     13     3
+TWRIDX   0     14     8
+TWRIDX   1     13     3
+TWRIDX   2     31     8
+TWRIDX   3      5    26
+TWRIDX   4     10    27
+TWRIDX   5     12    26
+TWRIDX   6     16    26
 TWRIDX   7      3     2
 ################################################################################
 # Event: 64
@@ -14503,12 +14503,12 @@ OUT        6   240   219    45     1     1     3   243     0     3
 OUT        7   240     0  -206     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    26
-TWRIDX   1     11    26
-TWRIDX   2      8    26
-TWRIDX   3     14    26
-TWRIDX   4      6    14
-TWRIDX   5      5    12
+TWRIDX   0      6    14
+TWRIDX   1      5    12
+TWRIDX   2      3    26
+TWRIDX   3     11    26
+TWRIDX   4      8    26
+TWRIDX   5     14    26
 TWRIDX   6     13    16
 TWRIDX   7      0     1
 ################################################################################
@@ -14726,14 +14726,14 @@ OUT        6   240   207   206     1     1     3   243     0     3
 OUT        7   240   235   201     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     13    26
-TWRIDX   1     14    26
-TWRIDX   2     30    13
-TWRIDX   3     28    16
+TWRIDX   0     30    13
+TWRIDX   1     22     8
+TWRIDX   2     28    16
+TWRIDX   3      5     9
 TWRIDX   4     23    10
 TWRIDX   5     29    12
-TWRIDX   6     22     8
-TWRIDX   7      5     9
+TWRIDX   6     13    26
+TWRIDX   7     14    26
 ################################################################################
 # Event: 66
 ################################################################################
@@ -14949,12 +14949,12 @@ OUT        6   240   287  -201     1     1     3   243     0     3
 OUT        7   240   543  -201     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      2    27
-TWRIDX   1      9    20
-TWRIDX   2      7    26
-TWRIDX   3     17    26
-TWRIDX   4     32    16
-TWRIDX   5     31    17
+TWRIDX   0     32    16
+TWRIDX   1     31    17
+TWRIDX   2      2    27
+TWRIDX   3      9    20
+TWRIDX   4      7    26
+TWRIDX   5     17    26
 TWRIDX   6     18     1
 TWRIDX   7     34     1
 ################################################################################
@@ -15173,13 +15173,13 @@ OUT        7   240   511   210     0     1     1   241     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0     11    22
-TWRIDX   1      3    27
-TWRIDX   2     29    26
-TWRIDX   3     32    26
-TWRIDX   4     19    19
-TWRIDX   5     19     2
-TWRIDX   6     11     0
-TWRIDX   7     31     1
+TWRIDX   1     19    19
+TWRIDX   2     19     2
+TWRIDX   3      3    27
+TWRIDX   4     29    26
+TWRIDX   5     11     0
+TWRIDX   6     31     1
+TWRIDX   7     32    26
 ################################################################################
 # Event: 68
 ################################################################################
@@ -15395,14 +15395,14 @@ OUT        6   240   271   210     0     1     3   243     0     3
 OUT        7   240   443   215     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    27
-TWRIDX   1      7    27
-TWRIDX   2     17    26
-TWRIDX   3     28    27
-TWRIDX   4      0    20
-TWRIDX   5     13    12
-TWRIDX   6     15     9
-TWRIDX   7     17     8
+TWRIDX   0      0    20
+TWRIDX   1     15     9
+TWRIDX   2     17     8
+TWRIDX   3     13    12
+TWRIDX   4      0    27
+TWRIDX   5      7    27
+TWRIDX   6     17    26
+TWRIDX   7     28    27
 ################################################################################
 # Event: 69
 ################################################################################
@@ -15618,14 +15618,14 @@ OUT        6   280   367    69     0     1     2   282     0     3
 OUT        7   240    11   206     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    26
-TWRIDX   1      8    12
-TWRIDX   2     28    12
-TWRIDX   3     30    16
-TWRIDX   4     34    15
+TWRIDX   0      8    12
+TWRIDX   1     28    12
+TWRIDX   2     30    16
+TWRIDX   3     34    15
+TWRIDX   4      8     2
 TWRIDX   5      1    15
 TWRIDX   6     23    18
-TWRIDX   7      8     2
+TWRIDX   7      0    26
 ################################################################################
 # Event: 70
 ################################################################################
@@ -15841,14 +15841,14 @@ OUT        6   240    95   210     1     1     3   243     0     3
 OUT        7   240   263   215     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    26
-TWRIDX   1      0    26
-TWRIDX   2      6    26
-TWRIDX   3     16    27
-TWRIDX   4     22    17
-TWRIDX   5     33    12
-TWRIDX   6      8     8
-TWRIDX   7     26     8
+TWRIDX   0     22    17
+TWRIDX   1     33    12
+TWRIDX   2      8     8
+TWRIDX   3     26     8
+TWRIDX   4      3    26
+TWRIDX   5      0    26
+TWRIDX   6      6    26
+TWRIDX   7     16    27
 ################################################################################
 # Event: 71
 ################################################################################
@@ -16064,14 +16064,14 @@ OUT        6   240    47   206     0     1     3   243     0     3
 OUT        7   240   103   220     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    26
-TWRIDX   1      2    26
-TWRIDX   2      6    27
-TWRIDX   3     34    19
-TWRIDX   4      6    14
-TWRIDX   5      9    14
-TWRIDX   6     21     8
-TWRIDX   7     13     8
+TWRIDX   0     34    19
+TWRIDX   1      6    14
+TWRIDX   2      9    14
+TWRIDX   3     21     8
+TWRIDX   4     13     8
+TWRIDX   5      0    26
+TWRIDX   6      2    26
+TWRIDX   7      6    27
 ################################################################################
 # Event: 72
 ################################################################################
@@ -16287,14 +16287,14 @@ OUT        6   240   131   206     0     1     3   243     0     3
 OUT        7   240   147   192     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    24
-TWRIDX   1      8    26
-TWRIDX   2      9    26
-TWRIDX   3      5    16
-TWRIDX   4     11    16
-TWRIDX   5     27    16
-TWRIDX   6      6    12
-TWRIDX   7     33     2
+TWRIDX   0      5    16
+TWRIDX   1     11    16
+TWRIDX   2     27    16
+TWRIDX   3     33     2
+TWRIDX   4      6    12
+TWRIDX   5      0    24
+TWRIDX   6      8    26
+TWRIDX   7      9    26
 ################################################################################
 # Event: 73
 ################################################################################
@@ -16512,12 +16512,12 @@ OUT        7   240    99   210     0     1     3   243     0     3
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0      0    25
 TWRIDX   1     35    24
-TWRIDX   2      0    22
-TWRIDX   3      6    26
-TWRIDX   4     15    15
-TWRIDX   5     10     8
-TWRIDX   6     32     8
-TWRIDX   7     25     9
+TWRIDX   2     15    15
+TWRIDX   3     10     8
+TWRIDX   4     32     8
+TWRIDX   5     25     9
+TWRIDX   6      0    22
+TWRIDX   7      6    26
 ################################################################################
 # Event: 74
 ################################################################################
@@ -16733,11 +16733,11 @@ OUT        6   240   139  -210     0     1     3   243     0     3
 OUT        7   240   263  -220     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    27
-TWRIDX   1      0    26
-TWRIDX   2      9    26
-TWRIDX   3     22    26
-TWRIDX   4      7    18
+TWRIDX   0      7    18
+TWRIDX   1      3    27
+TWRIDX   2      0    26
+TWRIDX   3      9    26
+TWRIDX   4     22    26
 TWRIDX   5      1     1
 TWRIDX   6      8     1
 TWRIDX   7     16     0
@@ -16956,14 +16956,14 @@ OUT        6   240   511  -215     1     1     3   243     0     2
 OUT        7   240   399   106     1     1     1   241     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      6    26
-TWRIDX   1      8    26
-TWRIDX   2     16    26
-TWRIDX   3     29    26
-TWRIDX   4     32    19
-TWRIDX   5     25    20
-TWRIDX   6     14     1
-TWRIDX   7     32     0
+TWRIDX   0     32    19
+TWRIDX   1      6    26
+TWRIDX   2      8    26
+TWRIDX   3     16    26
+TWRIDX   4     29    26
+TWRIDX   5     14     1
+TWRIDX   6     32     0
+TWRIDX   7     25    20
 ################################################################################
 # Event: 76
 ################################################################################
@@ -17179,12 +17179,12 @@ OUT        6   240   135  -215     1     1     3   243     0     3
 OUT        7   240   367  -210     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      2    27
-TWRIDX   1     11    26
-TWRIDX   2     10    26
-TWRIDX   3     21    26
-TWRIDX   4      6    17
-TWRIDX   5     17    14
+TWRIDX   0      6    17
+TWRIDX   1     17    14
+TWRIDX   2      2    27
+TWRIDX   3     11    26
+TWRIDX   4     10    26
+TWRIDX   5     21    26
 TWRIDX   6      8     0
 TWRIDX   7     23     1
 ################################################################################
@@ -17402,11 +17402,11 @@ OUT        6   240   179  -206     0     1     3   243     0     3
 OUT        7   240   267  -192     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      8    26
-TWRIDX   1     32    26
-TWRIDX   2     36    20
-TWRIDX   3      1     9
-TWRIDX   4     29     8
+TWRIDX   0     36    20
+TWRIDX   1      1     9
+TWRIDX   2     29     8
+TWRIDX   3      8    26
+TWRIDX   4     32    26
 TWRIDX   5      1     1
 TWRIDX   6     11     1
 TWRIDX   7     16     2
@@ -17625,14 +17625,14 @@ OUT        6   240   371   215     0     1     3   243     0     3
 OUT        7   240   291   215     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     11    26
-TWRIDX   1     23    27
-TWRIDX   2     18    27
-TWRIDX   3      3    19
-TWRIDX   4     20    16
-TWRIDX   5     18    11
-TWRIDX   6     28    16
-TWRIDX   7     28    14
+TWRIDX   0      3    19
+TWRIDX   1     20    16
+TWRIDX   2     18    11
+TWRIDX   3     28    16
+TWRIDX   4     28    14
+TWRIDX   5     11    26
+TWRIDX   6     23    27
+TWRIDX   7     18    27
 ################################################################################
 # Event: 79
 ################################################################################
@@ -17848,12 +17848,12 @@ OUT        6   240   303   -86     1     1     3   243     0     3
 OUT        7   240    15  -210     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      4    26
-TWRIDX   1      0    26
-TWRIDX   2     11    26
-TWRIDX   3     21    26
-TWRIDX   4     19    18
-TWRIDX   5      8    10
+TWRIDX   0      8    10
+TWRIDX   1     19    18
+TWRIDX   2      4    26
+TWRIDX   3      0    26
+TWRIDX   4     11    26
+TWRIDX   5     21    26
 TWRIDX   6     19     8
 TWRIDX   7      0     1
 ################################################################################
@@ -18071,12 +18071,12 @@ OUT        6   240    55  -206     1     1     3   243     0     3
 OUT        7   240    99  -206     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     11    26
-TWRIDX   1     16    26
-TWRIDX   2     22    26
-TWRIDX   3     21    26
-TWRIDX   4     32    12
-TWRIDX   5      1     8
+TWRIDX   0      1     8
+TWRIDX   1     32    12
+TWRIDX   2     11    26
+TWRIDX   3     16    26
+TWRIDX   4     22    26
+TWRIDX   5     21    26
 TWRIDX   6      3     1
 TWRIDX   7      6     1
 ################################################################################
@@ -18294,13 +18294,13 @@ OUT        6   240   379   201     1     1     3   243     0     3
 OUT        7   240   359   -86     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      8    26
-TWRIDX   1     22    26
-TWRIDX   2     21    26
-TWRIDX   3     23    26
-TWRIDX   4      7    15
-TWRIDX   5     16     9
-TWRIDX   6     11     7
+TWRIDX   0     11     7
+TWRIDX   1      7    15
+TWRIDX   2     16     9
+TWRIDX   3      8    26
+TWRIDX   4     22    26
+TWRIDX   5     21    26
+TWRIDX   6     23    26
 TWRIDX   7     22     8
 ################################################################################
 # Event: 82
@@ -18517,13 +18517,13 @@ OUT        6   240   523   -18     1     1     3   243     0     3
 OUT        7   240    75  -215     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      1    26
-TWRIDX   1      9    26
-TWRIDX   2     20    26
-TWRIDX   3     25    26
-TWRIDX   4     17    12
-TWRIDX   5     33    12
-TWRIDX   6     28     3
+TWRIDX   0     28     3
+TWRIDX   1      1    26
+TWRIDX   2      9    26
+TWRIDX   3     20    26
+TWRIDX   4     25    26
+TWRIDX   5     17    12
+TWRIDX   6     33    12
 TWRIDX   7      4     0
 ################################################################################
 # Event: 83
@@ -18740,14 +18740,14 @@ OUT        6   240   191   206     0     1     3   243     0     3
 OUT        7   240   295   210     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     11    26
-TWRIDX   1     16    27
-TWRIDX   2     12    26
-TWRIDX   3     18    26
-TWRIDX   4     22    19
-TWRIDX   5     15    16
-TWRIDX   6      0     8
-TWRIDX   7     29     8
+TWRIDX   0     22    19
+TWRIDX   1     15    16
+TWRIDX   2      0     8
+TWRIDX   3     29     8
+TWRIDX   4     11    26
+TWRIDX   5     16    27
+TWRIDX   6     12    26
+TWRIDX   7     18    26
 ################################################################################
 # Event: 84
 ################################################################################
@@ -18963,14 +18963,14 @@ OUT        6   240    83   197     0     1     3   243     0     3
 OUT        7   240   107   197     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      5    26
-TWRIDX   1      6    26
-TWRIDX   2     13    19
-TWRIDX   3      0    11
-TWRIDX   4      9    11
-TWRIDX   5     12    11
-TWRIDX   6     16    12
-TWRIDX   7     21     8
+TWRIDX   0     13    19
+TWRIDX   1      0    11
+TWRIDX   2      9    11
+TWRIDX   3     12    11
+TWRIDX   4     21     8
+TWRIDX   5     16    12
+TWRIDX   6      5    26
+TWRIDX   7      6    26
 ################################################################################
 # Event: 85
 ################################################################################
@@ -19187,12 +19187,12 @@ OUT        7   240   283  -215     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
 TWRIDX   0     24    25
-TWRIDX   1      4    26
-TWRIDX   2     10    26
-TWRIDX   3      9    26
-TWRIDX   4      4    20
-TWRIDX   5     16    15
-TWRIDX   6     29     7
+TWRIDX   1     29     7
+TWRIDX   2     16    15
+TWRIDX   3      4    26
+TWRIDX   4     10    26
+TWRIDX   5      9    26
+TWRIDX   6      4    20
 TWRIDX   7     17     0
 ################################################################################
 # Event: 86
@@ -19409,14 +19409,14 @@ OUT        6   240   275   206     0     1     3   243     0     3
 OUT        7   240   203   215     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      3    26
-TWRIDX   1     17    26
-TWRIDX   2     12    27
-TWRIDX   3     20    19
-TWRIDX   4     16    16
-TWRIDX   5     32    12
-TWRIDX   6     33    12
-TWRIDX   7     12     8
+TWRIDX   0     16    16
+TWRIDX   1     12     8
+TWRIDX   2     20    19
+TWRIDX   3     32    12
+TWRIDX   4     33    12
+TWRIDX   5      3    26
+TWRIDX   6     17    26
+TWRIDX   7     12    27
 ################################################################################
 # Event: 87
 ################################################################################
@@ -19632,13 +19632,13 @@ OUT        6   240   455   206     0     1     3   243     0     3
 OUT        7   240   427  -106     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0      0    26
-TWRIDX   1     12    26
-TWRIDX   2     20    26
-TWRIDX   3     28    26
-TWRIDX   4     30    20
-TWRIDX   5     25    17
-TWRIDX   6     11     8
+TWRIDX   0     30    20
+TWRIDX   1     11     8
+TWRIDX   2     25    17
+TWRIDX   3      0    26
+TWRIDX   4     12    26
+TWRIDX   5     20    26
+TWRIDX   6     28    26
 TWRIDX   7     26     7
 ################################################################################
 # Event: 88
@@ -19855,14 +19855,14 @@ OUT        6   240   363   215     0     1     3   243     0     3
 OUT        7   240   395   206     0     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     16    26
-TWRIDX   1     22    27
-TWRIDX   2     24    26
-TWRIDX   3     15    19
-TWRIDX   4     14    11
-TWRIDX   5     24    11
-TWRIDX   6     19    15
-TWRIDX   7     32     3
+TWRIDX   0     15    19
+TWRIDX   1     14    11
+TWRIDX   2     24    11
+TWRIDX   3     32     3
+TWRIDX   4     19    15
+TWRIDX   5     16    26
+TWRIDX   6     22    27
+TWRIDX   7     24    26
 ################################################################################
 # Event: 89
 ################################################################################
@@ -20078,11 +20078,11 @@ OUT        6   240    59  -201     1     1     3   243     0     3
 OUT        7   240   187  -192     1     1     3   243     0     3
 # Tower indices:
 # TWRIDX   MU   PHI   ETA
-TWRIDX   0     22    26
-TWRIDX   1     35    26
-TWRIDX   2     12    20
-TWRIDX   3     22    11
-TWRIDX   4     25    18
-TWRIDX   5     17     8
+TWRIDX   0     12    20
+TWRIDX   1     22    11
+TWRIDX   2     25    18
+TWRIDX   3     17     8
+TWRIDX   4     22    26
+TWRIDX   5     35    26
 TWRIDX   6      3     1
 TWRIDX   7     11     2
