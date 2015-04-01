@@ -21,8 +21,12 @@ class LUTConfigurator(object):
         self.phimap = []
         muon_phi_stepsize = 0.011
         tower_phi_size = 2*0.087
+        print "WARNING: we are still useing the tower-phi index work-around!"
         for x in xrange(pow(2, 10)): #phi
-            self.phimap.append(int(x*muon_phi_stepsize / tower_phi_size))
+            if x <= 569: # there should be 575 here, but we had wrap-around issues
+                self.phimap.append(int(x*muon_phi_stepsize / tower_phi_size))
+            else:
+                self.phimap.append(0)
 
         
         self.towermap = []
