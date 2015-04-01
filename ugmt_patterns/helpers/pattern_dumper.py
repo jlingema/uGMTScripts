@@ -97,7 +97,7 @@ class TestbenchWriter(object):
                         quality="QUAL",
                         sort="RANK",
                         empty="EMPT",
-                        iso="(ISO)"
+                        iso="(ISO)",
                     )
     def writeTrackHeadline(self):
         """ documenting the individual track quantities """
@@ -143,9 +143,9 @@ class TestbenchWriter(object):
                         empty=isempty
                     )
         if addIso:
-            tmp_string += " {iso:>5}\n".format(iso=mu.Iso)
-        else:
-            tmp_string += "\n"
+            tmp_string += " {iso:>5}".format(iso=mu.Iso)
+        
+        tmp_string += "\n"
         self.string += tmp_string
 
     def writeTracks(self, tracks, track_type):
@@ -200,7 +200,7 @@ class TestvectorWriter(object):
                 mu_type     muon type (BAR, FWD+/-, OVL+/-, FIMD, BIMD, OIMD, OUT)
                 rank        relative position of the muon (IMD: 0-23, OUT: 0-7, FWD/OVL: 0-37, BAR: 0-35)
                 addIso      whether to add isolation info (should only be done for OUT)
-        Adds to string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO)"
+        Adds to string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO) (TWR)"
         """
         if self.muonCounter == 0:
             self.string += "\n{bx:0>4}".format(bx=self.bxCounter)
@@ -307,7 +307,7 @@ class PatternDumper(object):
             link = i
             if muon.local_link != -1:
                 link = muon.local_link
-            
+
             self._writer.writeMuon(muon, themuid, link, addIso, rankLUT)
             
 
@@ -351,6 +351,11 @@ class PatternDumper(object):
             self.writeTrackGroup(fwdn_muons, "FTRK-")
 
         self._bxCounter += 1
+
+    def writeTowerIndices(self, twrs):
+        self._writer.string += "# {typ:<8} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx="MU", phi="PHI", eta="ETA")
+        for i, twr in enumerate(twrs):
+            self._writer.string += "{typ:<8} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx=i, phi=twr[0], eta=twr[1])
 
     def addLine(self, line):
         self._writer.string += line
