@@ -24,6 +24,11 @@ from tools.vhdl import VHDLConstantsParser
 
 from helpers.options import parse_options, discover_emu_files
 
+
+
+
+
+
 def get_muon_list_out(emu_product, mu_type, vhdl_dict):
     if mu_type == "OUT":    
         nexpected = 8
@@ -32,8 +37,9 @@ def get_muon_list_out(emu_product, mu_type, vhdl_dict):
 
     mulist = [Muon(vhdl_dict, mu_type="OUT", bitword=0)]*nexpected
     for i in xrange(emu_product.size(0)):
-        mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj = emu_product.at(0, i))
-        mulist[i] = mu_tmp
+        if emu_product.at(0, i).hwPt() > 0:
+            mu_tmp = Muon(vhdl_dict, mu_type="OUT", obj = emu_product.at(0, i))
+            mulist[i] = mu_tmp
     return mulist
 
 
@@ -151,7 +157,7 @@ def main():
             fwdp_muons = get_muon_list(emu_fwd_muons, "FWD_POS", vhdl_dict)
             fwdn_muons = get_muon_list(emu_fwd_muons, "FWD_NEG", vhdl_dict)
 
-            input_buffer.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, [])
+            input_buffer.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calo_sums)
 
             output_buffer.writeFrameBasedOutputBX(outmuons, imdmuons)
 

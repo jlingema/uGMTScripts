@@ -845,7 +845,7 @@ OIMD       5     0     0     0     0     0     0     0     1
 OIMD       6     0     0     0     0     0     0     0     1
 OIMD       7     0     0     0     0     0     0     0     1
 BIMD       8    18   128    66     1     1     8    26     0
-BIMD       9     0    77    48     1     1     8     8     1
+BIMD       9     0     0     0     0     0     0     0     1
 BIMD      10     0     0     0     0     0     0     0     1
 BIMD      11     0     0     0     0     0     0     0     1
 BIMD      12     0     0     0     0     0     0     0     1
@@ -2560,7 +2560,7 @@ OIMD      16     0     0     0     0     0     0     0     1
 OIMD      17     0     0     0     0     0     0     0     1
 OIMD      18     0     0     0     0     0     0     0     1
 OIMD      19     0     0     0     0     0     0     0     1
-FIMD      20     0   215  -155     0     1     8     8     1
+FIMD      20     0     0     0     0     0     0     0     1
 FIMD      21     0     0     0     0     0     0     0     1
 FIMD      22     0     0     0     0     0     0     0     1
 FIMD      23     0     0     0     0     0     0     0     1
@@ -4254,7 +4254,7 @@ OIMD       6     0     0     0     0     0     0     0     1
 OIMD       7     0     0     0     0     0     0     0     1
 BIMD       8    40   555    35     0     1     8    48     0
 BIMD       9    22    90     2     0     1     8    30     0
-BIMD      10     0   189    53     1     1     8     8     1
+BIMD      10     0     0     0     0     0     0     0     1
 BIMD      11     0     0     0     0     0     0     0     1
 BIMD      12     0     0     0     0     0     0     0     1
 BIMD      13     0     0     0     0     0     0     0     1
@@ -7459,7 +7459,7 @@ OIMD      16     0     0     0     0     0     0     0     1
 OIMD      17     0     0     0     0     0     0     0     1
 OIMD      18     0     0     0     0     0     0     0     1
 OIMD      19     0     0     0     0     0     0     0     1
-FIMD      20     0   517  -189     0     1     8     8     1
+FIMD      20     0     0     0     0     0     0     0     1
 FIMD      21     0     0     0     0     0     0     0     1
 FIMD      22     0     0     0     0     0     0     0     1
 FIMD      23     0     0     0     0     0     0     0     1
@@ -11929,7 +11929,7 @@ BIMD      13     0     0     0     0     0     0     0     1
 BIMD      14     0     0     0     0     0     0     0     1
 BIMD      15     0     0     0     0     0     0     0     1
 OIMD      16    72   171  -100     1     1     8    80     0
-OIMD      17     0   545   -83     0     1     8     8     1
+OIMD      17     0     0     0     0     0     0     0     1
 OIMD      18     0     0     0     0     0     0     0     1
 OIMD      19     0     0     0     0     0     0     0     1
 FIMD      20     1   107  -172     0     1     8     9     0
@@ -27035,7 +27035,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-      0     0     0     0     0     0     0     0     0
 # Expected emulator output
 #TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
-FIMD       0     0   140   121     1     1     8     8     1
+FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
 FIMD       3     0     0     0     0     0     0     0     1
@@ -30877,7 +30877,7 @@ OIMD       4     0     0     0     0     0     0     0     1
 OIMD       5     0     0     0     0     0     0     0     1
 OIMD       6     0     0     0     0     0     0     0     1
 OIMD       7     0     0     0     0     0     0     0     1
-BIMD       8     0    43    39     0     1     8     8     1
+BIMD       8     0     0     0     0     0     0     0     1
 BIMD       9     0     0     0     0     0     0     0     1
 BIMD      10     0     0     0     0     0     0     0     1
 BIMD      11     0     0     0     0     0     0     0     1
@@ -31082,7 +31082,7 @@ FTRK-      0     0     0     0     0     0     0     0     0
 FTRK-   -113   558     8     0     0     0     0     0     0
 # Expected emulator output
 #TYPE    POS    PT   PHI   ETA   CHR  VCHR  QUAL  RANK  EMPT (ISO)
-FIMD       0     0   410   213     0     1     8     8     1
+FIMD       0     0     0     0     0     0     0     0     1
 FIMD       1     0     0     0     0     0     0     0     1
 FIMD       2     0     0     0     0     0     0     0     1
 FIMD       3     0     0     0     0     0     0     0     1
