@@ -9,7 +9,7 @@ class BufferWriter(object):
         super(BufferWriter, self).__init__()
         self.string = ""
         self.frameCounter = 0
-        self.head = """Board MP7_904_MAC85_UGMT
+        self.head = """Board ugmt_b40
  Quad/Chan :    q00c0      q00c1      q00c2      q00c3      q01c0      q01c1      q01c2      q01c3      q02c0      q02c1      q02c2      q02c3      q03c0      q03c1      q03c2      q03c3      q04c0      q04c1      q04c2      q04c3      q05c0      q05c1      q05c2      q05c3      q06c0      q06c1      q06c2      q06c3      q07c0      q07c1      q07c2      q07c3      q08c0      q08c1      q08c2      q08c3      q09c0      q09c1      q09c2      q09c3      q10c0      q10c1      q10c2      q10c3      q11c0      q11c1      q11c2      q11c3      q12c0      q12c1      q12c2      q12c3      q13c0      q13c1      q13c2      q13c3      q14c0      q14c1      q14c2      q14c3      q15c0      q15c1      q15c2      q15c3      q16c0      q16c1      q16c2      q16c3      q17c0      q17c1      q17c2      q17c3  
       Link :     00         01         02         03         04         05         06         07         08         09         10         11         12         13         14         15         16         17         18         19         20         21         22         23         24         25         26         27         28         29         30         31         32         33         34         35         36         37         38         39         40         41         42         43         44         45         46         47         48         49         50         51         52         53         54         55         56         57         58         59         60         61         62         63         64         65         66         67         68         69         70         71    
 """
@@ -32,11 +32,16 @@ class BufferWriter(object):
         self.frameCounter += 1
 
     def get_full_string(self):
-        return self.head + self.string
+        fstring = self.head + self.string
+        self.string = ""
+        return fstring
 
     def fill_up(self, n):
         while self.frameCounter < n:
             self.writeFrame([])
+
+    def reset(self):
+        self.frameCounter = 0
 
 class TestbenchWriter(object):
     """
@@ -252,9 +257,19 @@ class PatternDumper(object):
     def dump(self, fill = False):
         if fill:
             self._writer.fill_up(1024)
+        
+        if hasattr(self._writer, 'reset'): self._writer.reset()
 
         with open(self.fname, "w") as fobj:
             fobj.write(self._writer.get_full_string())
+
+    def dump_string(self, fill = False):
+        if fill:
+            self._writer.fill_up(1024)
+        # self._writer.reset()
+        if hasattr(self._writer, 'reset'): self._writer.reset()
+
+        return self._writer.get_full_string()
 
     def clear(self):
         self.string = ""
@@ -265,6 +280,16 @@ class PatternDumper(object):
             iframe = (i%per_link)*2+frame_offset # 2 padding words
             frames[iframe][ilink] = muon.getLSW()
             frames[iframe+1][ilink] = muon.getMSW()
+
+    def writeCaloToFrames(self, frames, calosums):
+        for ieta in range(28):
+            idx_low = ieta*36
+            for iframe in range(6):
+                frame_val = 0
+                for l_iphi in range(6): # per frame 6 calo sums encoded
+                    idx = idx_low+(iframe*6)+l_iphi 
+                    frame_val += calosums[idx] << (l_iphi*5)
+                frames[iframe][ieta] = frame_val
 
 
     def writeFrameBasedOutputBX(self, out_muons, imd_muons):
@@ -290,7 +315,7 @@ class PatternDumper(object):
         self.writeMuonsToFrames(frames, "OVL_NEG", ovln_muons, 3, 36)
 
         if calosums:
-            self._log.warning("CaloSums are currently not written")
+            self.writeCaloToFrames(frames, calosums)
 
         for x, frame in frames.iteritems():
             self._writer.writeFrame(frame)
@@ -353,7 +378,7 @@ class PatternDumper(object):
         self._bxCounter += 1
 
     def writeTowerIndices(self, twrs):
-        self._writer.string += "# {typ:<8} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx="MU", phi="PHI", eta="ETA")
+        self._writer.string += "# {typ:<6} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="ID", idx="MU", phi="PHI", eta="ETA")
         for i, twr in enumerate(twrs):
             self._writer.string += "{typ:<8} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx=i, phi=twr[0], eta=twr[1])
 
