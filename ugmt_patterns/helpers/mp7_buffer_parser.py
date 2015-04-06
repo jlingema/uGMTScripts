@@ -319,7 +319,6 @@ class OutputBufferParser(BufferParser):
         muon_objs = []
 
         frame = self.frame_low+skip
-        print frame
         haveWarned = False
         while frame < self.frame_high:
             bx = (frame + 1 - self.frame_low) / 6
