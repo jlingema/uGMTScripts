@@ -1,4 +1,4 @@
-import ROOT
+# import ROOT
 
 # non member functions
 def get_masked_word(complete_word, bit_low, bit_high): 
@@ -8,10 +8,10 @@ def get_masked_word(complete_word, bit_low, bit_high):
     masked_word = complete_word & mask
     return masked_word>>bit_low
 
-def hist_creator2D(namesdict,hist,xname,yname,title): # xname & yname are strings!
-    hist["{yname} gg {xname}".format(xname=xname,yname=yname)] = ROOT.TH2D("{title}".format(title=title),"",
-        namesdict[xname][1],namesdict[xname][2],namesdict[xname][3],
-        namesdict[yname][1],namesdict[yname][2],namesdict[yname][3])
+# def hist_creator2D(namesdict,hist,xname,yname,title): # xname & yname are strings!
+#     hist["{yname} gg {xname}".format(xname=xname,yname=yname)] = ROOT.TH2D("{title}".format(title=title),"",
+#         namesdict[xname][1],namesdict[xname][2],namesdict[xname][3],
+#         namesdict[yname][1],namesdict[yname][2],namesdict[yname][3])
 
 def isequal(a,b): # gives 1 if a==b and 0 otherwise
     x = int(a)^int(b)
