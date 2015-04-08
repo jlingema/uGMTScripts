@@ -16,18 +16,39 @@ if __name__ == "__main__":
         # Reading and processing the hardware data
         output_parser = OutputBufferParser(fnames["tx"], vhdl_dict, version)
         out_muons = output_parser.get_output_muons()
-
         non_zero = [ mu for mu in out_muons if mu.bitword != 0 ]
 
-        mu_to_print = []
-        if options.verbose:
-            mu_to_print = out_muons
-        else:
-            mu_to_print = non_zero
+        out_muons_emu = None
+        if "emu_tx" in fnames.keys():
+            output_parser_emu = OutputBufferParser(fnames["emu_tx"], vhdl_dict, version)
+            out_muons_emu = output_parser_emu.get_output_muons()            
+            non_zero_emu = [ mu for mu in out_muons_emu if mu.bitword != 0 ]
 
-        last_bx = 0            
-        for mu in non_zero:
-            if mu.bx != last_bx:
-                print "*"*50, "current bx:", mu.bx, "*"*50
-                last_bx = mu.bx
-            print print_out_word(mu.bitword)
+
+        if out_muons_emu != None:
+            mu_to_print = {}
+            if options.verbose:
+                mu_to_print = zip(out_muons, out_muons_emu)
+            else:
+                mu_to_print = zip(non_zero, non_zero_emu)
+
+            last_bx = 0
+            for mu, mu_emu in mu_to_print:
+                if mu.bx != last_bx:
+                    print "*"*50, "current bx:", mu.bx, "*"*50
+                    last_bx = mu.bx
+                if options.verbose or (mu.bitword != mu_emu.bitword):
+                    print "hw", print_out_word(mu.bitword), "emu", print_out_word(mu_emu.bitword)
+        else:
+            mu_to_print = []
+            if options.verbose:
+                mu_to_print = out_muons
+            else:
+                mu_to_print = non_zero
+
+            last_bx = 0            
+            for mu in non_zero:
+                if mu.bx != last_bx:
+                    print "*"*50, "current bx:", mu.bx, "*"*50
+                    last_bx = mu.bx
+                print print_out_word(mu.bitword)
