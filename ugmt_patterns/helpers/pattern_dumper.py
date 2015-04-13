@@ -289,7 +289,7 @@ class PatternDumper(object):
                 for l_iphi in range(6): # per frame 6 calo sums encoded
                     idx = idx_low+(iframe*6)+l_iphi 
                     frame_val += calosums[idx] << (l_iphi*5)
-                frames[iframe][ieta] = frame_val
+                frames[iframe][ieta+8] = frame_val
 
 
     def writeFrameBasedOutputBX(self, out_muons, imd_muons):
