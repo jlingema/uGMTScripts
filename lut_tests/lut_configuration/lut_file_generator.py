@@ -88,6 +88,7 @@ if __name__ == "__main__":
         lut_config = json.load(json_file)
         for name, config in lut_config.iteritems():
             owidth = config['data_out_width']
+            print name
             if config["function"] != "":
                 lut_data = LUTConfigurator.get_function_lut(config["function"], config["inputs"], config["input_widths"], config["data_out_width"])
                 write_coe_file(name, opts.coe_out, config["function"], lut_data)
