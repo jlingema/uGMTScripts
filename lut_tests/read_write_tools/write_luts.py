@@ -25,7 +25,7 @@ def get_content(opts, size):
     protocol, name = opts.content.split("://")
     contents = []
     if protocol == "file":
-        with open(opts.content, 'r') as fobj:
+        with open(name, 'r') as fobj:
             for l in fobj:
                 if l.startswith('#'): continue
                 contents.append(int(l.strip(), 16))
@@ -83,26 +83,29 @@ for node in opts.nodes:
             if node in n_pl:
                 matched_nodes.append('payload.'+n_pl)
                 print 'Node queued for writing:', 'payload.'+n_pl
-                if size > 0 and board.getNode('payload.'+node).getSize() != size:
+                if size > 0 and board.getNode('payload.'+n_pl).getSize() != size:
                     print "ERROR : Not all nodes you supplied are of same size!"
-                    sys.exit(-1) 
+                    sys.exit(-1)
+                else:
+                    size = board.getNode('payload.'+n_pl).getSize()
     else:
         mode = board.getNode('payload.'+node).getMode()
         if size > 0 and board.getNode('payload.'+node).getSize() != size:
             print "ERROR : Not all nodes you supplied are of same size!"
             sys.exit(-1) 
+        else:
+            size = board.getNode('payload.'+node).getSize()
         matched_nodes.append('payload.'+node)
         print 'Node queued for writing:', 'payload.'+node
 
 
 contents = get_content(opts, size)
 
-
 if not opts.dryrun:
     print "-"*70
     print 'starting write process'
     for node in matched_nodes:
-        board.getNode(node).writeBlock(contents[0:node.getSize()])
+        board.getNode(node).writeBlock(contents[0:size])
 
     try:
         board.dispatch()
