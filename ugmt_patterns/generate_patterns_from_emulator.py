@@ -120,6 +120,7 @@ def main():
         output_buffer = PatternDumper(basedir_mp7+pattern+"_out.txt", vhdl_dict, BufferWriter)
         input_testbench = PatternDumper(basedir_testbench+pattern+".txt", vhdl_dict, TestbenchWriter)
         serializer_testbench = PatternDumper(basedir_testbench+"serializer_"+pattern+".txt", vhdl_dict, TestbenchWriter)
+        deserializer_testbench = PatternDumper(basedir_testbench+"deserializer_"+pattern+".txt", vhdl_dict, TestbenchWriter)
         input_testvec = PatternDumper(basedir_integration+"integration_"+pattern+".txt", vhdl_dict, TestvectorWriter)
         
         if opts.delay > 0:
@@ -132,6 +133,7 @@ def main():
             event_head += "#"*80+"\n"
             input_testbench.addLine(event_head)
             serializer_testbench.addLine(event_head)
+            deserializer_testbench.addLine(event_head)
 
             event.getByLabel("microGMTEmulator", out_handle)
             event.getByLabel("microGMTEmulator", "intermediateMuons", imd_handle)
@@ -158,12 +160,14 @@ def main():
             fwdn_muons = get_muon_list(emu_fwd_muons, "FWD_NEG", vhdl_dict)
 
             input_buffer.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calo_sums)
-
+            deserializer_testbench.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calo_sums)
             output_buffer.writeFrameBasedOutputBX(outmuons, imdmuons)
 
             input_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=calo_sums, rankLUT=rankLUT, addTracks=True)
             input_testbench.addLine("# Expected emulator output\n")
             input_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
+            deserializer_testbench.addLine("# Expected emulator output\n")
+            deserializer_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=calo_sums, rankLUT=rankLUT, addTracks=True)
             if tower_indices != None:
                 input_testbench.addLine("# Tower indices:\n")
                 lowidx = i*8
@@ -179,6 +183,7 @@ def main():
         input_testbench.dump()
         input_testvec.dump()
         serializer_testbench.dump()
+        deserializer_testbench.dump()
         input_buffer.dump()
 
 
