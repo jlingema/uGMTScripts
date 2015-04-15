@@ -14,7 +14,7 @@ class BufferWriter(object):
       Link :     00         01         02         03         04         05         06         07         08         09         10         11         12         13         14         15         16         17         18         19         20         21         22         23         24         25         26         27         28         29         30         31         32         33         34         35         36         37         38         39         40         41         42         43         44         45         46         47         48         49         50         51         52         53         54         55         56         57         58         59         60         61         62         63         64         65         66         67         68         69         70         71    
 """
 
-    def writeFrame(self, words, valid = 1, validoverflow = 0):
+    def writeFrame(self, words, valid = 1, validoverflow = 0, ftype=None):
         """
         Write a frame to the internal "buffer" (i.e. string),
         TAKES: 
@@ -51,7 +51,8 @@ class TestbenchWriter(object):
     def __init__(self):
         super(TestbenchWriter, self).__init__()
         self.string = ""
-        self.frameCounter = 0
+        self.iFrameCounter = 0
+        self.oFrameCounter = 0
         self.bxCounter = 0
         self.head = """################################################################################
 # Pattern for testbench of the uGMT algo block
@@ -74,20 +75,26 @@ class TestbenchWriter(object):
 """
     
 
-    def writeFrame(self, words, valid = 1, validoverflow = 0):
+    def writeFrame(self, words, valid = 1, validoverflow = 0, ftype="in"):
         """
         Adds the frame to the buffer
         TAKES: 
             words : list of the 32 bit words of the current frame (filled with 0s to have 72)
         """
-        self.string += "{n:<6} ".format(n="FRM"+str(self.frameCounter))
+        if ftype == "in":
+            self.string += "{n:<6} ".format(n="IFR"+str(self.iFrameCounter))
+            self.iFrameCounter += 1
+        else:
+            self.string += "{n:<6} ".format(n="OFR"+str(self.oFrameCounter))
+            self.oFrameCounter += 1
+
         for w in words:
             self.string += " {v} {w:0>8x}".format(v=valid, w=w)
 
         for i in range(72-len(words)):
             self.string += " {v} {w:0>8x}".format(v=validoverflow, w=0)
         self.string += "\n"
-        self.frameCounter += 1
+
 
     def writeMuonHeadline(self):
         """ documenting the individual muon quantities """
@@ -301,7 +308,7 @@ class PatternDumper(object):
         self.writeMuonsToFrames(frames, "IMD", imd_muons, 3, 0)
 
         for x, frame in frames.iteritems():
-            self._writer.writeFrame(frame)
+            self._writer.writeFrame(frame, ftype="out")
 
     def writeFrameBasedInputBX(self, bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums):
         frames = {}
@@ -318,7 +325,7 @@ class PatternDumper(object):
             self.writeCaloToFrames(frames, calosums)
 
         for x, frame in frames.iteritems():
-            self._writer.writeFrame(frame)
+            self._writer.writeFrame(frame, ftype="in")
         self._bxCounter += 1
 
 
