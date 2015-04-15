@@ -121,6 +121,7 @@ def main():
         input_testbench = PatternDumper(basedir_testbench+pattern+".txt", vhdl_dict, TestbenchWriter)
         serializer_testbench = PatternDumper(basedir_testbench+"serializer_"+pattern+".txt", vhdl_dict, TestbenchWriter)
         deserializer_testbench = PatternDumper(basedir_testbench+"deserializer_"+pattern+".txt", vhdl_dict, TestbenchWriter)
+        integration_testbench = PatternDumper(basedir_testbench+"integration_"+pattern+".txt", vhdl_dict, TestbenchWriter)
         input_testvec = PatternDumper(basedir_integration+"integration_"+pattern+".txt", vhdl_dict, TestvectorWriter)
         
         if opts.delay > 0:
@@ -134,6 +135,7 @@ def main():
             input_testbench.addLine(event_head)
             serializer_testbench.addLine(event_head)
             deserializer_testbench.addLine(event_head)
+            integration_testbench.addLine(event_head)
 
             event.getByLabel("microGMTEmulator", out_handle)
             event.getByLabel("microGMTEmulator", "intermediateMuons", imd_handle)
@@ -160,6 +162,7 @@ def main():
             fwdn_muons = get_muon_list(emu_fwd_muons, "FWD_NEG", vhdl_dict)
 
             input_buffer.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calo_sums)
+            integration_testbench.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calo_sums)
             deserializer_testbench.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calo_sums)
             output_buffer.writeFrameBasedOutputBX(outmuons, imdmuons)
 
@@ -178,6 +181,8 @@ def main():
             serializer_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
             serializer_testbench.addLine("# Expected emulator output\n")
             serializer_testbench.writeFrameBasedOutputBX(outmuons, imdmuons)
+            integration_testbench.addLine("# Expected emulator output\n")
+            integration_testbench.writeFrameBasedOutputBX(outmuons, imdmuons)
 
         output_buffer.dump(True)
         input_testbench.dump()
@@ -185,7 +190,7 @@ def main():
         serializer_testbench.dump()
         deserializer_testbench.dump()
         input_buffer.dump()
-
+        integration_testbench.dump()
 
 if __name__ == "__main__":
     main()
