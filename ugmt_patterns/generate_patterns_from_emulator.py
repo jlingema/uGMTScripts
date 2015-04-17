@@ -117,7 +117,6 @@ def main():
 
         basedir_testbench = "data/patterns/testbench/"
         basedir_mp7 = "data/patterns/mp7/"
-        # basedir_integration = "data/patterns/integration/"
 
         input_buffer = PatternDumper(basedir_mp7+pattern+".txt", vhdl_dict, BufferWriter)
         output_buffer = PatternDumper(basedir_mp7+pattern+"_out.txt", vhdl_dict, BufferWriter)
@@ -125,7 +124,6 @@ def main():
         serializer_testbench = PatternDumper(basedir_testbench+"serializer_"+pattern+".txt", vhdl_dict, TestbenchWriter)
         deserializer_testbench = PatternDumper(basedir_testbench+"deserializer_"+pattern+".txt", vhdl_dict, TestbenchWriter)
         integration_testbench = PatternDumper(basedir_testbench+"integration_"+pattern+".txt", vhdl_dict, TestbenchWriter)
-        # input_testvec = PatternDumper(basedir_integration+"integration_"+pattern+".txt", vhdl_dict, TestvectorWriter)
 
         if opts.delay > 0:
             input_buffer.writeEmptyFrames(opts.delay)
@@ -185,8 +183,6 @@ def main():
                 lowidx = i*8
                 input_testbench.writeTowerIndices(tower_indices[lowidx:lowidx+8])
 
-            # input_testvec.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=[], rankLUT=rankLUT, addTracks=True)
-
             serializer_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
             serializer_testbench.addLine("# Expected emulator output\n")
             serializer_testbench.writeFrameBasedOutputBX(outmuons, imdmuons)
@@ -203,7 +199,6 @@ def main():
         print "write: avg", avg_write_time/float(i+1), "last", write_time
         output_buffer.dump(True)
         input_testbench.dump()
-        # input_testvec.dump()
         serializer_testbench.dump()
         deserializer_testbench.dump()
         input_buffer.dump()
