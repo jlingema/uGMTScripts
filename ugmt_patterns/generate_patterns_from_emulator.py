@@ -133,6 +133,7 @@ def main():
         avg_get_label_time = 0
         avg_conversion_time = 0
         avg_write_time = 0
+        n_twrs = 0
         for i, event in enumerate(events):
             evt_start = time.time()
             event_head = "#"*80+"\n"
@@ -180,8 +181,12 @@ def main():
             deserializer_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=calo_sums, rankLUT=rankLUT, addTracks=True)
             if tower_indices is not None:
                 input_testbench.addLine("# Tower indices:\n")
-                lowidx = i*8
-                input_testbench.writeTowerIndices(tower_indices[lowidx:lowidx+8])
+                cntr = 0
+                for mu in outmuons:
+                    if mu.bitword != 0:
+                        cntr += 1
+                input_testbench.writeTowerIndices(tower_indices[n_twrs:n_twrs+cntr])
+                n_twrs += cntr
 
             serializer_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
             serializer_testbench.addLine("# Expected emulator output\n")
