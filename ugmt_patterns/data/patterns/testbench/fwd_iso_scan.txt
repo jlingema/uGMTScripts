@@ -232,9 +232,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -455,9 +455,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -678,9 +678,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -901,9 +901,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -1124,9 +1124,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -1347,9 +1347,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -1570,9 +1570,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -1793,9 +1793,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -2016,9 +2016,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -2239,9 +2239,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -2462,9 +2462,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -2685,9 +2685,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
@@ -2908,9 +2908,9 @@ OUT        7     0     0     0     0     0     0     0     1     0
 # Tower indices:
 # ID     MU   PHI   ETA
 TWRIDX   0     13    25
-TWRIDX   1     11    27
-TWRIDX   2      9    22
-TWRIDX   3     12    15
+TWRIDX   1     10    27
+TWRIDX   2      8    22
+TWRIDX   3     11    15
 TWRIDX   4      0     0
 TWRIDX   5      0     0
 TWRIDX   6      0     0
