@@ -7,7 +7,7 @@ class BufferWriter(object):
     """
     def __init__(self):
         super(BufferWriter, self).__init__()
-        self.string = ""
+        self.string = []
         self.frameCounter = 0
         self.head = """Board ugmt_b40
  Quad/Chan :    q00c0      q00c1      q00c2      q00c3      q01c0      q01c1      q01c2      q01c3      q02c0      q02c1      q02c2      q02c3      q03c0      q03c1      q03c2      q03c3      q04c0      q04c1      q04c2      q04c3      q05c0      q05c1      q05c2      q05c3      q06c0      q06c1      q06c2      q06c3      q07c0      q07c1      q07c2      q07c3      q08c0      q08c1      q08c2      q08c3      q09c0      q09c1      q09c2      q09c3      q10c0      q10c1      q10c2      q10c3      q11c0      q11c1      q11c2      q11c3      q12c0      q12c1      q12c2      q12c3      q13c0      q13c1      q13c2      q13c3      q14c0      q14c1      q14c2      q14c3      q15c0      q15c1      q15c2      q15c3      q16c0      q16c1      q16c2      q16c3      q17c0      q17c1      q17c2      q17c3  
@@ -22,18 +22,18 @@ class BufferWriter(object):
         RETURNS:
             void
         """
-        self.string += "Frame {n:0>4} :".format(n=self.frameCounter)
+        self.string += ["Frame {n:0>4} :".format(n=self.frameCounter)]
         for w in words:
-            self.string += " {v}v{w:0>8x}".format(v=valid, w=w)
+            self.string += [" {v}v{w:0>8x}".format(v=valid, w=w)]
 
         for i in range(72-len(words)):
-            self.string += " {v}v{w:0>8x}".format(v=validoverflow, w=0)
-        self.string += "\n"
+            self.string += [" {v}v{w:0>8x}".format(v=validoverflow, w=0)]
+        self.string += ["\n"]
         self.frameCounter += 1
 
     def get_full_string(self):
-        fstring = self.head + self.string
-        self.string = ""
+        fstring = self.head + ''.join(self.string)
+        self.string = []
         return fstring
 
     def fill_up(self, n):
@@ -50,7 +50,7 @@ class TestbenchWriter(object):
     """
     def __init__(self):
         super(TestbenchWriter, self).__init__()
-        self.string = ""
+        self.string = []
         self.iFrameCounter = 0
         self.oFrameCounter = 0
         self.bxCounter = 0
@@ -82,44 +82,44 @@ class TestbenchWriter(object):
             words : list of the 32 bit words of the current frame (filled with 0s to have 72)
         """
         if ftype == "in":
-            self.string += "{n:<6} ".format(n="IFR"+str(self.iFrameCounter))
+            self.string += ["{n:<6} ".format(n="IFR"+str(self.iFrameCounter))]
             self.iFrameCounter += 1
         else:
-            self.string += "{n:<6} ".format(n="OFR"+str(self.oFrameCounter))
+            self.string += ["{n:<6} ".format(n="OFR"+str(self.oFrameCounter))]
             self.oFrameCounter += 1
 
         for w in words:
-            self.string += " {v} {w:0>8x}".format(v=valid, w=w)
+            self.string += [" {v} {w:0>8x}".format(v=valid, w=w)]
 
         for i in range(72-len(words)):
-            self.string += " {v} {w:0>8x}".format(v=validoverflow, w=0)
-        self.string += "\n"
+            self.string += [" {v} {w:0>8x}".format(v=validoverflow, w=0)]
+        self.string += ["\n"]
 
 
     def writeMuonHeadline(self):
         """ documenting the individual muon quantities """
-        self.string += "#{id:<5} {rank:>5} {pt:>5} {phi:>5} {eta:>5} {charge:>5} {charge_valid:>5} {quality:>5} {sort:>5} {empty:>5} {iso:>5}\n".format(
-                        id="TYPE",
-                        rank="POS",
-                        pt="PT",
-                        phi="PHI",
-                        eta="ETA",
-                        charge="CHR",
-                        charge_valid="VCHR",
-                        quality="QUAL",
-                        sort="RANK",
-                        empty="EMPT",
-                        iso="(ISO)",
-                    )
+        self.string += ["#{id:<5} {rank:>5} {pt:>5} {phi:>5} {eta:>5} {charge:>5} {charge_valid:>5} {quality:>5} {sort:>5} {empty:>5} {iso:>5}\n".format(
+                                id="TYPE",
+                                rank="POS",
+                                pt="PT",
+                                phi="PHI",
+                                eta="ETA",
+                                charge="CHR",
+                                charge_valid="VCHR",
+                                quality="QUAL",
+                                sort="RANK",
+                                empty="EMPT",
+                                iso="(ISO)",
+                            )]
     def writeTrackHeadline(self):
         """ documenting the individual track quantities """
-        self.string += "# TRACKS\n#TYPE   ETA0  PHI0 QUAL0  ETA1  PHI1 QUAL1  ETA2  PHI2 QUAL2\n"
+        self.string += ["# TRACKS\n#TYPE   ETA0  PHI0 QUAL0  ETA1  PHI1 QUAL1  ETA2  PHI2 QUAL2\n"]
 
     def writeEventHeader(self, n):
-        self.string += "# Event {n}\n".format(n=n)
+        self.string += ["# Event {n}\n".format(n=n)]
 
     def writeBXCounter(self, n):
-        self.string += "EVT {n}\n".format(n=n)
+        self.string += ["EVT {n}\n".format(n=n)]
 
     def fill_up(self, n):
         while self.frameCounter < n:
@@ -158,7 +158,7 @@ class TestbenchWriter(object):
             tmp_string += " {iso:>5}".format(iso=mu.Iso)
         
         tmp_string += "\n"
-        self.string += tmp_string
+        self.string += [tmp_string]
 
     def writeTracks(self, tracks, track_type):
         """ 
@@ -169,10 +169,10 @@ class TestbenchWriter(object):
         """
         for i, track in enumerate(tracks):
             if i%3==0:
-                self.string += "{id:<6}".format(id=track_type)
-            self.string += " {eta:>5} {phi:>5} {qual:>5}".format(eta=track[0], phi=track[1], qual=track[2])
+                self.string += ["{id:<6}".format(id=track_type)]
+            self.string += [" {eta:>5} {phi:>5} {qual:>5}".format(eta=track[0], phi=track[1], qual=track[2])]
             if (i+1)%3 == 0:
-                self.string += "\n"
+                self.string += ["\n"]
 
     def writeCaloChannel(self, channel, sums):
         """ 
@@ -181,13 +181,13 @@ class TestbenchWriter(object):
             channel: current channel
             sums: calo sums for current channel (list with length 36)
         """
-        self.string += "CALO{id:<2}".format(id=channel)
+        self.string += ["CALO{id:<2}".format(id=channel)]
         for csum in sums:
-            self.string += "{calo:>3}".format(calo=csum)
-        self.string += "\n"
+            self.string += ["{calo:>3}".format(calo=csum)]
+        self.string += ["\n"]
 
     def get_full_string(self):
-        return self.head + self.string
+        return self.head + ''.join(self.string)
 
 
 class TestvectorWriter(object):
@@ -197,7 +197,7 @@ class TestvectorWriter(object):
     """
     def __init__(self):
         super(TestvectorWriter, self).__init__()
-        self.string = ""
+        self.string = []
         self.frameCounter = 0
         self.muonCounter = 0
         self.bxCounter = 0
@@ -215,16 +215,16 @@ class TestvectorWriter(object):
         Adds to string "ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO) (TWR)"
         """
         if self.muonCounter == 0:
-            self.string += "\n{bx:0>4}".format(bx=self.bxCounter)
+            self.string += ["\n{bx:0>4}".format(bx=self.bxCounter)]
 
-        self.string += " {muon:0>16x}".format(muon=mu.bitword)
+        self.string += [" {muon:0>16x}".format(muon=mu.bitword)]
         self.muonCounter += 1
         if self.muonCounter == 108:
             self.bxCounter += 1
             self.muonCounter = 0
 
     def get_full_string(self):
-        return self.head + self.string
+        return self.head + ''.join(self.string)
 
     def writeTracks(self, tracks, track_type):
         pass
@@ -385,12 +385,14 @@ class PatternDumper(object):
         self._bxCounter += 1
 
     def writeTowerIndices(self, twrs):
-        self._writer.string += "# {typ:<6} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="ID", idx="MU", phi="PHI", eta="ETA")
+        self._writer.string += ["# {typ:<6} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="ID", idx="MU", phi="PHI", eta="ETA")]
         for i, twr in enumerate(twrs):
-            self._writer.string += "{typ:<8} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx=i, phi=twr[0], eta=twr[1])
+            self._writer.string += ["{typ:<8} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx=i, phi=twr[0], eta=twr[1])]
+        for i in range(len(twrs), 8):
+            self._writer.string += ["{typ:<8} {idx:<2} {phi:>5} {eta:>5}\n".format(typ="TWRIDX", idx=i, phi=0, eta=0)]
 
     def addLine(self, line):
-        self._writer.string += line
+        self._writer.string += [line]
 
     def writeMuonBasedOutputBX(self, out_muons, imd_muons):
         try:
