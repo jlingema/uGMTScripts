@@ -321,7 +321,7 @@ class OutputBufferParser(BufferParser):
         frame = self.frame_low+skip
         haveWarned = False
         while frame < self.frame_high:
-            bx = (frame + 1 - self.frame_low) / 6
+            bx = (frame - self.frame_low) / 6
             for i in xrange(4): #4 links                
                 if (len(muon_dict[frame+2]) > i): 
                     muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
