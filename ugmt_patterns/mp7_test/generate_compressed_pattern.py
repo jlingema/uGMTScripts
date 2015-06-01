@@ -103,7 +103,7 @@ def main():
 
     ALGODELAY = 60 #first frame with valid = 1
 
-    max_events = (1024-ALGODELAY)/6
+    max_events = int((1024-ALGODELAY)/6)
     
     for pattern, fnames in fname_dict.iteritems():
 
@@ -160,7 +160,7 @@ def main():
 
             if i%(max_events-1) == 0 and i != 0: # dump every max_events
                 ifile = i/max_events
-                print "Writing file {pattern}_{i}.zip".format(pattern=pattern, i=ifile)
+                print "Writing file {pattern}_{ifile}.zip for event {i}".format(pattern=pattern, ifile=ifile, i=i)
                 dump_files(path, pattern, ifile, input_buffer, output_buffer, opts.delay, ALGODELAY)
                 
 
