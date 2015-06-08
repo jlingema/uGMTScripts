@@ -17,6 +17,8 @@ class Muon():
         """
     
         # get the bit boundaries for the muon quantities
+        self.bx = bx
+
         pt_low = vhdl_dict["PT_{t}_LOW".format(t=mu_type)]
         pt_high = vhdl_dict["PT_{t}_HIGH".format(t=mu_type)]
 
@@ -92,7 +94,17 @@ class Muon():
             elif self.local_link < vhdl_dict["BARREL_HIGH"]: self.local_link -= vhdl_dict["BARREL_LOW"]
             elif self.local_link < vhdl_dict["OVL_NEG_HIGH"]: self.local_link -= vhdl_dict["OVL_NEG_LOW"]
             else: self.local_link -= vhdl_dict["FWD_NEG_LOW"]
-        self.bx = bx
+
+    def setBunchCounter(self, n_mu):
+        if n_mu == 1:
+            self.bitword += ((self.bx & 0b1) << 31)
+            # since it is the second bit only need to shift by 62 instead of 63
+            self.bitword += (self.bx & 0b10) << 62
+        if n_mu == 2:
+            self.bitword += (((self.bx & 0b100) >> 2) << 31)
+        if self.bx == 0 and n_mu == 0:
+            self.bitword += 1 << 31
+        pass
 
     def getBx(self):
         """

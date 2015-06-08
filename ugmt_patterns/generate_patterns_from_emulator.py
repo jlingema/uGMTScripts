@@ -41,7 +41,7 @@ def get_muon_list_out(emu_product, mu_type, vhdl_dict):
     return mulist
 
 
-def get_muon_list(emu_product, mu_type, vhdl_dict, check=False):
+def get_muon_list(emu_product, mu_type, vhdl_dict, bx, check=False):
     nexpected = 18
     if mu_type == "BARREL":
         nexpected = 36
@@ -51,7 +51,7 @@ def get_muon_list(emu_product, mu_type, vhdl_dict, check=False):
     link_offset = vhdl_dict[mu_type+"_LOW"]
     for mu in emu_product:
         loc_link = mu.link()-link_offset
-        mu_tmp = Muon(vhdl_dict, mu_type="IN", obj=mu)
+        mu_tmp = Muon(vhdl_dict, mu_type="IN", obj=mu, bx=bx)
         # only take muons from the right side of the detector
         if mu_type.endswith("POS") and mu_tmp.etaBits < 0:
             continue
@@ -61,10 +61,13 @@ def get_muon_list(emu_product, mu_type, vhdl_dict, check=False):
         # because we don't book all 72*3 muons but only 18*3/36*3
         loc_link = mu.link()-link_offset
         if mulist[loc_link*3].ptBits == 0:
+            mu_tmp.setBunchCounter(0)
             mulist[loc_link*3] = mu_tmp
         elif mulist[loc_link*3+1].ptBits == 0:
+            mu_tmp.setBunchCounter(1)
             mulist[loc_link*3+1] = mu_tmp
         elif mulist[loc_link*3+2].ptBits == 0:
+            mu_tmp.setBunchCounter(2)
             mulist[loc_link*3+2] = mu_tmp
 
         if check:
@@ -160,13 +163,13 @@ def main():
             imd_prod = imd_handle.product()
             imdmuons = get_muon_list_out(imd_prod, "IMD", vhdl_dict)
             emu_bar_muons = bar_handle.product()
-            bar_muons = get_muon_list(emu_bar_muons, "BARREL", vhdl_dict)
+            bar_muons = get_muon_list(emu_bar_muons, "BARREL", vhdl_dict, i)
             emu_ovl_muons = ovl_handle.product()
-            ovlp_muons = get_muon_list(emu_ovl_muons, "OVL_POS", vhdl_dict)
-            ovln_muons = get_muon_list(emu_ovl_muons, "OVL_NEG", vhdl_dict)
+            ovlp_muons = get_muon_list(emu_ovl_muons, "OVL_POS", vhdl_dict, i)
+            ovln_muons = get_muon_list(emu_ovl_muons, "OVL_NEG", vhdl_dict, i)
             emu_fwd_muons = fwd_handle.product()
-            fwdp_muons = get_muon_list(emu_fwd_muons, "FWD_POS", vhdl_dict)
-            fwdn_muons = get_muon_list(emu_fwd_muons, "FWD_NEG", vhdl_dict)
+            fwdp_muons = get_muon_list(emu_fwd_muons, "FWD_POS", vhdl_dict, i)
+            fwdn_muons = get_muon_list(emu_fwd_muons, "FWD_NEG", vhdl_dict, i)
 
             conversion_time = time.time() - evt_start - get_label_time
             input_buffer.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calo_sums)
