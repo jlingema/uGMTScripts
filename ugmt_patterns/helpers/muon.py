@@ -72,17 +72,15 @@ class Muon():
             self.phiBits = obj.hwPhi()
 
             # calculate the bitword to make comparison with HW easy
-            self.bitword =  (self.ptBits << pt_low) + \
-                            (self.qualityBits << qual_low) + \
-                            (self.Sysign << sysign_low) + \
-                            (unsigned_eta << eta_low) 
+            self.bitword =  (self.ptBits << pt_low)
+            self.bitword +=  (self.qualityBits << qual_low)
+            self.bitword +=  (self.Sysign << sysign_low) 
+            self.bitword +=  (unsigned_eta << eta_low) 
+            self.bitword += (self.phiBits << phi_low)
 
             if mu_type == "OUT" and self.Iso > 0:
                 self.bitword += (self.Iso << iso_low)
-            if mu_type == "OUT":
-                self.bitword += (self.phiBits << phi_low)
-            else:
-                self.bitword += self.encode_phi(self.phiBits) << phi_low
+            
 
         self.frame = frame
         self.link = link
