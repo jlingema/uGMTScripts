@@ -9,12 +9,11 @@ import time
 def setupROOT():
     gSystem.Load("libFWCoreFWLite")
     gROOT.ProcessLine('AutoLibraryLoader::enable();')
-    gSystem.Load("libFWCoreFWLite")
-    gSystem.Load("libCintex")
-    gROOT.ProcessLine('ROOT::Cintex::Cintex::Enable();')
+    # gSystem.Load("libCintex")
+    # gROOT.ProcessLine('ROOT::Cintex::Cintex::Enable();')
 
 setupROOT()
-gSystem.Load("libL1TriggerL1TGlobalMuon")
+# gSystem.Load("libL1TriggerL1TMuon")
 
 from ROOT import l1t
 
@@ -27,12 +26,7 @@ from tools.vhdl import VHDLConstantsParser
 from helpers.options import parse_options, discover_emu_files
 
 
-def get_muon_list_out(emu_product, mu_type, vhdl_dict):
-    if mu_type == "OUT":
-        nexpected = 8
-    if mu_type == "IMD":
-        nexpected = 24
-
+def get_muon_list_out(emu_product, mu_type, vhdl_dict, nexpected=8):
     mulist = [Muon(vhdl_dict, mu_type="OUT", bitword=0)]*nexpected
     for i in xrange(emu_product.size(0)):
         if emu_product.at(0, i).hwPt() > 0:
@@ -48,9 +42,7 @@ def get_muon_list(emu_product, mu_type, vhdl_dict, bx, check=False):
 
     mulist = [Muon(vhdl_dict, mu_type="IN", bitword=0)]*nexpected
 
-    link_offset = vhdl_dict[mu_type+"_LOW"]
     for mu in emu_product:
-        loc_link = mu.link()-link_offset
         mu_tmp = Muon(vhdl_dict, mu_type="IN", obj=mu, bx=bx)
         # only take muons from the right side of the detector
         if mu_type.endswith("POS") and mu_tmp.etaBits < 0:
@@ -59,7 +51,7 @@ def get_muon_list(emu_product, mu_type, vhdl_dict, bx, check=False):
             continue
 
         # because we don't book all 72*3 muons but only 18*3/36*3
-        loc_link = mu.link()-link_offset
+        loc_link = mu.processor()-1
         if mulist[loc_link*3].ptBits == 0:
             mu_tmp.setBunchCounter(0)
             mulist[loc_link*3] = mu_tmp
@@ -97,7 +89,7 @@ def main():
 
     opts = parse_options()
     fname_dict = discover_emu_files(opts.emudirectory)
-    rankLUT = l1t.MicroGMTRankPtQualLUT()
+    # rankLUT = l1t.MicroGMTRankPtQualLUT()
 
     for pattern, fnames in fname_dict.iteritems():
         print "+"*30, pattern, "+"*30
@@ -112,7 +104,11 @@ def main():
                 tower_indices = [[int(idx.strip()) for idx in l.split()] for l in fobj]
 
         out_handle = Handle('BXVector<l1t::Muon>')
-        imd_handle = Handle('BXVector<l1t::Muon>')
+        imd_bar_handle = Handle('BXVector<l1t::Muon>')
+        imd_emtf_p_handle = Handle('BXVector<l1t::Muon>')
+        imd_emtf_n_handle = Handle('BXVector<l1t::Muon>')
+        imd_omtf_p_handle = Handle('BXVector<l1t::Muon>')
+        imd_omtf_n_handle = Handle('BXVector<l1t::Muon>')
         bar_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
         fwd_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
         ovl_handle = Handle('std::vector<l1t::L1TRegionalMuonCandidate>')
@@ -148,7 +144,11 @@ def main():
             integration_testbench.addLine(event_head)
 
             event.getByLabel("microGMTEmulator", out_handle)
-            event.getByLabel("microGMTEmulator", "intermediateMuons", imd_handle)
+            event.getByLabel("microGMTEmulator", "imdMuonsBMTF", imd_bar_handle)
+            event.getByLabel("microGMTEmulator", "imdMuonsEMTFPos", imd_emtf_p_handle)
+            event.getByLabel("microGMTEmulator", "imdMuonsEMTFNeg", imd_emtf_n_handle)
+            event.getByLabel("microGMTEmulator", "imdMuonsOMTFPos", imd_omtf_p_handle)
+            event.getByLabel("microGMTEmulator", "imdMuonsOMTFNeg", imd_omtf_n_handle)
             event.getByLabel("uGMTInputProducer", "BarrelTFMuons", bar_handle)
             event.getByLabel("uGMTInputProducer", "ForwardTFMuons", fwd_handle)
             event.getByLabel("uGMTInputProducer", "OverlapTFMuons", ovl_handle)
@@ -160,8 +160,17 @@ def main():
 
             emu_out_muons = out_handle.product()
             outmuons = get_muon_list_out(emu_out_muons, "OUT", vhdl_dict)
-            imd_prod = imd_handle.product()
-            imdmuons = get_muon_list_out(imd_prod, "IMD", vhdl_dict)
+            imd_emtf_p_prod = imd_emtf_p_handle.product()
+            imdmuons = get_muon_list_out(imd_emtf_p_prod, "IMD", vhdl_dict, 4)
+            imd_omtf_p_prod = imd_omtf_p_handle.product()
+            imdmuons += get_muon_list_out(imd_omtf_p_prod, "IMD", vhdl_dict, 4)
+            imd_bmtf_prod = imd_omtf_p_handle.product()
+            imdmuons += get_muon_list_out(imd_bmtf_prod, "IMD", vhdl_dict, 8)
+            imd_omtf_n_prod = imd_omtf_n_handle.product()
+            imdmuons += get_muon_list_out(imd_omtf_n_prod, "IMD", vhdl_dict, 4)
+            imd_emtf_n_prod = imd_omtf_n_handle.product()
+            imdmuons += get_muon_list_out(imd_emtf_n_prod, "IMD", vhdl_dict, 4)
+
             emu_bar_muons = bar_handle.product()
             bar_muons = get_muon_list(emu_bar_muons, "BARREL", vhdl_dict, i)
             emu_ovl_muons = ovl_handle.product()
@@ -177,11 +186,11 @@ def main():
             deserializer_testbench.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calo_sums)
             output_buffer.writeFrameBasedOutputBX(outmuons, imdmuons)
 
-            input_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=calo_sums, rankLUT=rankLUT, addTracks=True)
+            input_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=calo_sums, addTracks=True)
             input_testbench.addLine("# Expected emulator output\n")
             input_testbench.writeMuonBasedOutputBX(outmuons, imdmuons)
             deserializer_testbench.addLine("# Expected emulator output\n")
-            deserializer_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=calo_sums, rankLUT=rankLUT, addTracks=True)
+            deserializer_testbench.writeMuonBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums=calo_sums, addTracks=True)
             if tower_indices is not None:
                 input_testbench.addLine("# Tower indices:\n")
                 cntr = 0
