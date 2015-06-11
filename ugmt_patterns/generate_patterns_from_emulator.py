@@ -104,7 +104,7 @@ def main():
                 tower_indices = [[int(idx.strip()) for idx in l.split()] for l in fobj]
 
         out_handle = Handle('BXVector<l1t::Muon>')
-        imd_bar_handle = Handle('BXVector<l1t::Muon>')
+        imd_bmtf_handle = Handle('BXVector<l1t::Muon>')
         imd_emtf_p_handle = Handle('BXVector<l1t::Muon>')
         imd_emtf_n_handle = Handle('BXVector<l1t::Muon>')
         imd_omtf_p_handle = Handle('BXVector<l1t::Muon>')
@@ -144,7 +144,7 @@ def main():
             integration_testbench.addLine(event_head)
 
             event.getByLabel("microGMTEmulator", out_handle)
-            event.getByLabel("microGMTEmulator", "imdMuonsBMTF", imd_bar_handle)
+            event.getByLabel("microGMTEmulator", "imdMuonsBMTF", imd_bmtf_handle)
             event.getByLabel("microGMTEmulator", "imdMuonsEMTFPos", imd_emtf_p_handle)
             event.getByLabel("microGMTEmulator", "imdMuonsEMTFNeg", imd_emtf_n_handle)
             event.getByLabel("microGMTEmulator", "imdMuonsOMTFPos", imd_omtf_p_handle)
@@ -164,11 +164,11 @@ def main():
             imdmuons = get_muon_list_out(imd_emtf_p_prod, "IMD", vhdl_dict, 4)
             imd_omtf_p_prod = imd_omtf_p_handle.product()
             imdmuons += get_muon_list_out(imd_omtf_p_prod, "IMD", vhdl_dict, 4)
-            imd_bmtf_prod = imd_omtf_p_handle.product()
+            imd_bmtf_prod = imd_bmtf_handle.product()
             imdmuons += get_muon_list_out(imd_bmtf_prod, "IMD", vhdl_dict, 8)
             imd_omtf_n_prod = imd_omtf_n_handle.product()
             imdmuons += get_muon_list_out(imd_omtf_n_prod, "IMD", vhdl_dict, 4)
-            imd_emtf_n_prod = imd_omtf_n_handle.product()
+            imd_emtf_n_prod = imd_emtf_n_handle.product()
             imdmuons += get_muon_list_out(imd_emtf_n_prod, "IMD", vhdl_dict, 4)
 
             emu_bar_muons = bar_handle.product()
