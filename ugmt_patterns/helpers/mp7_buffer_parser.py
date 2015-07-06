@@ -36,15 +36,25 @@ class BufferParser(object):
     """
     Parses MP7 buffer files and can create lists of objects
     """
-    def __init__(self, fname, vhdl_dict):
+    def __init__(self, fname, vhdl_dict, fobj=None):
         super(BufferParser, self).__init__()
         self.fname = fname              # file that is parsed
+        self.fobj = fobj                # if file-content is already available provide it
         self.frame_dict = {}            # dict for easy access of words (see init)
         self.initialized = False        # saves if frame_dict is initialized
         self.vhdl_dict = vhdl_dict      # vhdl-dict as returned by ../../tools/vhdl.VHDLConfigParser
         self.max_frame = 0              # uppermost frame number containing muons
         self.valid_frames = -1          # total number of frames containing muons
         self._log = log.init_logging(self.__class__.__name__)
+
+    def read_lines(self, fobj):
+        self.frame_dict = {}
+        for line in fobj:
+            frames = line.split()
+            if frames and frames[0] == "Frame":
+                frame_n = int(frames[1])
+                self.frame_dict[frame_n] = frames[3:]  # strips the frame identifier
+                self.max_frame = frame_n
 
     def init(self):
         """
@@ -53,15 +63,12 @@ class BufferParser(object):
         NOTE: The dict contains strings!
         """
         # transforms data from txt-File to a dictionary the index is the frame-number
-        with open(self.fname, "r") as fobj:
-            self.frame_dict = {}
-            for line in fobj:
-                frames = line.split()
-                if frames and frames[0] == "Frame":
-                    frame_n = int(frames[1]) 
-                    self.frame_dict[frame_n] = frames[3:] # strips the frame identifier
-                    self.max_frame = frame_n
-            self.initialized = True
+        if self.fobj is not None:
+            self.read_lines(self.fobj)
+        else:
+            with open(self.fname, "r") as fobj:
+                self.read_lines(fobj)
+        self.initialized = True
             
     def get_n_valid(self):
         """
@@ -132,13 +139,13 @@ class InputBufferParser(BufferParser):
     """
     Parses uGMT-Input files (RX-buffer dump)
     """
-    def __init__(self, fname, vhdl_dict):
+    def __init__(self, fname, vhdl_dict, fobj = None):
         """
         TAKES: 
             fname,      file-name for RX buffer dump 
             vhdl_dict   as returned by ../../tools/vhdl.VHDLConfigParser 
         """
-        super(InputBufferParser, self).__init__(fname, vhdl_dict)
+        super(InputBufferParser, self).__init__(fname, vhdl_dict, fobj)
         self.max_frame = 1023
     
     def init(self):
@@ -216,8 +223,8 @@ class InputBufferParser(BufferParser):
 
 class OutputBufferParser(BufferParser):
     """Parses uGMT-Output files (TX-buffer dump)"""
-    def __init__(self, fname, vhdl_dict, ugmt_version):
-        super(OutputBufferParser, self).__init__(fname, vhdl_dict)
+    def __init__(self, fname, vhdl_dict, fobj=None,  ugmt_version=Version("99_99_99")):
+        super(OutputBufferParser, self).__init__(fname, vhdl_dict, fobj)
         self.version = ugmt_version
         
     def init(self):
