@@ -125,7 +125,7 @@ class TestbenchWriter(object):
         while self.frameCounter < n:
             self.writeFrame([])
 
-    def writeMuon(self, mu, mu_type, rank, addIso = False, rankLUT = None):
+    def writeMuon(self, mu, mu_type, rank, addIso = False):
         """ 
         Convert a single ./helpers/muon.Muon object into string
         TAKES:  mu          Muon object
@@ -137,10 +137,10 @@ class TestbenchWriter(object):
         isempty = 0
         if mu.ptBits == 0: isempty = 1
         sortrank = 0
-        if rankLUT != None:
-            sortrank = rankLUT.lookup(mu.ptBits, mu.qualityBits)
-        else:
+        if mu_type in ["FIMD", "BIMD", "OIMD", "OUT"]:
             sortrank = mu.rank
+        else:
+            sortrank = mu.ptBits + mu.qualityBits
 
         tmp_string = "{id:<6} {rank:>5} {pt:>5} {phi:>5} {eta:>5} {charge:>5} {charge_valid:>5} {quality:>5} {sort:>5} {empty:>5}".format(
                         id=mu_type,
@@ -205,7 +205,7 @@ class TestvectorWriter(object):
         for i in range(108):
             self.head += " |{muon:-^14}|".format(muon="Muon({n})".format(n=i))
 
-    def writeMuon(self, mu, mu_type, rank, addIso = False, rankLUT = None):
+    def writeMuon(self, mu, mu_type, rank, addIso = False):
         """ 
         Convert a single ./helpers/muon.Muon object into string
         TAKES:  mu          Muon object
@@ -329,7 +329,7 @@ class PatternDumper(object):
         self._bxCounter += 1
 
 
-    def writeMuonGroup(self, muons, mutype, addIso, rankLUT):
+    def writeMuonGroup(self, muons, mutype, addIso):
         themuid = mutype
         for i, muon in enumerate(muons):
             if mutype == "IMD":
@@ -340,7 +340,7 @@ class PatternDumper(object):
             if muon.local_link != -1:
                 link = muon.local_link
 
-            self._writer.writeMuon(muon, themuid, link, addIso, rankLUT)
+            self._writer.writeMuon(muon, themuid, link, addIso)
             
 
     def writeCaloGroup(self, calosums):
@@ -355,7 +355,7 @@ class PatternDumper(object):
             tracks.append([muon.etaBits, muon.phiBits, muon.qualityBits])
         self._writer.writeTracks(tracks, track_type)
 
-    def writeMuonBasedInputBX(self, bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums, rankLUT, addTracks = False, addBXCounter = False):
+    def writeMuonBasedInputBX(self, bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calosums, addTracks = False, addBXCounter = False):
         if addBXCounter:
             self._writer.writeBXCounter(self._bxCounter)
 
@@ -368,11 +368,11 @@ class PatternDumper(object):
         except AttributeError:
             self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
             return
-        self.writeMuonGroup(fwdp_muons, "FWD+", False, rankLUT)
-        self.writeMuonGroup(ovlp_muons, "OVL+", False, rankLUT)
-        self.writeMuonGroup(bar_muons, "BAR", False, rankLUT)
-        self.writeMuonGroup(ovln_muons, "OVL-", False, rankLUT)
-        self.writeMuonGroup(fwdn_muons, "FWD-", False, rankLUT)
+        self.writeMuonGroup(fwdp_muons, "FWD+", False)
+        self.writeMuonGroup(ovlp_muons, "OVL+", False)
+        self.writeMuonGroup(bar_muons, "BAR", False)
+        self.writeMuonGroup(ovln_muons, "OVL-", False)
+        self.writeMuonGroup(fwdn_muons, "FWD-", False)
 
         if addTracks:
             self._writer.writeTrackHeadline()
@@ -400,5 +400,5 @@ class PatternDumper(object):
         except AttributeError:
             self._log.error("You are trying to write muons with the wrong Writer class. Only supports frame-based writing.")
             return
-        self.writeMuonGroup(imd_muons, "IMD", False, None)
-        self.writeMuonGroup(out_muons, "OUT", True, None)
+        self.writeMuonGroup(imd_muons, "IMD", False)
+        self.writeMuonGroup(out_muons, "OUT", True)

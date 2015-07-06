@@ -358,7 +358,7 @@ class OutputBufferParser(BufferParser):
         """
         if not self.initialized: self.init()
         # check if initialization failed
-        if not self.frame_low > 0: return []
+        if not self.frame_low >= 0: return []
         muon_dict = self.get_muon_dict(self.link_intermediate_low, self.link_intermediate_high, self.frame_low+self.intermediate_offset, self.frame_high+self.intermediate_offset)
         muon_objs = []
 
