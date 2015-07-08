@@ -1,4 +1,4 @@
-from muon import Muon 
+from muon import Muon
 from tools.muon_helpers import get_masked_word
 from tools.logger import log
 import re
@@ -69,13 +69,13 @@ class BufferParser(object):
             with open(self.fname, "r") as fobj:
                 self.read_lines(fobj)
         self.initialized = True
-            
+
     def get_n_valid(self):
         """
         How many valid frames are in the file?
         RETURNS: number of frames that are valid
         """
-        if self.valid_frames > 0: 
+        if self.valid_frames > 0:
             return self.valid_frames
 
         self.valid_frames = 0
@@ -84,19 +84,19 @@ class BufferParser(object):
         return self.valid_frames
 
     def frame_printer(self, frame_numbers):
-        """ 
-        Prints frames specified by 
+        """
+        Prints frames specified by
         TAKES frame_numbers (either list/tuple (multiple frames) or int (single frame))
         """
         if not self.initialized: self.init()
         if isinstance(frame_numbers, int):
             print self.frame_dict[frame_numbers]
         else:
-            frames = [ self.frame_dict[i] for i in frame_numbers ] 
+            frames = [ self.frame_dict[i] for i in frame_numbers ]
             for frame in frames:
                 print frame
 
-    def get_num(self, frame, link): 
+    def get_num(self, frame, link):
         """
         Get the hex-number as int of frame and link
         TAKES: frame (int in 0, 1023), link (int in 0, 71)
@@ -108,10 +108,10 @@ class BufferParser(object):
         num = int(frame_content, 16)
         return num
 
-    def get_muon_dict(self, link_low, link_high, frame_low, frame_high): 
+    def get_muon_dict(self, link_low, link_high, frame_low, frame_high):
         """
         Combains the two 32-bit words to get 64-bit muon in range specified
-        TAKES: 
+        TAKES:
             link_low, lowest link to be considered
             link_high, highest link to be considered
             frame_low, lowest frame to be considered
@@ -131,7 +131,7 @@ class BufferParser(object):
                 # if "0v" in self.frame_dict[frame][link_n] and "0v" in self.frame_dict[frame+1][link_n]:
                 #     mu_dict[frame].append([0, 0, 0])
 
-            frame += 2 
+            frame += 2
 
         return mu_dict
 
@@ -141,20 +141,20 @@ class InputBufferParser(BufferParser):
     """
     def __init__(self, fname, vhdl_dict, fobj = None):
         """
-        TAKES: 
-            fname,      file-name for RX buffer dump 
-            vhdl_dict   as returned by ../../tools/vhdl.VHDLConfigParser 
+        TAKES:
+            fname,      file-name for RX buffer dump
+            vhdl_dict   as returned by ../../tools/vhdl.VHDLConfigParser
         """
         super(InputBufferParser, self).__init__(fname, vhdl_dict, fobj)
         self.max_frame = 1023
-    
+
     def init(self):
         """
         Populates frame-dict (as mother class) and gets the valid frame range
         """
         super(InputBufferParser, self).init()
         self.get_ranges()
-    
+
     def get_ranges(self):
         """
         Populates the member variables that represent the valid frame range:
@@ -171,7 +171,7 @@ class InputBufferParser(BufferParser):
                 if a[:2] == "1v" and (self.frame_low == -1 or self.frame_low > frame):
                     self.frame_low = frame
                     break
-        
+
         if not self.frame_low >= 0:
             self._log.error("Found no valid, non-zero frames in this file {fn}".format(fn=self.fname))
             return
@@ -195,7 +195,7 @@ class InputBufferParser(BufferParser):
         Get all input muons in the file
         RETURNS: List of muon objects within the valid frame range (contains also zero muons)
         """
-        if not self.initialized: self.init() 
+        if not self.initialized: self.init()
         if not self.frame_low >= 0: return []
         frame = self.frame_low+skip
         muon_dict = self.get_muon_dict(self.link_low, self.link_high, self.frame_low, self.frame_high)
@@ -205,16 +205,16 @@ class InputBufferParser(BufferParser):
         while frame < (self.frame_high):
             bx = (frame+1) / 6
             for i in xrange(36): #8 links
-                if (len(muon_dict[frame]) > i): 
+                if (len(muon_dict[frame]) > i):
                     muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx))
                 else:
                     muon_objs.append(Muon(self.vhdl_dict, "IN", 0, link=-1, frame=frame, bx=bx))
 
-                if (len(muon_dict[frame+2]) > i): 
+                if (len(muon_dict[frame+2]) > i):
                     muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx))
                 else:
                     muon_objs.append(Muon(self.vhdl_dict, "IN", 0, link=-1, frame=frame+2, bx=bx))
-                if (len(muon_dict[frame+4]) > i): 
+                if (len(muon_dict[frame+4]) > i):
                     muon_objs.append(Muon(self.vhdl_dict, "IN", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
                 else:
                     muon_objs.append(Muon(self.vhdl_dict, "IN", 0, link=-1, frame=frame+4, bx=bx))
@@ -223,10 +223,10 @@ class InputBufferParser(BufferParser):
 
 class OutputBufferParser(BufferParser):
     """Parses uGMT-Output files (TX-buffer dump)"""
-    def __init__(self, fname, vhdl_dict, fobj=None,  ugmt_version=Version("99_99_99")):
+    def __init__(self, fname, vhdl_dict, ugmt_version=Version("99_99_99"), fobj=None):
         super(OutputBufferParser, self).__init__(fname, vhdl_dict, fobj)
         self.version = ugmt_version
-        
+
     def init(self):
         """
         Populates frame-dict (as mother class) and gets the valid frame range
@@ -256,7 +256,7 @@ class OutputBufferParser(BufferParser):
 
         self.frame_low = -1
         self.frame_high = -1
-        
+
         self.link_out_low = 0
         self.link_out_high = 3
 
@@ -265,9 +265,9 @@ class OutputBufferParser(BufferParser):
 
         self.link_rank_low = 12
         self.link_rank_high = 13
-        
+
         # so it is 0 if the first frame already has muons
-        last_0v_frame = -1 
+        last_0v_frame = -1
         escape = False
         for link in xrange(self.link_out_low, self.link_out_high+1):
             if escape: break
@@ -279,7 +279,7 @@ class OutputBufferParser(BufferParser):
                     self.frame_low = last_0v_frame+1
                     escape = True
                     break
-        
+
         if self.frame_low == -1:
             self._log.error("Found no valid, non-zero frames in this file {fn}".format(fn=self.fname))
             return
@@ -293,7 +293,7 @@ class OutputBufferParser(BufferParser):
                 if a[:2] == "0v" and self.frame_high == -1:
                     self.frame_high = frame-1
                 # continue search if valid goes up again
-                if self.frame_high != -1 and (a[:2] == "1v"): 
+                if self.frame_high != -1 and (a[:2] == "1v"):
                     self.frame_high = -1
 
         if self.frame_high == -1:
@@ -306,7 +306,7 @@ class OutputBufferParser(BufferParser):
                 self._log.warning("Apparently not all events fit into the output buffer: {fn}\n\t\twill ignore trailing frames".format(fn=self.fname))
                 self.frame_high = 1023
                 self.frame_high -= (self.frame_high-self.frame_low)%6
-        
+
         self._log.info("Found valid frames for final mus: {minf}-{maxf} (=> {bx} BX)".format(minf=self.frame_low, maxf=self.frame_high, bx = (self.frame_high-self.frame_low+1)/6))
         if self.intermediate_offset != 0:
             self._log.info("Offset is set for inter mus     : {offset}".format(offset=self.intermediate_offset))
@@ -316,10 +316,10 @@ class OutputBufferParser(BufferParser):
     def get_output_muons(self, skip = 0):
         """
         Get all output muons
-        RETURNS: list of muon objects found in links 0-3 (contains also zero muons) 
+        RETURNS: list of muon objects found in links 0-3 (contains also zero muons)
                  the muons are sorted as they are in the HW (0 = best of bx 0, 1 = second best etc)
         """
-        if not self.initialized: self.init() 
+        if not self.initialized: self.init()
         # check if initialization failed
         if not self.frame_low >= 0: return []
         muon_dict = self.get_muon_dict(self.link_out_low, self.link_out_high, self.frame_low, self.frame_high)
@@ -329,15 +329,15 @@ class OutputBufferParser(BufferParser):
         haveWarned = False
         while frame < self.frame_high:
             bx = (frame - self.frame_low) / 6
-            for i in xrange(4): #4 links                
-                if (len(muon_dict[frame+2]) > i): 
-                    muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
+            for i in xrange(4): #4 links
+                if (len(muon_dict[frame+2]) > i):
+                    muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx))
                 else:
                     muon_objs.append(Muon(self.vhdl_dict, "OUT", bitword=0))
                     if not haveWarned:
                         self._log.warning("Cannot find all 4 output muons: something wrong with the valid bit pattern?")
                         haveWarned = True
-                if (len(muon_dict[frame+4]) > i): 
+                if (len(muon_dict[frame+4]) > i):
                     muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
                 else:
                     muon_objs.append(Muon(self.vhdl_dict, "OUT", bitword=0))
@@ -346,14 +346,14 @@ class OutputBufferParser(BufferParser):
                         haveWarned = True
 
             frame += 6 # next event
-            
+
         return muon_objs
 
 
     def get_intermediate_muons(self):
         """
         Get all intermediate muons
-        RETURNS: list of imntermediate muon objects foudn in links 4-11 (contains also zero muons) 
+        RETURNS: list of imntermediate muon objects foudn in links 4-11 (contains also zero muons)
                  the muons are sorted as they are in the HW (0 = best of bx 0, 1 = second best etc)
         """
         if not self.initialized: self.init()
@@ -366,10 +366,10 @@ class OutputBufferParser(BufferParser):
         while frame < (self.frame_high+self.intermediate_offset):
             bx = (frame + 1 - self.frame_low + self.intermediate_offset) / 6
             # 8 links NOTE: when getting dict the link-offsets are already defined...
-            for i in xrange(8): 
+            for i in xrange(8):
                 # print muon_dict[frame+4]
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx)) 
-                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx)) 
+                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame][i][0], link=muon_dict[frame][i][1], frame=frame, bx=bx))
+                muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+2][i][0], link=muon_dict[frame+2][i][1], frame=frame+2, bx=bx))
                 muon_objs.append(Muon(self.vhdl_dict, "OUT", muon_dict[frame+4][i][0], link=muon_dict[frame+4][i][1], frame=frame+4, bx=bx))
 
             frame += 6
@@ -377,7 +377,7 @@ class OutputBufferParser(BufferParser):
 
     def extract_rank_words(self, bitword):
         """
-        As 2 ranks are encoded in each 32 bit word, they are split here 
+        As 2 ranks are encoded in each 32 bit word, they are split here
         RETURNS: pair: rank0 rank1 (msw, lsw)
         """
         rank_bitlength = 10
@@ -387,8 +387,8 @@ class OutputBufferParser(BufferParser):
         rank2 = get_masked_word(ranksword, 0, rank_bitlength-1) #lsw
         return rank1, rank2
 
-    def get_ranks(self): 
-        """ 
+    def get_ranks(self):
+        """
         List of valid ranks in the range found by get_ranges
         RETURNS: list of 12-bit rank words
         """
