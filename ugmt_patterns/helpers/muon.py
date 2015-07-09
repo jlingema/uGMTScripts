@@ -61,10 +61,10 @@ class Muon():
                 # self.phiBits = self.decode_phi(phi_low, phi_high)
                 self.phiBits = bithlp.get_shifted_subword(self.bitword, phi_low, phi_high)
                 # we have to adjust these values as they are beyond the 32 bit boundary
-                sysign_low -= 1
-                sysign_high -= 1
-                trackadd_high = vhdl_dict["ADDRESS_IN_HIGH"] - 1
-                trackadd_low = vhdl_dict["ADDRESS_IN_LOW"] - 1
+                sysign_low += 1
+                sysign_high += 1
+                trackadd_high = vhdl_dict["ADDRESS_IN_HIGH"] + 1
+                trackadd_low = vhdl_dict["ADDRESS_IN_LOW"] + 1
             self.rank = 0
 
         elif bitword == None and obj != None:  # for emulator
