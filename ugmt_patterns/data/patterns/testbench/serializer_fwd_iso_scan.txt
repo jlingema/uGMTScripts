@@ -5,7 +5,7 @@
 # where ID = {FWD+/-, OVL+/-, BAR, OUT, FIMD, BIMD, OIMD}
 # N is the rank for IMD / OUT and the link for inputs.
 # ISO is optional and only present for OUT
-# 
+#
 # Data format for tracks:
 # ID ETA0 PHI0 QUALITY0 ETA1 PHI1 QUALITY1 ETA2 PHI2 QUALITY2
 # where ID = {FTRK+/-, OTRK+/-, BTRK}

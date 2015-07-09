@@ -1,13 +1,12 @@
 from tools.bithelper import bithlp
 
-
 class Muon():
 
     """
     A class capable of interpreting the uGMT emulator and hardware muon representations
     """
 
-    def __init__(self, vhdl_dict, mu_type, bitword=None, obj=None, link=-1, frame=-1, bx=-1):
+    def __init__(self, vhdl_dict, mu_type, bitword=None, obj=None, link=-1, frame=-1, bx=-1, gPhi = None):
         """
         ctor:
         TAKES:
@@ -63,12 +62,18 @@ class Muon():
                 # we have to adjust these values as they are beyond the 32 bit boundary
 
             self.rank = 0
+            self.globPhiBits = self.phiBits
 
         elif bitword == None and obj != None:  # for emulator
+            if gPhi is not None:
+                self.globPhiBits = gPhi
+            else:
+                self.globPhiBits = obj.hwPhi()
             if mu_type == "OUT":
                 self.Iso = obj.hwIso()
                 self.rank = obj.hwRank()
                 self.Sysign = obj.hwCharge() + (obj.hwChargeValid() << 1)
+
             else:
                 self.Iso = 0
                 self.rank = 0
@@ -78,11 +83,11 @@ class Muon():
                 trackadd_high = vhdl_dict["ADDRESS_IN_HIGH"] + 1
                 trackadd_low = vhdl_dict["ADDRESS_IN_LOW"] + 1
 
+            self.phiBits = obj.hwPhi()
             self.etaBits = obj.hwEta()
             unsigned_eta = bithlp.twos_complement_to_unsigned(obj.hwEta(), 9)
             self.qualityBits = obj.hwQual()
             self.ptBits = obj.hwPt()
-            self.phiBits = obj.hwPhi()
 
             # calculate the bitword to make comparison with HW easy
             self.bitword = (self.ptBits << pt_low)

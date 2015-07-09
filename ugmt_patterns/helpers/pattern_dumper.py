@@ -2,7 +2,7 @@ from tools.logger import log
 
 class BufferWriter(object):
     """
-    Class (Decorator) that produces mp7-buffer-files. 
+    Class (Decorator) that produces mp7-buffer-files.
     Giving this class to the ctor of of PatternDumper will let it create these files
     """
     def __init__(self):
@@ -10,14 +10,14 @@ class BufferWriter(object):
         self.string = []
         self.frameCounter = 0
         self.head = """Board ugmt_b40
- Quad/Chan :    q00c0      q00c1      q00c2      q00c3      q01c0      q01c1      q01c2      q01c3      q02c0      q02c1      q02c2      q02c3      q03c0      q03c1      q03c2      q03c3      q04c0      q04c1      q04c2      q04c3      q05c0      q05c1      q05c2      q05c3      q06c0      q06c1      q06c2      q06c3      q07c0      q07c1      q07c2      q07c3      q08c0      q08c1      q08c2      q08c3      q09c0      q09c1      q09c2      q09c3      q10c0      q10c1      q10c2      q10c3      q11c0      q11c1      q11c2      q11c3      q12c0      q12c1      q12c2      q12c3      q13c0      q13c1      q13c2      q13c3      q14c0      q14c1      q14c2      q14c3      q15c0      q15c1      q15c2      q15c3      q16c0      q16c1      q16c2      q16c3      q17c0      q17c1      q17c2      q17c3  
-      Link :     00         01         02         03         04         05         06         07         08         09         10         11         12         13         14         15         16         17         18         19         20         21         22         23         24         25         26         27         28         29         30         31         32         33         34         35         36         37         38         39         40         41         42         43         44         45         46         47         48         49         50         51         52         53         54         55         56         57         58         59         60         61         62         63         64         65         66         67         68         69         70         71    
+ Quad/Chan :    q00c0      q00c1      q00c2      q00c3      q01c0      q01c1      q01c2      q01c3      q02c0      q02c1      q02c2      q02c3      q03c0      q03c1      q03c2      q03c3      q04c0      q04c1      q04c2      q04c3      q05c0      q05c1      q05c2      q05c3      q06c0      q06c1      q06c2      q06c3      q07c0      q07c1      q07c2      q07c3      q08c0      q08c1      q08c2      q08c3      q09c0      q09c1      q09c2      q09c3      q10c0      q10c1      q10c2      q10c3      q11c0      q11c1      q11c2      q11c3      q12c0      q12c1      q12c2      q12c3      q13c0      q13c1      q13c2      q13c3      q14c0      q14c1      q14c2      q14c3      q15c0      q15c1      q15c2      q15c3      q16c0      q16c1      q16c2      q16c3      q17c0      q17c1      q17c2      q17c3
+      Link :     00         01         02         03         04         05         06         07         08         09         10         11         12         13         14         15         16         17         18         19         20         21         22         23         24         25         26         27         28         29         30         31         32         33         34         35         36         37         38         39         40         41         42         43         44         45         46         47         48         49         50         51         52         53         54         55         56         57         58         59         60         61         62         63         64         65         66         67         68         69         70         71
 """
 
     def writeFrame(self, words, valid = 1, validoverflow = 0, ftype=None):
         """
         Write a frame to the internal "buffer" (i.e. string),
-        TAKES: 
+        TAKES:
             words: List of 72-X 32 bit words (if X > 0, the remaining links are filled with 0)
         RETURNS:
             void
@@ -61,7 +61,7 @@ class TestbenchWriter(object):
 # where ID = {FWD+/-, OVL+/-, BAR, OUT, FIMD, BIMD, OIMD}
 # N is the rank for IMD / OUT and the link for inputs.
 # ISO is optional and only present for OUT
-# 
+#
 # Data format for tracks:
 # ID ETA0 PHI0 QUALITY0 ETA1 PHI1 QUALITY1 ETA2 PHI2 QUALITY2
 # where ID = {FTRK+/-, OTRK+/-, BTRK}
@@ -73,12 +73,12 @@ class TestbenchWriter(object):
 # where ID = FRMx, x being the current 240 MHz cycle
 # In WordX the X represents the link number, meaning that muon0 is x(FRM0, WORD0) + x(FRM1, WORD0) << 32.
 """
-    
+
 
     def writeFrame(self, words, valid = 1, validoverflow = 0, ftype="in"):
         """
         Adds the frame to the buffer
-        TAKES: 
+        TAKES:
             words : list of the 32 bit words of the current frame (filled with 0s to have 72)
         """
         if ftype == "in":
@@ -126,7 +126,7 @@ class TestbenchWriter(object):
             self.writeFrame([])
 
     def writeMuon(self, mu, mu_type, rank, addIso = False):
-        """ 
+        """
         Convert a single ./helpers/muon.Muon object into string
         TAKES:  mu          Muon object
                 mu_type     muon type (BAR, FWD+/-, OVL+/-, FIMD, BIMD, OIMD, OUT)
@@ -146,7 +146,7 @@ class TestbenchWriter(object):
                         id=mu_type,
                         rank=rank,
                         pt=mu.ptBits,
-                        phi=mu.phiBits,
+                        phi=mu.globPhiBits,
                         eta=mu.etaBits,
                         charge=mu.Sysign & 0x1,
                         charge_valid=mu.Sysign >> 1,
@@ -156,14 +156,14 @@ class TestbenchWriter(object):
                     )
         if addIso:
             tmp_string += " {iso:>5}".format(iso=mu.Iso)
-        
+
         tmp_string += "\n"
         self.string += [tmp_string]
 
     def writeTracks(self, tracks, track_type):
-        """ 
-        Adds the track information to the buffer. 
-        TAKES: 
+        """
+        Adds the track information to the buffer.
+        TAKES:
             tracks: list of [eta, phi, qual]*n_tracks
             track_type: track-id = {FTRK+/-, BTRK, OTRK+/-}
         """
@@ -175,9 +175,9 @@ class TestbenchWriter(object):
                 self.string += ["\n"]
 
     def writeCaloChannel(self, channel, sums):
-        """ 
-        Adds the calo information to the buffer. 
-        TAKES: 
+        """
+        Adds the calo information to the buffer.
+        TAKES:
             channel: current channel
             sums: calo sums for current channel (list with length 36)
         """
@@ -206,7 +206,7 @@ class TestvectorWriter(object):
             self.head += " |{muon:-^14}|".format(muon="Muon({n})".format(n=i))
 
     def writeMuon(self, mu, mu_type, rank, addIso = False):
-        """ 
+        """
         Convert a single ./helpers/muon.Muon object into string
         TAKES:  mu          Muon object
                 mu_type     muon type (BAR, FWD+/-, OVL+/-, FIMD, BIMD, OIMD, OUT)
@@ -260,11 +260,11 @@ class PatternDumper(object):
     def writeEmptyFrames(self, n):
         for i in range(n):
             self._writer.writeFrame([])
-    
+
     def dump(self, fill = False):
         if fill:
             self._writer.fill_up(1024)
-        
+
         if hasattr(self._writer, 'reset'): self._writer.reset()
 
         with open(self.fname, "w") as fobj:
@@ -294,7 +294,7 @@ class PatternDumper(object):
             for iframe in range(6):
                 frame_val = 0
                 for l_iphi in range(6): # per frame 6 calo sums encoded
-                    idx = idx_low+(iframe*6)+l_iphi 
+                    idx = idx_low+(iframe*6)+l_iphi
                     frame_val += calosums[idx] << (l_iphi*5)
                 frames[iframe][ieta+8] = frame_val
 
@@ -341,7 +341,7 @@ class PatternDumper(object):
                 link = muon.local_link
 
             self._writer.writeMuon(muon, themuid, link, addIso)
-            
+
 
     def writeCaloGroup(self, calosums):
         for iline in range(28):
