@@ -1,0 +1,9 @@
+{
+	"nodes": [
+		{"name":"input_disable_reg", "subnode_mode":"mask", "default":0, "cust_desc":""},
+		{"name":"phi_offset_0", "subnode_mode":"", "default":0, "cust_desc":""},
+		{"name":"phi_offset_1", "subnode_mode":"", "default":0, "cust_desc":""},
+		{"name":"phi_offset_2", "subnode_mode":"", "default":0, "cust_desc":""},
+		{"name":"phi_offset_3", "subnode_mode":"", "default":0, "cust_desc":""}
+	]
+}
