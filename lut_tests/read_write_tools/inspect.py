@@ -2,6 +2,7 @@
 import uhal
 import sys
 from time import sleep
+import re
 
 import argparse
 
@@ -14,7 +15,7 @@ class Inspector(object):
         self.read_dict = {}
         self.values = {}
         self.display_dict = {}
-    
+
     def add(self, node_name):
         print "Adding node to be inspected: {name}".format(name=node_name)
         self.nodes.append("payload."+node_name)
@@ -75,14 +76,15 @@ class Inspector(object):
 
 def parse_options():
     desc = "Inspection tool via ipbus"
-        
+
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('board', type=str, help='board to connect to')
     parser.add_argument('nodes', type=str, nargs='+', help='nodes that will be inspected (skip the preceeding payload)')
     parser.add_argument('--dryrun', dest='dryrun', default=False,  action='store_true', help='dryrun, will only list matching nodes and contents')
+    parser.add_argument('--regex', dest="regex", default=False, action='store_true', help='interpret node names as regexps')
 
     opts = parser.parse_args()
-    
+
     return opts
 
 uhal.setLogLevelTo(uhal.LogLevel.ERROR)
@@ -113,6 +115,10 @@ inspector = Inspector(board)
 for node in opts.nodes:
     if not node in payload_nodes:
         for n_pl in payload_nodes:
+            if opts.regex:
+                m = re.search(node, n_pl)
+                if not m is None:
+                    inspector.add(n_pl)
             if node in n_pl:
                 inspector.add(n_pl)
     else:
