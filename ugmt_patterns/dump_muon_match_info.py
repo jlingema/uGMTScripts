@@ -1,16 +1,7 @@
-import os
 from helpers.mp7_buffer_parser import InputBufferParser, OutputBufferParser, Version
 from tools.vhdl import VHDLConstantsParser
 from tools.muon_helpers import print_out_word, print_in_word
-from tools.logger import log
 from helpers.options import  parse_options, discover_files
-
-cmssw_env = False
-try: # try to import CMSSW libs
-    from DataFormats.FWLite import Events, Handle
-    cmssw_env = True
-except ImportError:
-    log.error("Could not load CMSSW-Modules. Will not look at emulator data!")
 
 class Relation():
     max_relation = -1
@@ -69,7 +60,7 @@ def get_closest_matches(inmus, outmus, imdmus):
 if __name__ == "__main__":
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 
-    options, args = parse_options()
+    options = parse_options()
     file_dict = discover_files(options)
 
     for pattern, fnames in file_dict.iteritems():

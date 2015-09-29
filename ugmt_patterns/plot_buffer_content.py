@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     vhdl_dict = VHDLConstantsParser.parse_vhdl_file("data/ugmt_constants.vhd")
 
-    options, args = parse_options()
+    options = parse_options()
 
     _log = None
     if options.verbose:

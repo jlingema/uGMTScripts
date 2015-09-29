@@ -1,4 +1,4 @@
-import ROOT
+# import ROOT
 
 # non member functions
 def get_masked_word(complete_word, bit_low, bit_high): 
@@ -8,10 +8,10 @@ def get_masked_word(complete_word, bit_low, bit_high):
     masked_word = complete_word & mask
     return masked_word>>bit_low
 
-def hist_creator2D(namesdict,hist,xname,yname,title): # xname & yname are strings!
-    hist["{yname} gg {xname}".format(xname=xname,yname=yname)] = ROOT.TH2D("{title}".format(title=title),"",
-        namesdict[xname][1],namesdict[xname][2],namesdict[xname][3],
-        namesdict[yname][1],namesdict[yname][2],namesdict[yname][3])
+# def hist_creator2D(namesdict,hist,xname,yname,title): # xname & yname are strings!
+#     hist["{yname} gg {xname}".format(xname=xname,yname=yname)] = ROOT.TH2D("{title}".format(title=title),"",
+#         namesdict[xname][1],namesdict[xname][2],namesdict[xname][3],
+#         namesdict[yname][1],namesdict[yname][2],namesdict[yname][3])
 
 def isequal(a,b): # gives 1 if a==b and 0 otherwise
     x = int(a)^int(b)
@@ -46,7 +46,8 @@ def print_in_word(w, show_legend = False):
     reset = '\x1b[39;49;00m'
     print_w = bin(w)[2:]
     print_w = "0"*(64-len(print_w))+print_w
-    pretty_print_w =  print_w[0] + add_pre + print_w[1:28] + phi_pre + print_w[28:32] + reset + print_w[32] + phi_pre + print_w[33:39]+ sys_pre + print_w[39:41] + reset + print_w[41] + eta_pre + print_w[42:51] + q_pre + print_w[51:55] + pt_pre + print_w[55:] + reset
+    # pretty_print_w =  print_w[0] + add_pre + print_w[1:28] + phi_pre + print_w[28:32] + reset + print_w[32] + phi_pre + print_w[33:39]+ sys_pre + print_w[39:41] + reset + print_w[41] + eta_pre + print_w[42:51] + q_pre + print_w[51:55] + pt_pre + print_w[55:] + reset
+    pretty_print_w =  print_w[0] + add_pre + print_w[1:30] + sys_pre + print_w[30:32] + reset + print_w[32] + phi_pre + print_w[33:41] + reset + print_w[41] + eta_pre + print_w[42:51] + q_pre + print_w[51:55] + pt_pre + print_w[55:] + reset
     if show_legend:
         print  add_pre + "add" + phi_pre + "phi" + sys_pre + "sys" + eta_pre + "eta" + q_pre + "q"+ pt_pre + "pt"+ reset
     return pretty_print_w

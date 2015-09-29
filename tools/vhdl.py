@@ -7,7 +7,7 @@ class VHDLConstantsParser(object):
     """A parser that understands only constant definitions"""
     _log = log.init_logging("vhdl parse")
     def __init__(self):
-        super(VHDLConstantsParser, self).__init__()        
+        super(VHDLConstantsParser, self).__init__()
 
     @staticmethod
     def get_actual_value(comb_match, val_dict):
@@ -19,7 +19,7 @@ class VHDLConstantsParser(object):
                 values[i] = "val_dict['"+values[i]+"']"
             eval_str += values[i]
 
-        VHDLConstantsParser._log.info("Found combinatorical expression, please check (assuming the values are stored in dict val_dict):")
+        VHDLConstantsParser._log.info("Found combinatorial expression, please check (assuming the values are stored in dict val_dict):")
         value = eval(eval_str)
         print "\t\t", eval_str, "=", value
         return value
@@ -50,7 +50,7 @@ class VHDLConstantsParser(object):
 
                 if type_match:
                     t = re.split(r": *", type_match.group(0))[1]
-                    if t in ["integer", "natural"]:                
+                    if t in ["integer", "natural"]:
                         if value_match:
                             config_dict[vname] = int(re.split(r":= *", value_match.group(0))[1])
                         elif vcomb_match:
@@ -60,7 +60,12 @@ class VHDLConstantsParser(object):
                     if "vector" in t:
                         vals = line.split("(")[2].replace(")", "").replace(";", "")
                         vals = vals.split(",")
-                        vals = [ int(x.strip()) for x in vals]
+                        try:
+                            vals = [ int(x.strip()) for x in vals]
+                        except ValueError:
+                            print "Ignoring line", i, ": Do not understand the type."
+
+
                         vals.reverse()
-                        config_dict[vname] = vals 
+                        config_dict[vname] = vals
         return config_dict

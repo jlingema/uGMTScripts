@@ -11,5 +11,9 @@ function pathadd() {
 
 }
 
-pathadd PYTHONPATH "$(pwd)/"
+SCRIPTPATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+pathadd PYTHONPATH "$SCRIPTPATH"
+pathadd PYTHONPATH "$SCRIPTPATH/ugmt_patterns"
+
 export PYTHONPATH

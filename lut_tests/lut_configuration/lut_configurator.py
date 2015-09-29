@@ -19,10 +19,14 @@ class LUTConfigurator(object):
             self._json = None
 
         self.phimap = []
-        muon_phi_stepsize = 2*math.pi / pow(2, 10)
+        muon_phi_stepsize = 0.011
         tower_phi_size = 2*0.087
+        print "WARNING: we are still useing the tower-phi index work-around!"
         for x in xrange(pow(2, 10)): #phi
-            self.phimap.append(int(x*muon_phi_stepsize / tower_phi_size))
+            if x <= 569: # there should be 575 here, but we had wrap-around issues
+                self.phimap.append(int(x*muon_phi_stepsize / tower_phi_size))
+            else:
+                self.phimap.append(0)
 
         
         self.towermap = []
@@ -31,11 +35,13 @@ class LUTConfigurator(object):
         self.etamap = {}
         muon_eta_stepsize = 0.011
         neg_offset = 0b100000000
+        neg_mask = 0b11111111
         for x in xrange(pow(2, 8)):
-            eta_mu = muon_eta_stepsize*x
+            eta_mu = min(2.4, muon_eta_stepsize*x) #2.05 = eta_acc - last_tower_size
             twr_idx_neg, twr_idx_pos = self.get_tower_index(eta_mu)
             self.etamap[x] = twr_idx_pos
-            self.etamap[x+neg_offset] = twr_idx_neg
+            x_neg = (x^neg_mask)+neg_offset # twos complement in 9 bit space
+            self.etamap[x_neg] = twr_idx_neg
         
 
     def create_tower_map(self):
@@ -45,24 +51,30 @@ class LUTConfigurator(object):
             for i in range(10):
                 i1 += 0.087*2
                 self.towermap.append(0.087*2)
+            
             self.towermap.append(0.19)
-
+            i1+=0.19
             self.towermap.append(0.242)
+            i1+=0.242
 
             self.towermap.append(0.15)
+            i1+=0.15
             self.towermap.append(0.178)
-            self.towermap.append(0.15)
-            self.towermap.append(0.35)
+            i1+=0.178
+            # print i1 # is 2.5
+
+            # self.towermap.append(0.15)
+            # self.towermap.append(0.35)
 
 
     def get_tower_index(self, eta):
         if eta > 2.4: return 0, 0
         eta_tot = 0
-        i = 0
-        while (eta_tot < eta):
+        i = -1
+        while (eta_tot <= eta):
             eta_tot += self.towermap[i]
             i += 1
-        return 14-i, 15+i 
+        return 13-i, 14+i 
 
     def get_lut(self, lut_path):
         if self._json:
@@ -119,13 +131,13 @@ class LUTConfigurator(object):
 
     @staticmethod
     def get_2param_function_lut(function_string, addr_width1, addr_width2, data_width):
-        max_addr = pow(2, addr_width1+addr_width2)
+        max_addr = 1 << (addr_width1+addr_width2)
         # calculate masks for to unhash the input
         mask1 = (1 << addr_width1) - 1
         mask2 = (1 << (addr_width1 + addr_width2)) - mask1 - 1
 
         # maximum value of output, given the data_width
-        data_max = pow(2, data_width) - 1
+        data_max = (1 << data_width) - 1
         data = []
         # iterate over the whole input range
         for x in xrange(max_addr):
@@ -163,7 +175,6 @@ class LUTConfigurator(object):
         masks = []
         for i, boundary in enumerate(bit_boundaries):
             msk = LUTConfigurator.generate_mask(boundary[0], boundary[1])
-            print rev_input_names[i], "mask:", bin(msk)
             masks.append(msk)
 
         data_max = (1 << data_width) - 1 
@@ -177,7 +188,7 @@ class LUTConfigurator(object):
                 inputs[i] = inputs[i] >> bit_boundaries[i][0] # shift by lower bound
             # take maximum data if overflow
             res = min(eval(my_function_string), data_max)
-
+            
             data.append(res)
         return data
 
