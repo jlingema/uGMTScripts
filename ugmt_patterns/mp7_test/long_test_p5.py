@@ -25,17 +25,18 @@ def decompress(pattern_fname, comp_fname):
 
 def parse_options():
     desc = "Interface for multi-buffer test"
-        
+
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('boardname', type=str, default='ugmt_b40', help='name of mp7 board')
     parser.add_argument('--dir', type=str, dest='directory', default='patterns/many_events/', help='directory containing compressed patterns')
     parser.add_argument('--dump', default=False, action='store_true', help='flag for actually dumping the buffers')
     parser.add_argument('--out', type=str, dest='outpath', default='dumps', help='directory for buffer dumps')
     parser.add_argument('--test', type=str, dest='testpath', default='', help='directory containing HW response (suppresses HW access)')
+    parser.add_argument('--energydelay', '-d', type=str, dest='en_delay', default='0', help='delay for energy deposits')
 
     # parser.add_argument('--details', default=False, action='store_true', help='do detailed analysis of individual muons')
     opts = parser.parse_args()
-    
+
     return opts
 
 class Analyser():
@@ -71,10 +72,10 @@ class Analyser():
         muon_nonzero_ctr = 0 # counts how many non-zero
         for emu, hw in zip(emuout, hwout):
             event = mucntr/8+eventstart
-            if (emu.bitword != 0): 
+            if (emu.bitword != 0):
                 muon_nonzero_ctr += 1
-            if emu.bitword != hw.bitword: 
-                if not event in self.errors: 
+            if emu.bitword != hw.bitword:
+                if not event in self.errors:
                     self.errors.append(event)
                     self.pt_errors[event] = 0
                     self.phi_errors[event] = 0
@@ -132,12 +133,12 @@ class Analyser():
         print "number of qual errors: ", tot, "/", self.mu_cntr
         logger.write("number of muons with qual errors: {n} / {total}\n".format(n=tot, total=self.mu_cntr))
         logger.write("errornous events: {evts}\n".format(evts=events))
-        
+
         tot, events = self.get_total(self.chrg_errors)
         print "number of chrg errors: ", tot, "/", self.mu_cntr
         logger.write("number of muons with chrg errors: {n} / {total}\n".format(n=tot, total=self.mu_cntr))
         logger.write("errornous events: {evts}\n".format(evts=events))
-        
+
         tot, events = self.get_total(self.iso_errors)
         print "number of iso errors:  ", tot, "/", self.mu_cntr
         logger.write("number of muons with iso errors: {n} / {total}\n".format(n=tot, total=self.mu_cntr))
@@ -155,7 +156,7 @@ def main():
         for fname in files:
             if fname.startswith('tx_') and fname.endswith('.zip'):
                 # strip leading tx_ and _<i>.zip
-                pattern_name = fname[3:-6] 
+                pattern_name = fname[3:-6]
                 file_list_tx.append(root+fname)
             if fname.startswith('rx_') and fname.endswith('.zip'):
                 file_list_rx.append(root+fname)
@@ -173,7 +174,7 @@ def main():
     if len(file_list_rx) != len(file_list_tx):
         print "Number of RX and TX files not the same!"
         return
-        
+
     print "-"*30, pattern_name, "-"*30
     print "Starting test: A total of {i} files will be fed into the algorithm".format(i=len(file_list_rx))
     log = open('{pattern}.log'.format(pattern=pattern_name), 'w')
@@ -192,7 +193,8 @@ def main():
         cap_lines = []
         if opts.testpath == '':
             butler_out = ''
-            butlerError = subprocess.call(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name)])
+            butlerError = subprocess.call(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e 36-71'])
+            butlerError = subprocess.call(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e 0-35', '--play {delay}'.format(delay=opts.en_delay)])
 	    if butlerError != 0:
                 print " errors in mp7_butler: "+str(butlerError)
                 return
@@ -209,7 +211,7 @@ def main():
                 cap_lines = cap.readlines()
                 # if opts.dump:
                 #     with open(opts.outpath+'/tx_summary_{x}.txt'.format(x=i), 'w') as ofile:
-                #         for lin in cap_lines: 
+                #         for lin in cap_lines:
                 #             ofile.write(lin)
             # if opts.dump:
             #     with open('tmp/rx_summary.txt', 'r') as cap:
@@ -226,12 +228,12 @@ def main():
         emu_lines = []
         with open(tx_tmp_name, 'r') as emu:
             emu_lines = emu.readlines()
-        
+
 
         diff = difflib.context_diff(emu_lines, cap_lines)
         have_errors = False
         for d in diff:
-            if d.startswith("***************"): 
+            if d.startswith("***************"):
                 have_errors = True
                 break
         # if they are not: do detailed analysis
