@@ -29,6 +29,7 @@ def parse_options():
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('boardname', type=str, default='ugmt_b40', help='name of mp7 board')
     parser.add_argument('--p5', default=False, action='store_true', help='whether running in point 5 environment')
+    parser.add_argument('--calo_delay', type=int, dest='calo_delay', default='2', help='Delay of calorimeter sums with respect to muons')
     parser.add_argument('--dir', type=str, dest='directory', default='patterns/many_events/', help='directory containing compressed patterns')
     parser.add_argument('--dump', default=False, action='store_true', help='flag for actually dumping the buffers')
     parser.add_argument('--out', type=str, dest='outpath', default='dumps', help='directory for buffer dumps')
@@ -194,13 +195,15 @@ def main():
         if opts.testpath == '':
             butler_out = ''
             if opts.p5:
-                butlerError = subprocess.call(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name)])
+                butlerError = subprocess.call(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e', '36-71'])
+                butlerError += subprocess.call(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e', '0-35', '--play', str(opts.calo_delay)])
                 if butlerError != 0:
                     print " errors in mp7_butler: "+str(butlerError)
                     return
             else:
                 try:
-                    subprocess.check_output(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name)])
+                    subprocess.check_output(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e', '36-71'])
+                    subprocess.check_output(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e', '0-35', '--play', str(opts.calo_delay)])
                 except subprocess.CalledProcessError as e:
                     print " errors in mp7_butler: "+str(e)
                     return
