@@ -28,8 +28,12 @@ def parse_options():
 
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('boardname', type=str, default='ugmt_b40', help='name of mp7 board')
+    parser.add_argument('--connections_file', '-c', type=str, dest='connections_file',
+                        default='file://${MP7_TESTS}/etc/mp7/connections-test.xml;file://${MP7_TESTS}/etc/mp7/connections-RAL.xml;file://${MP7_TESTS}/etc/mp7/connections-oct14.xml;file://${MP7_TESTS}/etc/mp7/connections-calo-2015.xml;file://${MP7_TESTS}/etc/mp7/connections-TDR.xml',
+                        help='Path of connections file to be used.')
+    parser.add_argument('--p5', default=False, action='store_true', help='whether running in point 5 environment')
+    parser.add_argument('--energydelay', '-d', type=str, dest='en_delay', default='0', help='Delay for energy deposits with respect to muons')
     parser.add_argument('--dir', type=str, dest='directory', default='patterns/many_events/', help='directory containing compressed patterns')
-    parser.add_argument('--energydelay', '-d', type=str, dest='en_delay', default='0', help='delay for energy deposits')
     parser.add_argument('--dump', default=False, action='store_true', help='flag for actually dumping the buffers')
     parser.add_argument('--out', type=str, dest='outpath', default='dumps', help='directory for buffer dumps')
     parser.add_argument('--test', type=str, dest='testpath', default='', help='directory containing HW response (suppresses HW access)')
@@ -193,19 +197,32 @@ def main():
         cap_lines = []
         if opts.testpath == '':
             butler_out = ''
-            try:
-                subprocess.check_output(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e 36-71'])
-                subprocess.check_output(['mp7butler.py', 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e 0-35', '--play {delay}'.format(delay=opts.en_delay)])
-            except subprocess.CalledProcessError as e:
-                print " errors in mp7_butler: "+str(e)
-                return
+            if opts.p5:
+                butlerError = subprocess.call(['mp7butler.py', '-c', opts.connections_file, 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e', '36-71'])
+                butlerError += subprocess.call(['mp7butler.py', '-c', opts.connections_file, 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e', '0-35', '--play', '{delay}'.format(delay=opts.en_delay)])
+                if butlerError != 0:
+                    print " errors in mp7_butler: "+str(butlerError)
+                    return
+            else:
+                try:
+                    subprocess.check_output(['mp7butler.py', '-c', opts.connections_file, 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e', '36-71'])
+                    subprocess.check_output(['mp7butler.py', '-c', opts.connections_file, 'buffers', opts.boardname, 'algoPlay', '--inject', 'file://{fname}'.format(fname=rx_tmp_name), '-e', '0-35', '--play', '{delay}'.format(delay=opts.en_delay)])
+                except subprocess.CalledProcessError as e:
+                    print " errors in mp7_butler: "+str(e)
+                    return
             log.write(butler_out)
             time.sleep(1)
-            try:
-                subprocess.check_output(['mp7butler.py', 'capture', opts.boardname, '--outputpath', 'tmp'])
-            except subprocess.CalledProcessError as e:
-                print " errors in mp7_butler: "+str(e)
-                return
+            if opts.p5:
+                butlerError = subprocess.call(['mp7butler.py', '-c', opts.connections_file, 'capture', opts.boardname, '--outputpath', 'tmp'])
+                if butlerError != 0:
+                    print " errors in mp7_butler: "+str(e)
+                    return
+            else:
+                try:
+                    subprocess.check_output(['mp7butler.py', '-c', opts.connections_file, 'capture', opts.boardname, '--outputpath', 'tmp'])
+                except subprocess.CalledProcessError as e:
+                    print " errors in mp7_butler: "+str(e)
+                    return
             log.write(butler_out)
 
             cap_lines = []
