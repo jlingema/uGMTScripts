@@ -2,13 +2,13 @@
 # Pattern for testbench of the uGMT algo block
 # Data format of muons:
 # ID N PT PHI ETA CHARGE CHARGE_VALID QUALITY SORT EMPTY (ISO)
-# where ID = {FWD+/-, OVL+/-, BAR, OUT, FIMD, BIMD, OIMD}
+# where ID = {EMTF+/-, OMTF+/-, BMTF, OUT, EIMD, BIMD, OIMD}
 # N is the rank for IMD / OUT and the link for inputs.
 # ISO is optional and only present for OUT
 #
 # Data format for tracks:
 # ID ETA0 PHI0 QUALITY0 ETA1 PHI1 QUALITY1 ETA2 PHI2 QUALITY2
-# where ID = {FTRK+/-, OTRK+/-, BTRK}
+# where ID = {ETRK+/-, OTRK+/-, BTRK}
 # Tracks are given always for 3 consecutive muons
 #
 #
