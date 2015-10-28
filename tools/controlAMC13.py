@@ -5,13 +5,16 @@ import sys
 mp7path=os.environ.get('MP7_TESTS')
 if mp7path == None:
     print "ERROR: Set the mp7sw environment before continuing."
-    exit() 
+    exit()
 sys.path.append(mp7path+'/python/daq')
 import re
 import dtm
 import uhal
 import readline
 import argparse
+import logging
+from mp7.tools.log_config import initLogging
+initLogging( logging.DEBUG)
 
 desc = ''
 parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -70,15 +73,14 @@ def stop(amc13, state):
         print "Error: Board not running."
 
 def spy(amc13, state):
-    if state == "Running":
-       print "Spying on events. Use ctrl+c to stop."
-       amc13.spy()
-    else:
-       print "Error: We're not running."
+    if state != "Running":
+        print "WARNING: Seems like we're not running, you probably won't see any events here."
+    print "Spying on events. Use ctrl+c to stop."
+    amc13.spy()
 
 def main():
     # I'm so sorry..
-    state = "Undefined" 
+    state = "Undefined"
 
     # Sanitise the connection string
     conns = opts.connections_file.split(';')
