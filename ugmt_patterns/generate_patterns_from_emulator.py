@@ -37,7 +37,7 @@ def get_muon_list_out(emu_product, mu_type, vhdl_dict, nexpected=8):
 
 def get_muon_list(emu_product, mu_type, vhdl_dict, bx, check=False):
     nexpected = 18
-    if mu_type == "BARREL":
+    if mu_type == "BMTF":
         nexpected = 36
 
     mulist = [Muon(vhdl_dict, mu_type="IN", bitword=0)]*nexpected
@@ -172,13 +172,13 @@ def main():
             imdmuons += get_muon_list_out(imd_emtf_n_prod, "IMD", vhdl_dict, 4)
 
             emu_bar_muons = bar_handle.product()
-            bar_muons = get_muon_list(emu_bar_muons, "BARREL", vhdl_dict, i)
+            bar_muons = get_muon_list(emu_bar_muons, "BMTF", vhdl_dict, i)
             emu_ovl_muons = ovl_handle.product()
-            ovlp_muons = get_muon_list(emu_ovl_muons, "OVL_POS", vhdl_dict, i)
-            ovln_muons = get_muon_list(emu_ovl_muons, "OVL_NEG", vhdl_dict, i)
+            ovlp_muons = get_muon_list(emu_ovl_muons, "OMTF_POS", vhdl_dict, i)
+            ovln_muons = get_muon_list(emu_ovl_muons, "OMTF_NEG", vhdl_dict, i)
             emu_fwd_muons = fwd_handle.product()
-            fwdp_muons = get_muon_list(emu_fwd_muons, "FWD_POS", vhdl_dict, i)
-            fwdn_muons = get_muon_list(emu_fwd_muons, "FWD_NEG", vhdl_dict, i)
+            fwdp_muons = get_muon_list(emu_fwd_muons, "EMTF_POS", vhdl_dict, i)
+            fwdn_muons = get_muon_list(emu_fwd_muons, "EMTF_NEG", vhdl_dict, i)
 
             conversion_time = time.time() - evt_start - get_label_time
             input_buffer.writeFrameBasedInputBX(bar_muons, fwdp_muons, fwdn_muons, ovlp_muons, ovln_muons, calo_sums)
