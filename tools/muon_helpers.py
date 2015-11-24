@@ -1,7 +1,8 @@
 # import ROOT
+from bithelper import bithlp
 
 # non member functions
-def get_masked_word(complete_word, bit_low, bit_high): 
+def get_masked_word(complete_word, bit_low, bit_high):
     # Create bit mask for bit_low-bit_high
     mask = (1<<(bit_high-bit_low+1)) - 1
     mask = mask<<bit_low
@@ -35,15 +36,6 @@ def non_zero(muon_objs): # counts how many obj in an array are !=0
             counter += 1
     return counter
 
-def signed_int(x): # returns the signed integer represented by the input bitstring
-    index = len(x)-1
-    val = -2**(index)*int(x[0], 2)
-    for i in x[1:]:
-        index -= 1
-        val += 2**(index)*int(i, 2)
-    return val
-        
-
 def print_in_word(w, show_legend = False):
     pt_pre = '\x1b[31;01m'
     q_pre = '\x1b[32;01m'
@@ -59,7 +51,7 @@ def print_in_word(w, show_legend = False):
     if show_legend:
         print  add_pre + "add" + phi_pre + "phi" + sys_pre + "sys" + eta_pre + "eta" + q_pre + "q"+ pt_pre + "pt"+ reset
     return pretty_print_w
-    
+
 
 def print_out_word(w, show_legend = False, print_dec = False, print_bin = True):
     pt_pre = '\t\x1b[31;01m'
@@ -80,9 +72,8 @@ def print_out_word(w, show_legend = False, print_dec = False, print_bin = True):
             pretty_print_w += "\n"
         else:
             pretty_print_w = ""
-        signed_eta = signed_int(print_w[32:41])
+        signed_eta = bithlp.twos_complement_to_signed(int(print_w[32:41], 2), len(print_w[32:41]))
         pretty_print_w += str(int(print_w[:28], 2)) + sys_pre + print_w[28:30] + iso_pre + print_w[30:32] + eta_pre + str(signed_eta) + q_pre + str(int(print_w[41:45], 2)) + pt_pre + str(int(print_w[45:54], 2)) + phi_pre + str(int(print_w[54:], 2)) + reset
     if show_legend:
         print  "address" + sys_pre + "sys" + iso_pre + "iso" + eta_pre + "eta" + q_pre + "q" + pt_pre + "pt" + phi_pre + "phi" + reset
     return pretty_print_w
-    
