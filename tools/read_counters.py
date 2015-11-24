@@ -1,7 +1,9 @@
 #!/bin/python
+from __future__ import print_function
+
+import time
 import uhal
 import sys
-
 import argparse
 
 uhal.setLogLevelTo(uhal.LogLevel.ERROR)
@@ -9,22 +11,17 @@ uhal.setLogLevelTo(uhal.LogLevel.ERROR)
 def mem_display(node, values):
     string = node+"  =  ["
     vals = values[node]
-    if len(vals) > 16:
-        for i in range(8):
-            string += hex(vals[i]) + ", "
-        string += " ..."
-        n = len(vals)
-        for i in range(n-8, n):
-            string += ", "+hex(vals[i])
-        string += "] (total size: {sz})".format(sz=len(vals))
-    else:
-        for val in vals:
-            string += hex(val)+", "
-        string += "]"
-    print string
+    for val in vals:
+        string += hex(val)+", "
+    string += "]"
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    fname = node[node.rfind(".")+1:] + "_" + timestr + ".txt"
+    f = open(fname, 'w')
+    print(string, file=f)
+    f.close()
 
 def reg_display(node, values):
-    print node, " = ", hex(values[node])
+    print(node, " = ", hex(values[node]))
 
 def display_all(regNodes, memNodes, regValues, memValues):
     for regNode in regNodes:
@@ -48,7 +45,7 @@ def read_all(board, regNodes, memNodes, regValues, memValues):
     try:
         board.dispatch()
     except:
-        print "Failed to read!"
+        print("Failed to read!")
         return -1
 
     return 0
@@ -60,7 +57,7 @@ def add_nodes(board, node_name, regNodes, memNodes):
     elif mode == uhal.BlockReadWriteMode.INCREMENTAL:
         memNodes.append("payload."+node_name)
     else:
-        print "No implemented read function for mode", mode
+        print("No implemented read function for mode", mode)
 
 def parseNumList(string):
     m = string.split('-')
@@ -73,7 +70,7 @@ def main():
     desc = ''
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--quads', type=parseNumList, default="0-8", help='Range of muon quads to read from.')
-    parser.add_argument('--dumpSpyBuffers', default='False', action='store_true', help='Whether to read out the spy buffers.')
+    parser.add_argument('--dumpSpyBuffers', default='False', action='store_true', help='Read out and dump the spy buffers to file.')
     parser.add_argument('--connections_file', type=str, default='/nfshome0/ugmtdev/firmware/connections-ugmt.xml', help='URI to connections file.')
     parser.add_argument('board', type=str, help='Name of board to read from.')
 
@@ -86,14 +83,17 @@ def main():
     try:
         board.dispatch()
     except:
-        # print something here when if times out
-        print 'MP7 access failed (name:', board.id(), 'uri:', board.uri(), ')'
+        print('MP7 access failed (name:', board.id(), 'uri:', board.uri(), ')')
         sys.exit(-1)
 
-    counter_template_string = "muon_input.mu_quad_{0}.muon_counter_"
     counter_list = []
+    counter_template_string = "muon_input.mu_quad_{0}.muon_counter_"
+    spy_buf_template_string = "spy_buffer_control.spy_buffer_{0}"
     for i in opts.quads:
         counter_list.append(counter_template_string.format(i))
+    if opts.dumpSpyBuffers:
+        for i in range(0, 4):
+            counter_list.append(spy_buf_template_string.format(i))
 
     payload_nodes = board.getNode('payload').getNodes()
     regNodes = []
