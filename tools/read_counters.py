@@ -16,9 +16,8 @@ def mem_display(node, values):
     string += "]"
     timestr = time.strftime("%Y%m%d-%H%M%S")
     fname = node[node.rfind(".")+1:] + "_" + timestr + ".txt"
-    f = open(fname, 'w')
-    print(string, file=f)
-    f.close()
+    with open(fname, 'w') as f:
+        print(string, file=f)
 
 def reg_display(node, values):
     print(node, " = ", hex(values[node]))
@@ -87,6 +86,7 @@ def main():
         sys.exit(-1)
 
     counter_list = []
+    counter_list.append("muon_counter_reset.lumi_section_cnt")
     counter_template_string = "muon_input.mu_quad_{0}.muon_counter_"
     spy_buf_template_string = "spy_buffer_control.spy_buffer_{0}"
     for i in opts.quads:
