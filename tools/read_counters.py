@@ -62,7 +62,10 @@ def parseNumList(string):
     m = string.split('-')
 
     start = m[0]
-    end = m[1] or start
+    try:
+        end = m[1]
+    except IndexError:
+        end = m[0]
     return list(range(int(start, 10), int(end, 10)+1))
 
 def main():
@@ -91,7 +94,7 @@ def main():
     spy_buf_template_string = "spy_buffer_control.spy_buffer_{0}"
     for i in opts.quads:
         counter_list.append(counter_template_string.format(i))
-    if opts.dumpSpyBuffers:
+    if opts.dumpSpyBuffers == True:
         for i in range(0, 4):
             counter_list.append(spy_buf_template_string.format(i))
 
