@@ -6,6 +6,8 @@ import uhal
 import sys
 import argparse
 
+import curses
+
 uhal.setLogLevelTo(uhal.LogLevel.ERROR)
 
 def mem_display(node, values):
@@ -22,11 +24,41 @@ def mem_display(node, values):
 def reg_display(node, values):
     print(node, " = ", hex(values[node]))
 
+def reg_display_continuously(node, values, stdscr, cnt):
+    LSprefix = "payload.muon_counter_reset."
+    ratePrefix = "payload.muon_input.mu_"
+    if node.find(LSprefix) != -1:
+        nodeLabel = node[len(LSprefix):]
+    elif node.find(ratePrefix) != -1:
+        nodeLabel = node[len(ratePrefix):]
+    counterVal = nodeLabel + "\t" + hex(values[node]) + "\n"
+
+    if cnt < 27:
+        xVal = 0
+        yVal = cnt
+    else:
+        xVal = 40
+        yVal = cnt - 26
+
+    try:
+        stdscr.addstr(yVal, xVal, counterVal)
+    except curses.error:
+        pass
+
 def display_all(regNodes, memNodes, regValues, memValues):
     for regNode in regNodes:
         reg_display(regNode, regValues)
     for memNode in memNodes:
         mem_display(memNode, memValues)
+
+def display_all_continuously(regNodes, memNodes, regValues, memValues, stdscr):
+        for memNode in memNodes:
+            mem_display(memNode, memValues)
+        cnt = 0
+        for regNode in regNodes:
+            reg_display_continuously(regNode, regValues, stdscr, cnt)
+            cnt += 1
+        stdscr.refresh()
 
 def mem_read(board, node, values):
     size = board.getNode(node).getSize()
@@ -71,6 +103,7 @@ def parseNumList(string):
 def main():
     desc = ''
     parser = argparse.ArgumentParser(description=desc, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--autoUpdate', '-a', default='False', action='store_true', help='Automatically update counters until stopped by Ctrl+c.')
     parser.add_argument('--quads', type=parseNumList, default="0-8", help='Range of muon quads to read from.')
     parser.add_argument('--dumpSpyBuffers', default='False', action='store_true', help='Read out and dump the spy buffers to file.')
     parser.add_argument('--connections_file', type=str, default='/nfshome0/ugmtdev/firmware/connections-ugmt.xml', help='URI to connections file.')
@@ -111,8 +144,25 @@ def main():
 
     regValues = {}
     memValues = {}
-    if read_all(board, regNodes, memNodes, regValues, memValues) == 0:
-        display_all(regNodes, memNodes, regValues, memValues)
+    if opts.autoUpdate != True:
+        if read_all(board, regNodes, memNodes, regValues, memValues) == 0:
+            display_all(regNodes, memNodes, regValues, memValues)
+    else:
+        stdscr = curses.initscr()
+        curses.noecho()
+        curses.cbreak()
+        curses.curs_set(0)
+        try:
+            while True:
+                if read_all(board, regNodes, memNodes, regValues, memValues) == 0:
+                    display_all_continuously(regNodes, memNodes, regValues, memValues, stdscr)
+        except KeyboardInterrupt:
+            print("Bye.")
+        finally:
+            curses.curs_set(1)
+            curses.echo()
+            curses.nocbreak()
+            curses.endwin()
 
 if __name__ == "__main__":
     main()
