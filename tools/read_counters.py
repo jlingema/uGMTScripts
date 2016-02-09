@@ -155,7 +155,11 @@ outputs of the regional sorters.')
     for i in opts.quads:
         counter_list.append(counter_template_string.format(i))
     if opts.readSorterOutputs is True:
-        counter_list.append("uGMT.sorting.muon_counter_")
+        counter_list.append("uGMT.sorting.muon_counter_EMTFp")
+        counter_list.append("uGMT.sorting.muon_counter_OMTFp")
+        counter_list.append("uGMT.sorting.muon_counter_BMTF")
+        counter_list.append("uGMT.sorting.muon_counter_OMTFn")
+        counter_list.append("uGMT.sorting.muon_counter_EMTFn")
     if opts.dumpSpyBuffers is True:
         for i in range(0, 4):
             counter_list.append(spy_buf_template_string.format(i))
