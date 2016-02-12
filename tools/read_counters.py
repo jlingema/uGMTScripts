@@ -31,15 +31,17 @@ def reg_display_continuously(node, values, stdscr, cnt):
     LSprefix = "payload.muon_counter_reset."
     ratePrefix = "payload.muon_input.mu_"
     sorterRatePrefix = "payload.uGMT.sorting."
+    convResult = str(int(values[node])/23) + " Hz"
     if node.find(LSprefix) != -1:
         nodeLabel = node[len(LSprefix):]
+        convResult = str(values[node])
     elif node.find(ratePrefix) != -1:
         nodeLabel = node[len(ratePrefix):]
     elif node.find(sorterRatePrefix) != -1:
         nodeLabel = node[len(sorterRatePrefix):]
     else:
         nodeLabel = node
-    counterVal = nodeLabel + "\t" + hex(values[node]) + "\n"
+    counterVal = nodeLabel + "\t" + convResult + "\n"
 
     if cnt < 27:
         xVal = 0
